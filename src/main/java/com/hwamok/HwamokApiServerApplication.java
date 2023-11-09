@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HwamokApiServerApplication {
 
   public static void main(String[] args) {
+    System.out.println("테스트 입니다.");
     SpringApplication.run(HwamokApiServerApplication.class, args);
   }
 
