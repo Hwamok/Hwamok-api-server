@@ -1,0 +1,62 @@
+services:
+  hwamok-mysql:
+    platform: linux/x86_64
+    image: mysql
+    container_name: hwamok-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+    volumes:
+      - ./config/:/docker-entrypoint-initdb.d/
+    ports:
+      - 3306:3306
+
+# domain => Back-end => Business Model
+# domain => Network => Address
+# www.naver.com
+# DNS 서버 => Hosting
+# 입력 -> 요청발생 -> DNS서버(AWS, 가비아, cafe24 .. 무료로 호스팅을 할 수있는 )
+
+# key , name
+# www.naver.com , http://192.168.0.1 (index.html이 위치하고 있는 실제 컴퓨터의 주소) 1.19.20.0
+
+# 컴퓨터에 방이 6만몇개..
+# 컴퓨터한테 방에 번호 달아줌 1번방(index.html) , 2번방(이미지), 3번방(css파일)
+# http://192.168.0.1:1(port)
+# http://localhost:8080/test
+
+#8080번방에 서랍이 하나 있는데
+# 서랍첫번째 칸에 hello boot 라는 것을 넣어놓고 이름표를 /로 달아두는것
+# 404에러 => Not Found Resource
+
+#    ports:
+#      - 3306:3308
+
+# 3306번방에 가면 mysql이 있을거야
+# inbound:outbound
+# 내부포트:외부포트
+
+#제가 3307번방에가면 mysql이 있을거야
+#도커가 3307번 방에 가봤더니 3306번 방으로 가시오 라고 써져있어요
+#도커가 3306번 방으로 갑니다.
+# mysql의 공식 포트번호가 3306
+# 도커 완벽하게 격리된 컨테이너 컨테이너1과 컨테이너2는 별개
+# 내 컴퓨터는 한대 3306 3307
+
+#도커로 예를 들면 귀찮은 문제 해결용으로 쓰기도
+# www.naver.com:80 (공식적으로 http의 포트는 80으로하자)
+# https (443)
+
+#Cloud (aws) 가상컴퓨터 - vpc - ec2 spring 2개 8080 8081- 나(외부) 80(web) -> 8080 81 -> 8081
+
+
+#포트번호 => 대기업들 자주쓰는 프로토콜이 미리 선점을 해둠
+# http : 80 (생략)
+# https : 443 (생략)
+# ssh : 22 (생략)
+# FTP : 23
+# Mail : 587
+# mysql, mariadb : 3306
+# postgresql :5432
+# orcal : 1521
+
+
