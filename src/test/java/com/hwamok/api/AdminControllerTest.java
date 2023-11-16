@@ -33,7 +33,7 @@ class AdminControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    AdminRepository adminRepository;
+    private AdminRepository adminRepository;
 
     @Test
     void 관리자_생성_성공() throws Exception {
@@ -69,8 +69,8 @@ class AdminControllerTest {
 
     @Test
     void 관리자_리스트조회_성공() throws Exception {
-        Admin admin1 = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com"));
-        Admin admin2 = adminRepository.save(new Admin("test12345", "12345", "이름이", "test1@test1.com"));
+        adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com"));
+        adminRepository.save(new Admin("test12345", "12345", "이름이", "test1@test1.com"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/list"))
                 .andDo(MockMvcResultHandlers.print())

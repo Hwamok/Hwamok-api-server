@@ -21,7 +21,6 @@ public class AdminController {
 
     @PostMapping
     public ResponseEntity<ApiResult<?>> create(@RequestBody AdminCreateDto.Request request){
-
         adminService.create(request.getLoginId(),request.getPassword(),request.getName(),request.getEmail());
 
         return Result.created();
@@ -29,7 +28,6 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResult<Admin>> getInfo(@PathVariable Long id){
-
         Admin admin = adminService.getInfo(id);
 
         return Result.ok(admin);
@@ -37,7 +35,6 @@ public class AdminController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResult<List<Admin>>> getInfos(){
-
         List<Admin> admin = adminService.getInfos();
 
         return Result.ok(admin);
@@ -45,16 +42,14 @@ public class AdminController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResult<?>> update(@PathVariable Long id, @RequestBody AdminUpdateDto.Request request){
-
-        Admin admin = adminService.update(id,request.getPassword(),request.getName(),request.getEmail());
+        adminService.update(id,request.getPassword(),request.getName(),request.getEmail());
 
         return Result.ok();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResult<?>> delete(@PathVariable Long id){
-
-        Admin admin = adminService.delete(id);
+        adminService.delete(id);
 
         return Result.ok();
     }
