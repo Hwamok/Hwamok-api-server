@@ -34,6 +34,7 @@ public class AdminController {
 
         return Result.ok(admin);
     }
+
     @GetMapping("/list")
     public ResponseEntity<ApiResult<List<Admin>>> getInfos(){
 
