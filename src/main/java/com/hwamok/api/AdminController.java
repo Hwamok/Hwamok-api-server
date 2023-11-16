@@ -26,6 +26,7 @@ public class AdminController {
 
         return Result.created();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResult<Admin>> getInfo(@PathVariable Long id){
 
@@ -48,6 +49,7 @@ public class AdminController {
 
         return Result.ok();
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResult<?>> delete(@PathVariable Long id){
 
@@ -55,5 +57,4 @@ public class AdminController {
 
         return Result.ok();
     }
-
 }
