@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,16 +36,16 @@ class AdminServiceImplTest {
     void 관리자_저장_성공() {
         Admin admin = adminService.create("test123", "1234", "이름", "test@test.com");
 
-        Assertions.assertThat(admin.getId()).isNotNull();
-
+        assertThat(admin.getId()).isNotNull();
     }
 
     @Test
     void 관리자_단건조회_성공() {
         Admin admin = adminRepository.save(new Admin("test123", passwordEncoder.encode("1234"), "이름", "test@test.com"));
+
         Admin foundedAmdin = adminService.getInfo(admin.getId());
 
-        Assertions.assertThat(foundedAmdin.getId()).isNotNull();
+        assertThat(foundedAmdin.getId()).isNotNull();
 
     }
 
@@ -61,7 +62,7 @@ class AdminServiceImplTest {
         Admin admin2 = adminRepository.save(new Admin("test1234", passwordEncoder.encode("12344"), "이름은", "test1@test1.com"));
 
         List<Admin> adminList = adminService.getInfos();
-        Assertions.assertThat(adminList.size()).isEqualTo(2);
+        assertThat(adminList.size()).isEqualTo(2);
     }
 
     @Test
@@ -69,9 +70,9 @@ class AdminServiceImplTest {
         Admin admin = adminRepository.save(new Admin("test123", passwordEncoder.encode("1234"), "이름", "test@test.com"));
 
         Admin updateAdmin = adminService.update(admin.getId(), "update1234", "수정이름", "update@update.com");
-        Assertions.assertThat(passwordEncoder.matches("update1234", updateAdmin.getPassword())).isTrue();
-        Assertions.assertThat(updateAdmin.getName()).isEqualTo("수정이름");
-        Assertions.assertThat(updateAdmin.getEmail()).isEqualTo("update@update.com");
+        assertThat(passwordEncoder.matches("update1234", updateAdmin.getPassword())).isTrue();
+        assertThat(updateAdmin.getName()).isEqualTo("수정이름");
+        assertThat(updateAdmin.getEmail()).isEqualTo("update@update.com");
     }
 
     @Test
@@ -86,7 +87,7 @@ class AdminServiceImplTest {
         Admin admin = adminRepository.save(new Admin("test123", passwordEncoder.encode("1234"), "이름", "test@test.com"));
 
         Admin deletedAdmin = adminService.delete(admin.getId());
-        Assertions.assertThat(deletedAdmin.getStatus()).isEqualTo(AdminStatus.INACTIVATED);
+        assertThat(deletedAdmin.getStatus()).isEqualTo(AdminStatus.INACTIVATED);
 
     }
 
