@@ -24,20 +24,19 @@ import static com.hwamok.utils.RegexUtil.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin extends BaseEntity {
-
-  @Column(nullable = false)
+  @Column(length = 12, nullable = false)
   private String loginId;
 
   @Column(nullable = false)
   private String password;
 
-  @Column(nullable = false)
+  @Column(length = 20, nullable = false)
   private String name;
 
-  @Column(nullable = false)
+  @Column(length = 50, nullable = false)
   private String email;
 
-  @Column(nullable = false)
+  @Column(length = 20, nullable = false)
   @Enumerated(EnumType.STRING)
   private AdminStatus status = AdminStatus.ACTIVATED;
 
@@ -73,5 +72,4 @@ public class Admin extends BaseEntity {
   public void delete(){
     this.status = AdminStatus.INACTIVATED;
   }
-
 }

@@ -7,7 +7,7 @@ public class AdminFixture {
 
 
     public static Admin createAdmin(){
-        return new Admin("test123","1234","이름","test@test.com");
+        return new Admin("test123", "1234", "이름", "test@test.com");
     }
 
 }
