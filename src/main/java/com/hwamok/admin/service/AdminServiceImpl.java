@@ -23,26 +23,22 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public Admin create(String loginId, String password, String name, String email) {
-
         return adminRepository.save(new Admin(loginId, passwordEncoder.encode(password), name, email));
     }
 
     @Override
     public Admin getInfo(Long id) {
-
         return adminRepository.findById(id).orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_ADMIN));
     }
 
     @Override
     public List<Admin> getInfos() {
-        List<Admin> adminList = adminRepository.findAll();
         return adminRepository.findAll();
 
     }
 
     @Override
     public Admin update(Long id, String password, String name, String email) {
-
         Admin admin = adminRepository.findById(id).orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_ADMIN));
         admin.update(passwordEncoder.encode(password),name,email);
         return admin;
