@@ -19,13 +19,17 @@ public enum JoinPlatform {
   public static JoinPlatform converter(String platform) {
     switch (platform.toUpperCase()) {
       case "SELF":
-        return JoinPlatform.SELF;
+        return SELF;
+
       case "KAKAO":
-        return JoinPlatform.KAKAO;
+        return KAKAO;
+
       case "NAVER":
-        return JoinPlatform.NAVER;
+        return NAVER;
+
       case "GOOGLE":
-        return JoinPlatform.GOOGLE;
+        return GOOGLE;
+
       default:
         throw new IllegalArgumentException("UNKNOWN PLATFORM: " + platform);
     }

@@ -19,31 +19,29 @@ public class UserController {
 
     @PostMapping // 회원 가입
     public ResponseEntity<ApiResult<?>> signup(@RequestBody UserCreateDto.Request request) {
-        User user = userService.create(
+        userService.create(
                 request.getEmail(),
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
                 request.getPhone(),
                 request.getPlatform(),
-                request.getStatus(),
                 request.getProfile().getOriginalFileName(),
                 request.getProfile().getSavedFileName(),
                 request.getAddress().getPost(),
                 request.getAddress().getAddr(),
                 request.getAddress().getDetailAddr());
-        return Result.created(user);
+        return Result.created();
     }
 
     @PatchMapping("/updateProfile/{id}") // 회원 수정
-    public ResponseEntity<ApiResult<?>> updateProfile(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
+    public ResponseEntity<ApiResult<User>> updateProfile(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
         User user = userService.updateProfile(id, request.getEmail(),
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
                 request.getPhone(),
                 request.getPlatform(),
-                request.getStatus(),
                 request.getProfile().getOriginalFileName(),
                 request.getProfile().getSavedFileName(),
                 request.getAddress().getPost(),
@@ -53,13 +51,13 @@ public class UserController {
     }
 
     @GetMapping("/userOne/{id}") // 회원 조회
-    public ResponseEntity<ApiResult<?>> userOne(@PathVariable long id) {
+    public ResponseEntity<ApiResult<User>> userOne(@PathVariable long id) {
         User user = userService.getUser(id);
         return Result.ok(user);
     }
 
     @DeleteMapping ("/withdraw/{id}") // 회원 탈퇴
-    public ResponseEntity<ApiResult<?>> withdrawUser(@PathVariable long id) {
+    public ResponseEntity<ApiResult<User>> withdrawUser(@PathVariable long id) {
         userService.withdraw(id);
         User user = userService.getUser(id);
         return Result.ok(user);

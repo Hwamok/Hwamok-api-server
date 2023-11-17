@@ -43,7 +43,7 @@ class UserControllerTest {
     @Test
     void 회원_가입_성공() throws Exception {
 
-        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok", "20231115", "01012345678", "GOOGLE",
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok", "2023-11-15", "01012345678", "GOOGLE",
                 "ACTIVATED",new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
 
@@ -51,7 +51,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
                         jsonPath("message").value("success")

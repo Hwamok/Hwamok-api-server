@@ -11,12 +11,15 @@ public class RegexUtil {
     // 이메일형식 : 일반적인 이메일주소형식 검증
     private static final String EMAIL_PATTERN = "^[_a-z0-9-]+(.[_a-z0-9-]+)@(?:\\w+\\.)+\\w+$";
 
+    private static final String BIRTHDAY_PATTERN = "^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
+
     public static Boolean matches(String s, RegexType type){
         boolean result;
         switch (type){
             case LOGINID -> result = s.matches(LOGINID_PATTERN);
             case NAME -> result = s.matches(NAME_PATTERN);
             case EMAIL -> result = s.matches(EMAIL_PATTERN);
+            case BIRTHDAY -> result = s.matches(BIRTHDAY_PATTERN);
             default -> result = false;
         }
         return result;

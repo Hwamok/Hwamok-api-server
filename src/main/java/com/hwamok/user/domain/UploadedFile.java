@@ -1,7 +1,6 @@
 package com.hwamok.user.domain;
 
-import com.hwamok.core.Preconditions;
-import jakarta.persistence.Column;
+import com.hwamok.utils.PreConditions;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,21 +14,10 @@ public class UploadedFile {
   private String savedFileName;
 
   public UploadedFile(String originalFileName, String savedFileName) {
-
-    Preconditions.require(Strings.isNotBlank(originalFileName));
-    Preconditions.require(Strings.isNotBlank(savedFileName));
-
-    this.originalFileName = originalFileName;
-    this.savedFileName = savedFileName;
-  }
-
-  public void updateUploadedFile(String originalFileName, String savedFileName) {
-
-    Preconditions.require(Strings.isNotBlank(originalFileName));
-    Preconditions.require(Strings.isNotBlank(savedFileName));
+    PreConditions.require(Strings.isNotBlank(originalFileName));
+    PreConditions.require(Strings.isNotBlank(savedFileName));
 
     this.originalFileName = originalFileName;
     this.savedFileName = savedFileName;
   }
-
 }

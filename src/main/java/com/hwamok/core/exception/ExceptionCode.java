@@ -12,8 +12,9 @@ public enum ExceptionCode {
     NOT_EMAIL_FORM("E003", "이메일형식이 다릅니다."),
     NOT_NAME_FORM("E004", "이름형식이 다릅니다."),
     NOT_FOUND_ADMIN("E005","관리자정보를 찾을 수 없습니다."),
-    NOT_PASSWORD_MATCH("E006", "패스워드가 일치하지 않습니다.")
-
+    NOT_PASSWORD_MATCH("E006", "패스워드가 일치하지 않습니다."),
+    NOT_FOUND_USER("E007", "사용자 정보를 찾을 수 없습니다."),
+    NOT_DATE_FORM("E008", "날짜 형식이 다릅니다.")
 
     ;
 
