@@ -1,20 +1,12 @@
 package com.hwamok.admin.domain;
 
-import com.hwamok.core.exception.ExceptionCode;
-import com.hwamok.core.exception.HwamokException;
-import com.hwamok.notice.domain.Notice;
 import com.hwamok.support.BaseEntity;
-import com.hwamok.utils.PreConditions;
 import com.hwamok.utils.RegexType;
-import com.hwamok.utils.RegexUtil;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.hwamok.core.exception.ExceptionCode.*;
 import static com.hwamok.utils.PreConditions.*;

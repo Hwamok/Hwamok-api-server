@@ -1,9 +1,7 @@
 package com.hwamok.admin.domain;
 
 import com.hwamok.core.exception.ExceptionCode;
-import com.hwamok.core.exception.HwamokExceptionTest;
 import fixture.AdminFixture;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -11,16 +9,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import static com.hwamok.core.exception.HwamokExceptionTest.*;
 import static org.assertj.core.api.Assertions.*;
 
-
 class AdminTest {
-    // 공백을 띄우는 나만의 기준
-    // 1. 메소드와 메소드 사이
-    // 2. given when then ==> test code
-    // - given : 준비
-    // - when : 실행
-    // - then : 결과
-    // 3. 결이 다를 때
-
     @Test
     void 관리자_생성_성공() {
         Admin admin = new Admin("test123", "1234", "이름", "test@test.com");
@@ -41,8 +30,10 @@ class AdminTest {
 
     @Test
     void 관리자_생성_실패__아이디_2글자_이하() {
+        String fakeLoginId = "t";
+
         assertThatHwamokException(ExceptionCode.NOT_LOGINID_FORM)
-                .isThrownBy(()-> new Admin("t","1234","이름","test@test.com"));
+                .isThrownBy(()-> new Admin(fakeLoginId,"1234","이름","test@test.com"));
     }
 
     @Test
@@ -101,8 +92,10 @@ class AdminTest {
 
     @Test
     void 관리자_생성_실패__이름_특수문자사용() {
+        String fakeName = "이름!";
+
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123","1234","이름!","test@test.com"));
+                .isThrownBy(()-> new Admin("test123","1234",fakeName,"test@test.com"));
     }
 
     @ParameterizedTest
@@ -113,12 +106,18 @@ class AdminTest {
 
     @Test
     void 관리자_생성_실패__이메일_골뱅이없음() {
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM).isThrownBy(()-> new Admin("test123","1234","이름","testtest.com"));
+        String fakeEmail = "testtest.com";
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
     }
 
     @Test
     void 관리자_생성_실패__이메일_점없음() {
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM).isThrownBy(()-> new Admin("test123","1234","이름","test@testcom"));
+        String fakeEmail = "test@testcom";
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
     }
 
     @Test
@@ -152,51 +151,63 @@ class AdminTest {
 
     @Test
     void 관리자_수정_실패__이름_2글자_이하() {
+        String fakeName = "이";
         Admin admin = AdminFixture.createAdmin();
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> admin.update("update1234","이","update@update.com"));
+                .isThrownBy(()-> admin.update("update1234",fakeName,"update@update.com"));
     }
 
     @Test
     void 관리자_수정_실패__이름_20글자_이상() {
+        String fakeName = "이름이름이름이름이름이름이름이름이름이름이";
         Admin admin = AdminFixture.createAdmin();
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> admin.update("update1234","이름이름이름이름이름이름이름이름이름이름이","update@update.com"));
+                .isThrownBy(()-> admin.update("update1234",fakeName,"update@update.com"));
     }
 
     @Test
     void 관리자_수정_실패__이름_한글영어혼용() {
+        String fakeName = "이름name";
         Admin admin = AdminFixture.createAdmin();
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> admin.update("update1234","이름name","update@update.com"));
+                .isThrownBy(()-> admin.update("update1234",fakeName,"update@update.com"));
     }
-
 
     @Test
     void 관리자_수정_실패__이름_특수문자사용() {
+        String fakeName = "이름!";
         Admin admin = AdminFixture.createAdmin();
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM).isThrownBy(()-> admin.update("update1234","이름!","update@update.com"));
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> admin.update("update1234",fakeName,"update@update.com"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 관리자_수정_실패__이메일_null_또는_공백(String email) {
         Admin admin = AdminFixture.createAdmin();
+
         assertThatIllegalArgumentException().isThrownBy(()-> admin.update("update1234","이름",email));
     }
 
     @Test
     void 관리자_수정_실패__이메일_골뱅이없음() {
+        String fakeEmail = "testtest.com";
         Admin admin = AdminFixture.createAdmin();
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM).isThrownBy(()-> admin.update("update1234","이름","testtest.com"));
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> admin.update("update1234","이름",fakeEmail));
     }
 
     @Test
     void 관리자_수정_실패__이메일_점없음() {
+        String fakeEmail = "test@testcom";
         Admin admin = AdminFixture.createAdmin();
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM).isThrownBy(()-> admin.update("update1234","이름","test@testcom"));
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> admin.update("update1234","이름",fakeEmail));
     }
 }
