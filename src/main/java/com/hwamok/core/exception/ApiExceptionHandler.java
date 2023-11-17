@@ -10,24 +10,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
-
-    @ExceptionHandler({Throwable.class}) // Throwable이 발생하면 이 에러 코드가 발생
+    @ExceptionHandler({Throwable.class})
     public ResponseEntity<ApiResult<?>> exception(Throwable throwable) {
         log.info(throwable.getMessage());
-        return Result.error();
+        return Result.error(ExceptionCode.ERROR_SYSTEM);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class}) // IllegalArgumentException 발생하면 이 에러 코드가 발생
-    public ResponseEntity<ApiResult<?>> IllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<ApiResult<?>> illegalArgumentException(IllegalArgumentException e) {
         log.info(e.getMessage());
         return Result.error(ExceptionCode.REQUIRED_PARAMETER);
-
     }
 
-    @ExceptionHandler({HwamokException.class}) // HwamokException 발생하면 이 에러 코드가 발생
-    public ResponseEntity<ApiResult<?>> HwamokException(HwamokException hwamokException) {
-        log.info(hwamokException.getMessage());
+    @ExceptionHandler({HwamokException.class})
+    public ResponseEntity<ApiResult<?>> hwamokException(HwamokException e) {
+        log.info(e.getMessage());
 
-        return Result.error(hwamokException.getExceptionCode());
+        return Result.error(e.getExceptionCode());
     }
 }
+

@@ -3,14 +3,13 @@ package com.hwamok.core.response;
 import com.hwamok.core.exception.ExceptionCode;
 import lombok.Builder;
 import lombok.Getter;
-@Builder
-@Getter
-public class ApiResult<T> {
 
+@Getter
+@Builder
+public class ApiResult<T> {
     private String code;
     private String message;
     private T data;
-
 
     public static ApiResult<?> of(ExceptionCode exceptionCode){
         return ApiResult.of(exceptionCode, null);
@@ -23,5 +22,4 @@ public class ApiResult<T> {
                 .data(data)
                 .build();
     }
-
 }
