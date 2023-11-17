@@ -2,10 +2,8 @@ package com.hwamok.api.dto.admin;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminStatus;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
 
@@ -37,9 +35,5 @@ public class AdminReadDto {
             this.email = admin.getEmail();
             this.status = admin.getStatus();
         }
-
-
     }
-
-
 }
