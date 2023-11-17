@@ -8,17 +8,17 @@ import com.hwamok.utils.PreConditions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
 
-import static com.hwamok.utils.PreConditions.*;
-
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AdminServiceImpl implements AdminService{
 
     private final AdminRepository adminRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -33,8 +33,11 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public List<Admin> getInfos() {
-        return adminRepository.findAll();
+        List<Admin> adminList = adminRepository.findAll();
 
+        PreConditions.validate(adminList.size() != 0, ExceptionCode.NOT_FOUND_ADMIN);
+
+        return adminRepository.findAll();
     }
 
     @Override
