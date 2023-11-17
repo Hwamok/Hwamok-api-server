@@ -117,7 +117,8 @@ class AdminTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 관리자_생성_실패__이메일_null_또는_공백(String email) {
-        assertThatIllegalArgumentException().isThrownBy(()->new Admin("test123","1234","이름",email));
+        assertThatIllegalArgumentException()
+                .isThrownBy(()->new Admin("test123","1234","이름",email));
     }
 
     @Test
@@ -232,7 +233,8 @@ class AdminTest {
     void 관리자_수정_실패__이메일_null_또는_공백(String email) {
         Admin admin = AdminFixture.createAdmin();
 
-        assertThatIllegalArgumentException().isThrownBy(()-> admin.update("update1234","이름",email));
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> admin.update("update1234","이름",email));
     }
 
     @Test
@@ -240,7 +242,8 @@ class AdminTest {
         String fakeEmail = "testtesttesttesttest@testtesttesttesttesttest11.com";
         Admin admin = AdminFixture.createAdmin();
 
-        assertThatIllegalArgumentException().isThrownBy(()-> admin.update("update1234","이름",fakeEmail));
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> admin.update("update1234","이름",fakeEmail));
     }
     
     @Test
