@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
@@ -38,19 +39,15 @@ public class AdminController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResult<List<AdminReadDto.Response>>> getInfos(){
-        List<Admin> admins = adminService.getInfos();
         List<AdminReadDto.Response> responses = new ArrayList<>();
-
-        for(Admin admin : admins){
-            responses.add(new AdminReadDto.Response(admin.getId(), admin.getCreatedAt(), admin.getLoginId(), admin.getName(), admin.getEmail(), admin.getStatus()));
-        }
+        adminService.getInfos().stream().forEach((admin)-> responses.add(new AdminReadDto.Response(admin)));
 
         return Result.ok(responses);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResult<?>> update(@PathVariable Long id, @RequestBody AdminUpdateDto.Request request){
-        adminService.update(id,request.getPassword(),request.getName(),request.getEmail());
+        adminService.update(id, request.getPassword(), request.getName(), request.getEmail());
 
         return Result.ok();
     }
