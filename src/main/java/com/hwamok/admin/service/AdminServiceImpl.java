@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
 
@@ -43,16 +42,18 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public Admin update(Long id, String password, String name, String email) {
         Admin admin = adminRepository.findById(id).orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_ADMIN));
+
         admin.update(passwordEncoder.encode(password),name,email);
+
         return admin;
     }
-
-
 
     @Override
     public Admin delete(Long id) {
         Admin admin = adminRepository.findById(id).orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_ADMIN));
+
         admin.delete();
+
         return admin;
     }
 }
