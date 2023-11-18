@@ -29,7 +29,7 @@ class AdminTest {
     }
 
     @Test
-    void 관리자_생성_실패__아이디_2글자_이하() {
+    void 관리자_생성_실패__아이디_2글자_미만() {
         String fakeLoginId = "t";
 
         assertThatHwamokException(ExceptionCode.NOT_LOGINID_FORM)
@@ -37,7 +37,7 @@ class AdminTest {
     }
 
     @Test
-    void 관리자_생성_실패__아이디_12글자_이상() {
+    void 관리자_생성_실패__아이디_12글자_초과() {
         String fakeLoginId = "testtesttestt";
 
         assertThatHwamokException(ExceptionCode.NOT_LOGINID_FORM)
@@ -67,7 +67,7 @@ class AdminTest {
     }
 
     @Test
-    void 관리자_생성_실패__이름_2글자_이하() {
+    void 관리자_생성_실패__이름_한글_2글자_미만() {
         String fakeName = "이";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
@@ -75,8 +75,24 @@ class AdminTest {
     }
 
     @Test
-    void 관리자_생성_실패__이름_20글자_이상() {
-        String fakeName = "이름이름이름이름이름이름이름이름이름이름이";
+    void 관리자_생성_실패__이름_한글_6글자_초과() {
+        String fakeName = "이름이름이름이";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com"));
+    }
+
+    @Test
+    void 관리자_생성_실패__이름_영어_2글자_미만() {
+        String fakeName = "n";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> new Admin("test123","1234", fakeName,"test@test.com"));
+    }
+
+    @Test
+    void 관리자_생성_실패__이름_영어_20글자_초과() {
+        String fakeName = "namenamenamenamenamen";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com"));
@@ -122,6 +138,14 @@ class AdminTest {
     }
 
     @Test
+    void 관리자_생성_실패__이메일_50글자초과() {
+        String fakeEmail = "testtesttesttesttesttest@testtesttesttesttest11.com";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
+    }
+
+    @Test
     void 관리자_수정_성공() {
         Admin admin = AdminFixture.createAdmin();
 
@@ -151,7 +175,7 @@ class AdminTest {
     }
 
     @Test
-    void 관리자_수정_실패__이름_2글자_이하() {
+    void 관리자_수정_실패__이름_한글_2글자_미만() {
         String fakeName = "이";
         Admin admin = AdminFixture.createAdmin();
 
@@ -160,8 +184,26 @@ class AdminTest {
     }
 
     @Test
-    void 관리자_수정_실패__이름_20글자_이상() {
-        String fakeName = "이름이름이름이름이름이름이름이름이름이름이";
+    void 관리자_수정_실패__이름_한글_6글자_초과() {
+        String fakeName = "이름이름이름이";
+        Admin admin = AdminFixture.createAdmin();
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> admin.update("update1234",fakeName,"update@update.com"));
+    }
+
+    @Test
+    void 관리자_수정_실패__이름_영어_2글자_미만() {
+        String fakeName = "n";
+        Admin admin = AdminFixture.createAdmin();
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> admin.update("update1234",fakeName,"update@update.com"));
+    }
+
+    @Test
+    void 관리자_수정_실패__이름_영어_20글자_초과() {
+        String fakeName = "namenamenamenamenamen";
         Admin admin = AdminFixture.createAdmin();
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
@@ -195,6 +237,15 @@ class AdminTest {
                 .isThrownBy(()-> admin.update("update1234", "이름", email));
     }
 
+    @Test
+    void 관리자_수정_실패__이메일_50글자초과() {
+        String fakeEmail = "testtesttesttesttest@testtesttesttesttesttest11.com";
+        Admin admin = AdminFixture.createAdmin();
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> admin.update("update1234","이름",fakeEmail));
+    }
+    
     @Test
     void 관리자_수정_실패__이메일_골뱅이없음() {
         String fakeEmail = "testtest.com";
