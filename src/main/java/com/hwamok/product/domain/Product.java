@@ -33,8 +33,20 @@ public class Product extends BaseEntity {
   @Column(nullable = false)
   private ProductStatus productStatus = ProductStatus.ACTIVATED;
 
-  public void deleteProduct(){
-    this.productStatus = ProductStatus.INACTIVATED;
+  public Product(String name, String code, Integer price, Category category) {
+    PreConditions.require(Strings.isNotBlank(name));
+    PreConditions.require(Strings.isNotBlank(code));
+    PreConditions.require(price != null);
+    PreConditions.require(category != null);
+    PreConditions.require(productStatus != null);
+
+    PreConditions.validate(name.length() < 21, ExceptionCode.NOT_NAME_FORM);
+    PreConditions.validate(price > -1, ExceptionCode.NOT_PRICE_FORM);
+
+    this.name = name;
+    this.code = code;
+    this.price = price;
+    this.category = category;
   }
 
   public void updateProduct(String name, String code, Integer price, Category category){
@@ -52,19 +64,7 @@ public class Product extends BaseEntity {
     this.category = category;
   }
 
-  public Product(String name, String code, Integer price, Category category) {
-    PreConditions.require(Strings.isNotBlank(name));
-    PreConditions.require(Strings.isNotBlank(code));
-    PreConditions.require(price != null);
-    PreConditions.require(category != null);
-    PreConditions.require(productStatus != null);
-
-    PreConditions.validate(name.length() < 21, ExceptionCode.NOT_NAME_FORM);
-    PreConditions.validate(price > -1, ExceptionCode.NOT_PRICE_FORM);
-
-    this.name = name;
-    this.code = code;
-    this.price = price;
-    this.category = category;
+  public void deleteProduct(){
+    this.productStatus = ProductStatus.INACTIVATED;
   }
 }
