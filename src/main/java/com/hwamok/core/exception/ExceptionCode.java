@@ -15,9 +15,8 @@ public enum ExceptionCode {
     NOT_PASSWORD_MATCH("E006", "패스워드가 일치하지 않습니다."),
     NOT_BRANCH_FORM("E007", "브랜치 형식이 다릅니다."),
     NOT_CODE_FORM("E008", "코드 형식이 다릅니다."),
-    NOT_LEVEL_FORM("E009", "레벨 형식이 다릅니다,")
-
-
+    NOT_LEVEL_FORM("E009", "레벨 형식이 다릅니다,"),
+    NOT_FOUND_CATEGORY("E010", "카테고리를 찾을 수 없습니다.")
     ;
 
     private final String code; // final은 재할당 금지
