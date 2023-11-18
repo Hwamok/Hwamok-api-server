@@ -19,7 +19,7 @@ public class Product extends BaseEntity {
   @Column(length = 20, nullable = false)
   private String name;
 
-  //todo 자동생성으로 바꿔보기
+  // TODO: 2023-11-18 자동생성으로 바꿔보기! 
   @Column(length = 6, nullable = false)
   private String code;
 
