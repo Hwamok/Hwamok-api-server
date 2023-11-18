@@ -39,8 +39,10 @@ public class AdminController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResult<List<AdminReadDto.Response>>> getInfos(){
-        List<AdminReadDto.Response> responses = new ArrayList<>();
-        adminService.getInfos().stream().forEach((admin)-> responses.add(new AdminReadDto.Response(admin)));
+        List<AdminReadDto.Response> responses = adminService.getInfos()
+                                                            .stream()
+                                                            .map(admin -> new AdminReadDto.Response(admin))
+                                                            .collect(Collectors.toList());
 
         return Result.ok(responses);
     }
