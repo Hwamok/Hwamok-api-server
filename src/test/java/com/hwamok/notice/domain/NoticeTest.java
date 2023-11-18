@@ -3,12 +3,12 @@ package com.hwamok.notice.domain;
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokExceptionTest;
-import com.hwamok.utils.CreateValueUtil;
 import fixture.AdminFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+import static com.hwamok.utils.CreateValueUtil.*;
 import static org.assertj.core.api.Assertions.*;
 
 class NoticeTest {
@@ -34,7 +34,7 @@ class NoticeTest {
 
     @Test
     void 공지사항_생성_실패__제목_90글자초과() {
-        String fakeTitle = CreateValueUtil.stringLength(91);
+        String fakeTitle = stringLength(91);
         Admin admin = AdminFixture.createAdmin();
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_TITLE)
@@ -52,7 +52,7 @@ class NoticeTest {
 
     @Test
     void 공지사항_생성_실패__내용_1000글자초과() {
-        String fakeContent = CreateValueUtil.stringLength(1001);
+        String fakeContent = stringLength(1001);
         Admin admin = AdminFixture.createAdmin();
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_CONTENT)
