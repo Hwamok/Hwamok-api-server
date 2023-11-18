@@ -8,7 +8,6 @@ public enum JoinPlatform {
   GOOGLE("Goo1", "구글 회원");
 
   private String code;
-
   private String message;
 
   JoinPlatform(String code, String message) {

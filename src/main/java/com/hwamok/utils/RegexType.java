@@ -5,4 +5,5 @@ public enum RegexType {
     NAME,
     EMAIL,
     BIRTHDAY,
+    POST,
 }

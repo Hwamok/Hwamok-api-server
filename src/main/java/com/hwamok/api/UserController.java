@@ -1,7 +1,7 @@
 package com.hwamok.api;
 
-import com.hwamok.api.dto.UserCreateDto;
-import com.hwamok.api.dto.UserUpdateDto;
+import com.hwamok.api.dto.user.UserCreateDto;
+import com.hwamok.api.dto.user.UserUpdateDto;
 import com.hwamok.core.response.ApiResult;
 import com.hwamok.core.response.Result;
 import com.hwamok.user.domain.User;
@@ -17,8 +17,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping // 회원 가입
-    public ResponseEntity<ApiResult<?>> signup(@RequestBody UserCreateDto.Request request) {
+    @PostMapping("/create")
+    public ResponseEntity<ApiResult<?>> create(@RequestBody UserCreateDto.Request request) {
         userService.create(
                 request.getEmail(),
                 request.getPassword(),
@@ -31,12 +31,13 @@ public class UserController {
                 request.getAddress().getPost(),
                 request.getAddress().getAddr(),
                 request.getAddress().getDetailAddr());
+
         return Result.created();
     }
 
-    @PatchMapping("/updateProfile/{id}") // 회원 수정
-    public ResponseEntity<ApiResult<User>> updateProfile(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
-        User user = userService.updateProfile(id, request.getEmail(),
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
+        User user = userService.update(id, request.getEmail(),
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
@@ -47,19 +48,21 @@ public class UserController {
                 request.getAddress().getPost(),
                 request.getAddress().getAddr(),
                 request.getAddress().getDetailAddr());
+
         return Result.ok(user);
     }
 
-    @GetMapping("/userOne/{id}") // 회원 조회
-    public ResponseEntity<ApiResult<User>> userOne(@PathVariable long id) {
-        User user = userService.getUser(id);
+    @GetMapping("/getInfo/{id}")
+    public ResponseEntity<ApiResult<User>> getInfo(@PathVariable long id) {
+        User user = userService.getInfo(id);
+
         return Result.ok(user);
     }
 
-    @DeleteMapping ("/withdraw/{id}") // 회원 탈퇴
-    public ResponseEntity<ApiResult<User>> withdrawUser(@PathVariable long id) {
-        userService.withdraw(id);
-        User user = userService.getUser(id);
-        return Result.ok(user);
+    @DeleteMapping ("/delete/{id}")
+    public ResponseEntity<ApiResult<?>> delete(@PathVariable long id) {
+        userService.delete(id);
+
+        return Result.ok();
     }
 }

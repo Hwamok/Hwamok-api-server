@@ -1,4 +1,4 @@
-package com.hwamok.api.dto;
+package com.hwamok.api.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +10,7 @@ public class UploadedFileCreateDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-
       private String originalFileName;
-
       private String savedFileName;
-
     }
 }

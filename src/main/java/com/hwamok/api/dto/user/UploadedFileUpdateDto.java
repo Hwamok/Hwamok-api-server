@@ -1,22 +1,16 @@
-package com.hwamok.api.dto;
+package com.hwamok.api.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class AddressUpdateDto {
+public class UploadedFileUpdateDto {
 
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-
-      private int post;
-
-      private String addr;
-
-      private String detailAddr;
-
+      private String originalFileName;
+      private String savedFileName;
     }
-
 }

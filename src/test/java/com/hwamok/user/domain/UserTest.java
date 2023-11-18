@@ -282,6 +282,26 @@ class UserTest {
                         12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
     }
 
+    @Test
+    void 회원_가입_실패_post_음수일때() {
+        int fakePost = -1;
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        "01012345678", "GOOGLE", "originalImage","savedImage",
+                        fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_가입_실패_validate_post_5자리_아래일때() {
+        int fakePost = 1234;
+
+        assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        "01012345678", "GOOGLE", "originalImage","savedImage",
+                        fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_email_null_혹은_빈값(String email) {
@@ -436,5 +456,118 @@ class UserTest {
                         "2023-11-16", "01012345679", fakePlatform, "originalImage",
                         "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_name_특수문자() {
+        User user = UserFixture.create();
+
+        String fakeName = "화목!";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_name_두_글자_이하() {
+        User user = UserFixture.create();
+
+        String fakeName = "화";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_name_영문한글_혼용() {
+        User user = UserFixture.create();
+
+        String fakeName = "화목hwamok";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_email_골뱅이_없음() {
+        User user = UserFixture.create();
+
+        String fakeEmail = "hwamoktest.com";
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> user.update(fakeEmail, "1234", "hwamok","2023-11-15",
+                        "01012345678", "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_email_점_없음() {
+        User user = UserFixture.create();
+
+        String fakeEmail = "hwamok@testcom";
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> user.update(fakeEmail, "1234", "hwamok","2023-11-15",
+                        "01012345678", "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_birthDay_다시_없음() {
+        User user = UserFixture.create();
+
+        String fakeBirthDay = "20231115";
+
+        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",fakeBirthDay,
+                        "01012345678", "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_email_슬래시_변경() {
+        User user = UserFixture.create();
+
+        String fakeBirthDay = "2023/11/15";
+
+        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",fakeBirthDay,
+                        "01012345678", "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_post_음수일때() {
+        User user = UserFixture.create();
+
+        int fakePost = -1;
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15","01012345678", "GOOGLE", "originalImage",
+                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_post_5자리_아래일때() {
+        User user = UserFixture.create();
+
+        int fakePost = 1234;
+
+        assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15","01012345678", "GOOGLE", "originalImage",
+                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 }

@@ -57,8 +57,8 @@ class UserRepositoryTest {
     void 회원_단건_조회_성공_존재하지_않는_회원() {
         userRepository.save(UserFixture.create());
 
-        assertThatHwamokException(NOT_FOUND_USER).
-                isThrownBy(()->userRepository.
+        assertThatHwamokException(NOT_FOUND_USER)
+                .isThrownBy(()->userRepository.
                         findById(-1L).orElseThrow(()->new HwamokException(NOT_FOUND_USER)));
     }
 
@@ -91,6 +91,7 @@ class UserRepositoryTest {
         User user = userRepository.save(UserFixture.create());
 
         userRepository.findById(user.getId()).orElseThrow();
+
         user.delete();
 
         assertThat(user.getId()).isNotNull();

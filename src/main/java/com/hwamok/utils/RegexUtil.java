@@ -13,6 +13,9 @@ public class RegexUtil {
 
     private static final String BIRTHDAY_PATTERN = "^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 
+    private static final String POST_PATTERN = "^\\d{5}$";
+
+
     public static Boolean matches(String s, RegexType type){
         boolean result;
         switch (type){
@@ -20,6 +23,7 @@ public class RegexUtil {
             case NAME -> result = s.matches(NAME_PATTERN);
             case EMAIL -> result = s.matches(EMAIL_PATTERN);
             case BIRTHDAY -> result = s.matches(BIRTHDAY_PATTERN);
+            case POST -> result = s.matches(POST_PATTERN);
             default -> result = false;
         }
         return result;

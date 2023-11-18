@@ -1,4 +1,4 @@
-package com.hwamok.api.dto;
+package com.hwamok.api.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,13 +10,8 @@ public class AddressCreateDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-
       private int post;
-
       private String addr;
-
       private String detailAddr;
-
     }
-
 }
