@@ -1,6 +1,7 @@
 package com.hwamok.notice.domain;
 
 import com.hwamok.admin.domain.Admin;
+import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.support.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,8 +36,8 @@ public class Notice extends BaseEntity {
     require(Strings.isNotBlank(content));
     require(createdBy != null);
 
-    require(title.length() <= 90);
-    require(content.length() <= 1000);
+    validate(title.length() <= 90, ExceptionCode.OVER_LENGTH_TITLE);
+    validate(content.length() <= 1000, ExceptionCode.OVER_LENGTH_CONTENT);
 
     this.title = title;
     this.content = content;

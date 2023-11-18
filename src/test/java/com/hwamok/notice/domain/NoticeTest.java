@@ -1,6 +1,9 @@
 package com.hwamok.notice.domain;
 
 import com.hwamok.admin.domain.Admin;
+import com.hwamok.core.exception.ExceptionCode;
+import com.hwamok.core.exception.HwamokExceptionTest;
+import com.hwamok.utils.CreateValueUtil;
 import fixture.AdminFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,10 +34,10 @@ class NoticeTest {
 
     @Test
     void 공지사항_생성_실패__제목_90글자초과() {
-        String fakeTitle = "제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제";
+        String fakeTitle = CreateValueUtil.stringLength(91);
         Admin admin = AdminFixture.createAdmin();
 
-        assertThatIllegalArgumentException()
+        HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_TITLE)
                 .isThrownBy(() -> new Notice(fakeTitle, "내용", admin));
     }
 
@@ -49,10 +52,10 @@ class NoticeTest {
 
     @Test
     void 공지사항_생성_실패__내용_1000글자초과() {
-        String fakeContent = "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내";
+        String fakeContent = CreateValueUtil.stringLength(1001);
         Admin admin = AdminFixture.createAdmin();
 
-        assertThatIllegalArgumentException()
+        HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_CONTENT)
                 .isThrownBy(() -> new Notice("제목", fakeContent, admin));
     }
 
