@@ -59,8 +59,8 @@ public class UserController {
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<ApiResult<?>> delete(@PathVariable long id) {
-        userService.delete(id);
+    public ResponseEntity<ApiResult<?>> withdraw(@PathVariable long id) {
+        userService.withdraw(id);
 
         return Result.ok();
     }

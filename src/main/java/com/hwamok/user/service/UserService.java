@@ -9,5 +9,5 @@ public interface UserService {
 
     User update(long id, String email, String password, String name, String birthDay, String phone, String platform, String originalFileName, String savedFileName, int post, String addr, String detailAddr);
 
-    void delete(long id);
+    void withdraw(long id);
 }
