@@ -302,6 +302,46 @@ class UserTest {
                         fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
     }
 
+    @Test
+    void 회원_가입_실패_validate_phone_숫자_제외_다른_문자() {
+        String fakePhone = "010-1234#56";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_가입_실패_validate_phone_11자리_이하() {
+        String fakePhone = "0101234567";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_가입_실패_validate_phone_첫째자리_0_제외() {
+        String fakePhone = "21012345678";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_가입_실패_validate_phone_두째자리_1_제외() {
+        String fakePhone = "00012345678";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_email_null_혹은_빈값(String email) {
@@ -569,5 +609,53 @@ class UserTest {
                         "2023-11-15","01012345678", "GOOGLE", "originalImage",
                         "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_phone_숫자_제외_다른_문자() {
+        User user = UserFixture.create();
+
+        String fakePhone = "010-1234#56";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_phone_11자리_이하() {
+        User user = UserFixture.create();
+
+        String fakePhone = "0101234567";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_phone_첫째자리_0_제외() {
+        User user = UserFixture.create();
+
+        String fakePhone = "2101234567";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_phone_두째자리_1_제외() {
+        User user = UserFixture.create();
+
+        String fakePhone = "00012345678";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        fakePhone, "GOOGLE", "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
     }
 }

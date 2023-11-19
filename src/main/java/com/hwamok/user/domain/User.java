@@ -62,6 +62,7 @@ public class User extends BaseEntity {
     validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
     validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
+    validate(matches(phone, RegexType.PHONE),ExceptionCode.NOT_PHONE_FORM);
 
     this.email = email;
     this.password = password;
@@ -92,6 +93,7 @@ public class User extends BaseEntity {
     validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
     validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
+    validate(matches(phone, RegexType.PHONE),ExceptionCode.NOT_PHONE_FORM);
 
     this.email=email;
     this.password=password;

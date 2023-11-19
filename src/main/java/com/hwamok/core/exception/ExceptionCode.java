@@ -15,7 +15,8 @@ public enum ExceptionCode {
     NOT_PASSWORD_MATCH("E006", "패스워드가 일치하지 않습니다."),
     NOT_FOUND_USER("E007", "사용자 정보를 찾을 수 없습니다."),
     NOT_DATE_FORM("E008", "날짜 형식이 다릅니다."),
-    NOT_POST_FORM("E009", "우편번호 형식이 다릅니다.");
+    NOT_POST_FORM("E009", "우편 번호 형식이 다릅니다."),
+    NOT_PHONE_FORM("E010", "핸드폰 번호 형식이 다릅니다.");
 
     private final String code;
     private final String message;

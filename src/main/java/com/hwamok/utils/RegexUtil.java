@@ -15,6 +15,7 @@ public class RegexUtil {
 
     private static final String POST_PATTERN = "^\\d{5}$";
 
+    private static final String PHONE_PATTERN = "^01([0|1|6|7|8|9])([0-9]{4})([0-9]{4})$";
 
     public static Boolean matches(String s, RegexType type){
         boolean result;
@@ -24,6 +25,7 @@ public class RegexUtil {
             case EMAIL -> result = s.matches(EMAIL_PATTERN);
             case BIRTHDAY -> result = s.matches(BIRTHDAY_PATTERN);
             case POST -> result = s.matches(POST_PATTERN);
+            case PHONE -> result = s.matches(PHONE_PATTERN);
             default -> result = false;
         }
         return result;
