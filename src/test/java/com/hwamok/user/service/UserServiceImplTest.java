@@ -434,7 +434,16 @@ class UserServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_name_null_혹은_빈값(String name) {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", name,
+                        "2023-11-16", "01012345679", "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @ParameterizedTest
