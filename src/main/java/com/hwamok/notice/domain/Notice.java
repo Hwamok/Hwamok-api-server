@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.hibernate.validator.constraints.Length;
 
 import static com.hwamok.utils.PreConditions.*;
 
@@ -20,7 +19,6 @@ public class Notice extends BaseEntity {
   private String title;
 
   @Column(columnDefinition = "TEXT", nullable = false)
-  @Length(max = 1000)
   private String content;
 
   @Column(length = 20, nullable = false)
