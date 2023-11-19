@@ -41,6 +41,7 @@ class CategoryTest {
     Category parentCategory = new Category("화목한쇼핑몰", "CA001", "식품", 0, null);
     Category subCategory1 = new Category("화목한쇼핑몰", "CA002", "가공식품", 1, parentCategory);
     Category subCategory2 = new Category("화목한쇼핑몰", "CA003", "신선식품", 1, parentCategory);
+
     parentCategory.getSubCategory().add(subCategory1);
     parentCategory.getSubCategory().add(subCategory2);
 
@@ -50,28 +51,28 @@ class CategoryTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  void 카테고리_생성_실패__브랜치_값_없음(String branch) {
+  void 카테고리_생성_실패__브랜치_null_혹은_빈값(String branch) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
             new Category(branch, "CA001", "식품", 0, null));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
-  void 카테고리_생성_실패__코드_값_없음(String code) {
+  void 카테고리_생성_실패__코드_null_혹은_빈값(String code) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
             new Category("화목한쇼핑몰", code, "식품", 0, null));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
-  void 카테고리_생성_실패__이름_값_없음(String name) {
+  void 카테고리_생성_실패__이름_null_혹은_빈값(String name) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
             new Category("화목한쇼핑몰", "CA001", name, 0, null));
   }
 
   @ParameterizedTest
   @NullSource
-  void 카테고리_생성_실패__레벨_값_없음(Integer level) {
+  void 카테고리_생성_실패__레벨_null_혹은_빈값(Integer level) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
             new Category("화목한쇼핑몰", "CA001", "식품", level, null));
   }
