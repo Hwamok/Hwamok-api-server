@@ -43,4 +43,19 @@ public class Notice extends BaseEntity {
     this.content = content;
     this.createdBy = createdBy;
   }
+
+  public void update(String title, String content){
+    require(Strings.isNotBlank(title));
+    require(Strings.isNotBlank(content));
+
+    validate(title.length() <= 90, ExceptionCode.OVER_LENGTH_TITLE);
+    validate(content.length() <= 1000, ExceptionCode.OVER_LENGTH_CONTENT);
+
+    this.title = title;
+    this.content = content;
+  }
+
+  public void delete(){
+    this.status = NoticeStatus.DELETED;
+  }
 }
