@@ -1,17 +1,15 @@
 package com.hwamok.category.service;
 
 
-import com.hwamok.category.domain.Category;
-
 import java.util.List;
-import java.util.Optional;
 
 public interface CategoryService {
-    public Category saveCategory(String branch, String code, int level, String name, Category parent);
+    public Category saveCategory(String branch, String code, String name, Integer level, Category parent);
 
     public List<Category> getAllByBranch (String branch);
 
-    public List<Category> getAllByCodeType (String codeType);
+    // TODO: 2023-11-19 도메인 수정 후 추가 
+//    public List<Category> getAllByCodeType (String codeType);
 
     public Category getCategoryByCode (String code);
 
