@@ -3,6 +3,7 @@ package com.hwamok.admin.service;
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
 import com.hwamok.admin.domain.AdminStatus;
+import com.hwamok.api.dto.admin.AdminReadDto;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokExceptionTest;
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ class AdminServiceImplTest {
         adminRepository
                 .save(new Admin("test1234", p.encode("12344"), "이름은", "test1@test1.com"));
 
-        List<Admin> adminList = adminService.getInfos();
+        List<AdminReadDto.Response> adminList = adminService.getInfos();
 
         assertThat(adminList.size()).isEqualTo(2);
     }
