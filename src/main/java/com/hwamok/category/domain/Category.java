@@ -19,13 +19,14 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category extends BaseEntity {
-  //유효성검사, 필수값 검증
-
   @Column(length = 30, nullable = false)
   private String branch;
 
+  // TODO: 2023-11-18 코드 자동으로 올라가게 만들기, 유일값
   @Column(length = 5, nullable = false)
   private String code;
+
+  private String codeType= code.substring(0,2);
 
   @Column(length = 30, nullable = false)
   private String name;
@@ -43,20 +44,13 @@ public class Category extends BaseEntity {
   @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
   private List<Product> products = new ArrayList<>();
 
-  public void registerParentCategory(Category parentCategory){
-    this.parentCategory = parentCategory;
-  }
-  public void registerLevel(Integer level){
-    this.level = level;
-  }
-
+  private CategoryStatus status = CategoryStatus.ACTIVATE;
 
   @Builder
   public Category(String branch, String code, String name, Integer level, Category parentCategory){
     PreConditions.require(Strings.isNotBlank(branch));
     PreConditions.require(Strings.isNotBlank(code));
     PreConditions.require(Strings.isNotBlank(name));
-    //String으로 넣어서 validate로 숫자만 넣는것을 확인할지, 혹은 int로 할지...
     PreConditions.require(level != null);
 
     PreConditions.validate(branch.length() < 31, ExceptionCode.NOT_BRANCH_FORM);
@@ -69,5 +63,35 @@ public class Category extends BaseEntity {
     this.name = name;
     this.level = level;
     this.parentCategory = parentCategory;
+  }
+
+  public void registerParentCategory(Category parentCategory){
+    this.parentCategory = parentCategory;
+  }
+
+  public void registerLevel(Integer level){
+    this.level = level;
+  }
+
+  public void updateCategory(String branch, String code, String name, Integer level, Category parentCategory){
+    PreConditions.require(Strings.isNotBlank(branch));
+    PreConditions.require(Strings.isNotBlank(code));
+    PreConditions.require(Strings.isNotBlank(name));
+    PreConditions.require(level != null);
+
+    PreConditions.validate(branch.length() < 31, ExceptionCode.NOT_BRANCH_FORM);
+    PreConditions.validate(code.length() < 6, ExceptionCode.NOT_CODE_FORM);
+    PreConditions.validate(name.length() < 31, ExceptionCode.NOT_NAME_FORM);
+    PreConditions.validate(level > -1, ExceptionCode.NOT_LEVEL_FORM);
+
+    this.branch = branch;
+    this.code = code;
+    this.name = name;
+    this.level = level;
+    this.parentCategory = parentCategory;
+  }
+
+  public void deleteCategory(){
+    status = CategoryStatus.INACTIVATE;
   }
 }

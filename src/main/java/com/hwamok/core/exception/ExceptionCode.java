@@ -16,8 +16,8 @@ public enum ExceptionCode {
     NOT_BRANCH_FORM("E007", "브랜치 형식이 다릅니다."),
     NOT_CODE_FORM("E008", "코드 형식이 다릅니다."),
     NOT_LEVEL_FORM("E009", "레벨 형식이 다릅니다,"),
-    NOT_PRICE_FORM("E010", "가격 형식이 다릅니다.")
-
+    NOT_PRICE_FORM("E010", "가격 형식이 다릅니다."),
+    NOT_FOUND_CATEGORY("E011", "카테고리를 찾을 수 없습니다.")
     ;
 
     private final String code; // final은 재할당 금지
