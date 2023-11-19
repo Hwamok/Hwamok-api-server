@@ -347,7 +347,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void 회원_가입_실패_validate_post_5자리_아래일때() {
+    void 회원_가입_실패_validate_post_5자리_미만() {
         int fakePost = 1234;
 
         assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
@@ -449,121 +449,393 @@ class UserServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_birthDay_null_혹은_빈값(String birthDay) {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        birthDay, "01012345679", "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_phone_null_혹은_빈값(String phone) {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", phone, "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_platform_null_혹은_빈값(String platform) {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", platform, "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_addr_null_혹은_빈값(String addr) {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
+                        "savedImage1",12346, addr,"202"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 회원_수정_실패_detailAddr_null_혹은_빈값(String detailAddr) {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        detailAddr));
     }
 
     @Test
     void 회원_수정_실패_email_50글자_초과() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeEmail = "hwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamok@test.com";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234", "hwamok",
+                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @Test
     void 회원_수정_실패_name_20글자_초과() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeName = "hwamokhwamokhwamokhwamok";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @Test
     void 회원_수정_실패_birthDay_10글자_초과() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeBirthDay = "2023-11-1516";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        fakeBirthDay, "01012345678", "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @Test
     void 회원_수정_실패_phone_11글자_초과() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakePhone = "010123456789";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", fakePhone, "NAVER", "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @Test
     void 회원_수정_실패_platform_11글자_초과() {
+        User user = userRepository.save(UserFixture.create());
 
-    }
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
 
-    @Test
-    void 회원_수정_실패_validate_name_특수문자() {
+        String fakePlatform= "NAVERNAVERNAVER";
 
-    }
-
-    @Test
-    void 회원_수정_실패_validate_name_두_글자_미만() {
-
-    }
-
-    @Test
-    void 회원_수정_실패_validate_name_영문한글_혼용() {
-
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", fakePlatform, "originalImage1",
+                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
     }
 
     @Test
     void 회원_수정_실패_validate_email_골뱅이_없음() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeEmail = "hwamoktest.com";
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234",
+                        "hwamok","2023-11-15", "01012345678", "GOOGLE",
+                        "originalImage","savedImage",12345,
+                        "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
     }
 
     @Test
     void 회원_수정_실패_validate_email_점_없음() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeEmail = "hwamok@testcom";
+
+        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234",
+                        "hwamok","2023-11-15", "01012345678", "GOOGLE",
+                        "originalImage","savedImage",12345,
+                        "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_name_특수문자() {
+        User user = userRepository.save(UserFixture.create());
+
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeName = "화목!";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_name_두_글자_미만() {
+        User user = userRepository.save(UserFixture.create());
+
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeName = "화";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+    }
+
+    @Test
+    void 회원_수정_실패_validate_name_영문한글_혼용() {
+        User user = userRepository.save(UserFixture.create());
+
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeName = "화목hwamok";
+
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
     void 회원_수정_실패_validate_birthDay_다시_없음() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeBirthDay = "20231115";
+
+        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        fakeBirthDay, "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
-    void 회원_수정_실패_validate_email_슬래시_변경() {
+    void 회원_수정_실패_validate_birthDay_슬래시_변경() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeBirthDay = "2023/11/15";
+
+        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        fakeBirthDay, "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
     void 회원_수정_실패_post_음수일때() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        int fakePost = -1;
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
-    void 회원_수정_실패_validate_post_5자리_아래일때() {
+    void 회원_수정_실패_validate_post_5자리_미만() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        int fakePost = 1234;
+
+        assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
     void 회원_수정_실패_validate_phone_숫자_제외_다른_문자() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakePhone = "010-1234#56";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
+                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
     void 회원_수정_실패_validate_phone_11자리_미만() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakePhone = "0101234567";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
+                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
     void 회원_수정_실패_validate_phone_첫째자리_0_제외() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakePhone = "1101234567";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
+                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
     @Test
     void 회원_수정_실패_validate_phone_두째자리_1_제외() {
+        User user = userRepository.save(UserFixture.create());
 
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakePhone = "0001234567";
+
+        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
+                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
     }
 
+    @Test
+    void 회원_수정_실패_addr_80글자_초과() {
+        User user = userRepository.save(UserFixture.create());
+
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage", 12345, fakeAddr,"201"));
+    }
+
+    @Test
+    void 회원_수정_실패_detail_10글자_초과() {
+        User user = userRepository.save(UserFixture.create());
+
+        User foundId = userRepository.findById(user.getId())
+                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+
+        String fakeDetail = "10203405123";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetail));
+    }
 }
