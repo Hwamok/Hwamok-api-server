@@ -10,43 +10,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
 
     @Override
     public User create(String email, String password, String name, String birthDay, String phone, String platform,
                        String originalFileName, String savedFileName, int post, String addr, String detailAddr) {
-        User user = userRepository.save(new User(email, password, name, birthDay, phone, platform,
-                        originalFileName, savedFileName, post, addr, detailAddr));
-
-        return user;
+        return userRepository.save(new User(email, password, name, birthDay, phone, platform,
+                originalFileName, savedFileName, post, addr, detailAddr));
     }
 
     @Override
     public User getInfo(long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER"));
-
-        return user;
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER"));
     }
 
     @Override
     public User update(long id, String email, String password, String name, String birthDay, String phone,
                               String platform, String originalFileName, String savedFileName, int post, String addr,
                               String detailAddr) {
-
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER"));
-
         user.update(email, password, name, birthDay, phone, platform, originalFileName, savedFileName, post, addr, detailAddr);
-
         return user;
     }
 
     @Override
     public void delete(long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER"));
-
         user.delete();
-
-        userRepository.save(user);
     }
 }

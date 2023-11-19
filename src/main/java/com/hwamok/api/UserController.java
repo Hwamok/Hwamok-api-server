@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ApiResult<?>> create(@RequestBody UserCreateDto.Request request) {
         userService.create(
                 request.getEmail(),
@@ -35,7 +34,7 @@ public class UserController {
         return Result.created();
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResult<User>> update(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
         User user = userService.update(id, request.getEmail(),
                 request.getPassword(),
@@ -52,14 +51,14 @@ public class UserController {
         return Result.ok(user);
     }
 
-    @GetMapping("/getInfo/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResult<User>> getInfo(@PathVariable long id) {
         User user = userService.getInfo(id);
 
         return Result.ok(user);
     }
 
-    @DeleteMapping ("/delete/{id}")
+    @DeleteMapping ("/{id}")
     public ResponseEntity<ApiResult<?>> delete(@PathVariable long id) {
         userService.delete(id);
 

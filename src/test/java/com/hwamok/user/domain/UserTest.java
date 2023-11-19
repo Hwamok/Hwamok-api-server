@@ -10,14 +10,6 @@ import static com.hwamok.core.exception.HwamokExceptionTest.assertThatHwamokExce
 import static org.assertj.core.api.Assertions.*;
 
 class UserTest {
-    // 공백을 띄우는 기준
-    // 1. 메소드와 메소드 사이
-    // 2. given when then ==> test code
-    // - given : 준비
-    // - when : 실행
-    // - then : 결과
-    // 3. 결이 다를 때
-
     @Test
     void 회원_가입_성공() {
         User user = new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
@@ -68,19 +60,7 @@ class UserTest {
 
         user.delete();
 
-        assertThat(user.getId()).isNull();
-        assertThat(user.getEmail()).isEqualTo("hwamok@test.com");
-        assertThat(user.getPassword()).isEqualTo("1234");
-        assertThat(user.getName()).isEqualTo("hwamok");
-        assertThat(user.getBirthDay()).isEqualTo("2023-11-15");
-        assertThat(user.getPhone()).isEqualTo("01012345678");
-        assertThat(user.getPlatform()).isEqualTo(JoinPlatform.GOOGLE);
         assertThat(user.getStatus()).isEqualTo(UserStatus.INACTIVATED);
-        assertThat(user.getProfile().getOriginalFileName()).isEqualTo("originalImage");
-        assertThat(user.getProfile().getSavedFileName()).isEqualTo("savedImage");
-        assertThat(user.getAddress().getPost()).isEqualTo(12345);
-        assertThat(user.getAddress().getAddr()).isEqualTo("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea");
-        assertThat(user.getAddress().getDetailAddr()).isEqualTo("201");
     }
 
     @ParameterizedTest
@@ -158,7 +138,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_email_50글자_이상() {
+    void 회원_가입_실패_email_50글자_초과() {
         String fakeEmail = "hwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamok@test.com";
 
         assertThatIllegalArgumentException()
@@ -168,7 +148,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_name_20글자_이상() {
+    void 회원_가입_실패_name_20글자_초과() {
         String fakeName = "hwamokhwamokhwamokhwamok";
 
         assertThatIllegalArgumentException()
@@ -178,7 +158,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_birthDay_10글자_이상() {
+    void 회원_가입_실패_birthDay_10글자_초과() {
         String fakeBirthDay = "2023-11-1512";
 
         assertThatIllegalArgumentException()
@@ -188,7 +168,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_phone_11글자_이상() {
+    void 회원_가입_실패_phone_11글자_초과() {
         String fakePhone = "010123456789";
 
         assertThatIllegalArgumentException()
@@ -199,7 +179,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_platform_11글자_이상() {
+    void 회원_가입_실패_platform_10글자_초과() {
         String fakePlatform = "GOOGLEGOOGLE";
 
         assertThatIllegalArgumentException()
@@ -207,6 +187,27 @@ class UserTest {
                         "2023-11-15", "01012345678", fakePlatform, "originalImage",
                         "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
+    }
+
+    @Test
+    void 회원_가입_실패_addr_80글자_초과() {
+        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, fakeAddr,"201"));
+    }
+
+    @Test
+    void 회원_가입_실패_detail_10글자_초과() {
+        String fakeDetail = "10203405123";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetail));
     }
 
     @Test
@@ -221,7 +222,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_validate_name_두_글자_이하() {
+    void 회원_가입_실패_validate_name_두_글자_미만() {
         String fakeName = "화";
 
                 assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
@@ -273,7 +274,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_validate_email_슬래시_변경() {
+    void 회원_가입_실패_validate_birthDay_슬래시_변경() {
         String fakeBirthDay = "2023/11/15";
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
@@ -313,7 +314,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_validate_phone_11자리_이하() {
+    void 회원_가입_실패_validate_phone_11자리_미만() {
         String fakePhone = "0101234567";
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
@@ -434,7 +435,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_email_50글자_이상() {
+    void 회원_수정_실패_email_50글자_초과() {
         User user = UserFixture.create();
 
         String fakeEmail = "hwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamok@test.com";
@@ -446,7 +447,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_name_20글자_이상() {
+    void 회원_수정_실패_name_20글자_초과() {
         User user = UserFixture.create();
 
         String fakeName = "hwamokhwamokhwamokhwamok";
@@ -459,7 +460,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_birthDay_10글자_이상() {
+    void 회원_수정_실패_birthDay_10글자_초과() {
         User user = UserFixture.create();
 
         String fakeBirthDay = "2023-11-1512";
@@ -473,7 +474,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_phone_11글자_이상() {
+    void 회원_수정_실패_phone_11글자_초과() {
         User user = UserFixture.create();
 
         String fakePhone = "010123456789";
@@ -486,7 +487,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_platform_11글자_이상() {
+    void 회원_수정_실패_platform_10글자_초과() {
         User user = UserFixture.create();
 
         String fakePlatform = "NAVERNAVERNAVER";
@@ -512,7 +513,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_validate_name_두_글자_이하() {
+    void 회원_수정_실패_validate_name_두_글자_미만() {
         User user = UserFixture.create();
 
         String fakeName = "화";
@@ -624,7 +625,7 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_validate_phone_11자리_이하() {
+    void 회원_수정_실패_validate_phone_11자리_미만() {
         User user = UserFixture.create();
 
         String fakePhone = "0101234567";
@@ -657,5 +658,30 @@ class UserTest {
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
                         fakePhone, "GOOGLE", "originalImage","savedImage",
                         12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+    }
+
+    @Test
+    void 회원_수정_실패_addr_80글자_초과() {
+        User user = UserFixture.create();
+
+        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, fakeAddr,"201"));
+    }
+
+    @Test
+    void 회원_수정_실패_detail_10글자_초과() {
+        User user = UserFixture.create();
+
+        String fakeDetail = "10203405123";
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()->user.update("hwamok@test.com", "1234", "hwamok",
+                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
+                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetail));
     }
 }

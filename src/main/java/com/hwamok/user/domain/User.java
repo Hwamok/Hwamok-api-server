@@ -57,7 +57,7 @@ public class User extends BaseEntity {
     require(name.length() <= 20);
     require(birthDay.length() <= 10);
     require(phone.length() <= 11);
-    require(platform.length() <= 11);
+    require(platform.length() <= 10);
 
     validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);

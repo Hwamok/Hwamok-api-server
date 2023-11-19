@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class UserCreateDto {
-
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
