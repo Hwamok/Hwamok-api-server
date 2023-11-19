@@ -15,8 +15,8 @@ public enum ExceptionCode {
     NOT_PASSWORD_MATCH("E006", "패스워드가 일치하지 않습니다."),
     OVER_LENGTH_TITLE("E007", "제목의 길이 초과되었습니다."),
     OVER_LENGTH_CONTENT("E008", "내용의 길이가 초과되었습니다."),
-
-
+    NOT_FOUND_NOTICE("E009","공지사항 졍보를 찾을 수 없습니다."),
+    
     ;
 
     private final String code;
