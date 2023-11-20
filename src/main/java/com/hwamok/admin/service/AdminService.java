@@ -1,6 +1,8 @@
 package com.hwamok.admin.service;
 
 import com.hwamok.admin.domain.Admin;
+import com.hwamok.api.dto.admin.AdminCreateDto;
+import com.hwamok.api.dto.admin.AdminReadDto;
 
 import java.util.List;
 
@@ -9,7 +11,7 @@ public interface AdminService {
 
      Admin getInfo(Long id);
 
-     List<Admin> getInfos();
+     List<AdminReadDto.Response> getInfos();
 
      Admin update(Long id, String password, String name, String email);
 

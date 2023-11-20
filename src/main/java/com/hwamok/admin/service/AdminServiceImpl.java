@@ -2,6 +2,7 @@ package com.hwamok.admin.service;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
+import com.hwamok.api.dto.admin.AdminReadDto;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokException;
 import com.hwamok.utils.PreConditions;
@@ -30,12 +31,12 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
-    public List<Admin> getInfos() {
+    public List<AdminReadDto.Response> getInfos() {
         List<Admin> adminList = adminRepository.findAll();
 
         PreConditions.validate(adminList.size() != 0, ExceptionCode.NOT_FOUND_ADMIN);
 
-        return adminRepository.findAll();
+        return adminList.stream().map(AdminReadDto.Response::new).toList();
     }
 
     @Override

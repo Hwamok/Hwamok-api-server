@@ -7,19 +7,18 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice extends BaseEntity {
   private String title;
-
   private String content;
 
   @Enumerated(EnumType.STRING)
-  private NoticeStatus status;
+  private NoticeStatus status = NoticeStatus.CREATED;
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Admin createdBy;
+
+
 }
