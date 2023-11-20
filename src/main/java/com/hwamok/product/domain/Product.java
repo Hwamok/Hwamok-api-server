@@ -38,7 +38,6 @@ public class Product extends BaseEntity {
     PreConditions.require(Strings.isNotBlank(code));
     PreConditions.require(price != null);
     PreConditions.require(category != null);
-    PreConditions.require(productStatus != null);
 
     PreConditions.validate(name.length() < 21, ExceptionCode.NOT_NAME_FORM);
     PreConditions.validate(price > -1, ExceptionCode.NOT_PRICE_FORM);
