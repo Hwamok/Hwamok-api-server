@@ -18,11 +18,12 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class AdminServiceImplTest {
-
     @Autowired
     AdminService adminService;
+
     @Autowired
     AdminRepository adminRepository;
+
     @Autowired
     PasswordEncoder pwEncoder;
 
