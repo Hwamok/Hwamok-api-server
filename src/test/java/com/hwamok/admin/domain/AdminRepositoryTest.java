@@ -21,7 +21,7 @@ class AdminRepositoryTest {
 
     @Test
     void 관리자_저장_성공() {
-        Admin admin = adminRepository.save(new Admin("test123",passwordEncoder.encode("1234"),"이름","test@test.com"));
+        Admin admin = adminRepository.save(new Admin("test123", passwordEncoder.encode("1234"), "이름", "test@test.com"));
 
         Assertions.assertThat(admin.getId()).isNotNull();
     }

@@ -4,5 +4,7 @@ public enum RegexType {
     LOGINID,
     NAME,
     EMAIL,
-
+    BIRTHDAY,
+    POST,
+    PHONE,
 }

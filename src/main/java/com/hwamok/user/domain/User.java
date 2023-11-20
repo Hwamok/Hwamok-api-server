@@ -1,10 +1,16 @@
 package com.hwamok.user.domain;
 
+import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.support.BaseEntity;
+import com.hwamok.utils.RegexType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
+
+import static com.hwamok.utils.PreConditions.*;
+import static com.hwamok.utils.RegexUtil.*;
 
 @Entity
 @Getter
@@ -28,11 +34,78 @@ public class User extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private JoinPlatform platform;
 
-  @Column(length = 10, nullable = false)
+  @Column(length = 11, nullable = false)
   @Enumerated(EnumType.STRING)
-  private UserStatus status;
+  private UserStatus status = UserStatus.ACTIVATED;
+
   @Embedded
   private UploadedFile profile;
+
   @Embedded
   private Address address;
+
+  public User(String email, String password, String name, String birthDay, String phone, String platform,
+              String originalFileName, String savedFileName,
+              int post, String addr, String detailAddr) {
+    require(Strings.isNotBlank(email));
+    require(Strings.isNotBlank(password));
+    require(Strings.isNotBlank(name));
+    require(Strings.isNotBlank(birthDay));
+    require(Strings.isNotBlank(phone));
+    require(Strings.isNotBlank(platform));
+    require(email.length() <= 50);
+    require(name.length() <= 20);
+    require(birthDay.length() <= 10);
+    require(phone.length() <= 11);
+    require(platform.length() <= 10);
+
+    validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
+    validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
+    validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
+    validate(matches(phone, RegexType.PHONE),ExceptionCode.NOT_PHONE_FORM);
+
+    this.email = email;
+    this.password = password;
+    this.name = name;
+    this.birthDay = birthDay;
+    this.phone = phone;
+    this.platform = JoinPlatform.converter(platform);
+    this.profile = new UploadedFile(originalFileName, savedFileName);
+    this.address = new Address(post, addr, detailAddr);
+  }
+
+  public void update(String email, String password, String name, String birthDay, String phone, String platform,
+                     String originalFileName, String savedFileName,
+                     int post, String addr, String detailAddr) {
+
+    require(Strings.isNotBlank(email));
+    require(Strings.isNotBlank(password));
+    require(Strings.isNotBlank(name));
+    require(Strings.isNotBlank(birthDay));
+    require(Strings.isNotBlank(phone));
+    require(Strings.isNotBlank(platform));
+    require(email.length() <= 50);
+    require(name.length() <= 20);
+    require(birthDay.length() <= 10);
+    require(phone.length() <= 11);
+    require(platform.length() <= 11);
+
+    validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
+    validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
+    validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
+    validate(matches(phone, RegexType.PHONE),ExceptionCode.NOT_PHONE_FORM);
+
+    this.email=email;
+    this.password=password;
+    this.name=name;
+    this.birthDay=birthDay;
+    this.phone=phone;
+    this.platform = JoinPlatform.converter(platform);
+    this.profile = new UploadedFile(originalFileName, savedFileName);
+    this.address = new Address(post, addr, detailAddr);
+  }
+
+  public void delete() {
+    this.status = UserStatus.INACTIVATED;
+  }
 }
