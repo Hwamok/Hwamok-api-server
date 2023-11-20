@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ExceptionCode {
+
     SUCCESS("S000", "success"),
     ERROR_SYSTEM("E000", "치명적 오류가 발생 했습니다."),
     REQUIRED_PARAMETER("E001", "필수 값이 누락되었습니다."),
