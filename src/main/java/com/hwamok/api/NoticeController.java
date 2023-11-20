@@ -22,7 +22,6 @@ import static com.hwamok.api.dto.notice.NoticeReadDto.*;
 public class NoticeController {
     private final NoticeService noticeService;
 
-
     // TODO: 2023-11-20 Jwt 구현 후 @AuthenticationPrincipal을 통해 SecurityContextHolder에 저장된 HwamokAdmin을 받아올 예정
     @PostMapping
     public ResponseEntity<ApiResult<?>> create(@RequestBody NoticeCreateDto.Request request, HttpSession session) {
