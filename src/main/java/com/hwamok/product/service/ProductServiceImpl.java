@@ -1,6 +1,8 @@
 package com.hwamok.product.service;
 
 import com.hwamok.category.domain.Category;
+import com.hwamok.core.exception.ExceptionCode;
+import com.hwamok.core.exception.HwamokException;
 import com.hwamok.product.domain.Product;
 import com.hwamok.product.domain.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -23,19 +25,19 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProductByName(String name) {
         return productRepository.findProductByName(name).orElseThrow(()->
-                new RuntimeException());
+                new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
     }
 
     @Override
     public Product getProductByCode(String code) {
         return productRepository.findProductByCode(code).orElseThrow(()->
-                new RuntimeException());
+                new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
     }
 
     @Override
     public Product updateProduct(Long id, String name, String code, int price, Category category) {
         Product product = productRepository.findProductById(id).orElseThrow(() ->
-                new RuntimeException());
+                new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
         product.updateProduct(name, code, price, category);
         return product;
     }
@@ -43,7 +45,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void deleteProduct(Long id) {
         Product product = productRepository.findProductById(id).orElseThrow(() ->
-                new RuntimeException());
+                new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
         product.deleteProduct();
     }
 }
