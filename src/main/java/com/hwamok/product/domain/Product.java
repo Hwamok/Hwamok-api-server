@@ -31,7 +31,7 @@ public class Product extends BaseEntity {
   private Category category;
 
   @Column(nullable = false)
-  private ProductStatus productStatus = ProductStatus.ACTIVATED;
+  private ProductStatus status = ProductStatus.ACTIVATED;
 
   public Product(String name, String code, Integer price, Category category) {
     PreConditions.require(Strings.isNotBlank(name));
@@ -48,7 +48,7 @@ public class Product extends BaseEntity {
     this.category = category;
   }
 
-  public void updateProduct(String name, String code, Integer price, Category category){
+  public void updateProduct(String name, String code, Integer price, Category category) {
     PreConditions.require(Strings.isNotBlank(name));
     PreConditions.require(Strings.isNotBlank(code));
     PreConditions.require(price != null);
@@ -63,7 +63,7 @@ public class Product extends BaseEntity {
     this.category = category;
   }
 
-  public void deleteProduct(){
-    this.productStatus = ProductStatus.INACTIVATED;
+  public void deleteProduct() {
+    this.status = ProductStatus.INACTIVATED;
   }
 }
