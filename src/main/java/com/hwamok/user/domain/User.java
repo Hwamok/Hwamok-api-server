@@ -56,7 +56,7 @@ public class User extends BaseEntity {
     require(name.length() <= 20);
     require(birthDay.length() <= 10);
     require(phone.length() <= 11);
-    require(platform.length() <= 10);
+    require(platform.length() <= 11);
 
     validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
@@ -103,7 +103,7 @@ public class User extends BaseEntity {
     this.address = address;
   }
 
-  public void delete() {
-    this.status = UserStatus.INACTIVATED;
+  public void delete() { 
+    this.status = UserStatus.INACTIVATED; 
   }
 }

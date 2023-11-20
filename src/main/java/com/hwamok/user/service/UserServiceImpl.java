@@ -49,8 +49,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+    public void withdraw(long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER"));
         user.delete();
     }
 }

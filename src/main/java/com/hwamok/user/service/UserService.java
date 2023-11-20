@@ -15,5 +15,5 @@ public interface UserService {
     User update(long id, String email, String password, String name, String birthDay, String phone, String platform,
                 UploadedFileUpdateDto.Request profile, AddressUpdateDto.Request address);
 
-    void delete(long id);
+    void withdraw(long id);
 }
