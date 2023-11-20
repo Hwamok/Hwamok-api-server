@@ -1,5 +1,6 @@
 package com.hwamok.category.service;
 
+import com.hwamok.category.domain.Category;
 import com.hwamok.category.domain.CategoryRepository;
 import com.hwamok.category.domain.CategoryStatus;
 import com.hwamok.core.exception.ExceptionCode;
@@ -17,12 +18,8 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category saveCategory(String branch, String code, String name, Integer level, Category parent) {
-        Category category = Category.builder()
-                .branch(branch)
-                .code(code)
-                .name(name)
-                .build();
+    public Category saveCategory(String branch, String code, String name, Category parent) {
+        Category category = new Category(branch, code, name, parent);
 
         if (parent == null) {
             if (categoryRepository.existsByBranchAndName(branch, name)) {
@@ -34,14 +31,14 @@ public class CategoryServiceImpl implements CategoryService{
                                     .name("ROOT")
                                     .code("RT000")
                                     .branch(branch)
-                                    .level(0)
+                                    .level(0L)
                                     .build()
                     );
             if (!categoryRepository.existsByBranchAndName(branch, "ROOT")) {
                 categoryRepository.save(rootCategory);
             }
             category.registerParentCategory(rootCategory);
-            category.registerLevel(1);
+            category.registerLevel(1L);
 
         } else {
             category.registerLevel(parent.getLevel() + 1);
@@ -74,4 +71,10 @@ public class CategoryServiceImpl implements CategoryService{
         return categoryRepository.findAllByNameAndStatus(name, CategoryStatus.ACTIVATE);
     }
 
+    @Override
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+        category.deleteCategory();
+    }
 }

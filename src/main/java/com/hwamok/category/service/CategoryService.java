@@ -1,10 +1,12 @@
 package com.hwamok.category.service;
 
 
+import com.hwamok.category.domain.Category;
+
 import java.util.List;
 
 public interface CategoryService {
-    public Category saveCategory(String branch, String code, String name, Integer level, Category parent);
+    public Category saveCategory(String branch, String code, String name, Category parent);
 
     public List<Category> getAllByBranch (String branch);
 
@@ -14,4 +16,6 @@ public interface CategoryService {
     public Category getCategoryByCode (String code);
 
     public List<Category> getAllByName (String name);
+
+    public void deleteCategory(Long id);
 }
