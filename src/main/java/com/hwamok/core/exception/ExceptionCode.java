@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum ExceptionCode {
-
     SUCCESS("S000", "success"),
     ERROR_SYSTEM("E000", "치명적 오류가 발생 했습니다."),
     REQUIRED_PARAMETER("E001", "필수 값이 누락되었습니다."),
@@ -13,11 +12,14 @@ public enum ExceptionCode {
     NOT_NAME_FORM("E004", "이름형식이 다릅니다."),
     NOT_FOUND_ADMIN("E005","관리자정보를 찾을 수 없습니다."),
     NOT_PASSWORD_MATCH("E006", "패스워드가 일치하지 않습니다."),
-    NOT_BRANCH_FORM("E007", "브랜치 형식이 다릅니다."),
-    NOT_CODE_FORM("E008", "코드 형식이 다릅니다."),
-    NOT_LEVEL_FORM("E009", "레벨 형식이 다릅니다,"),
-    NOT_FOUND_CATEGORY("E010", "카테고리를 찾을 수 없습니다.")
-    ;
+    NOT_FOUND_USER("E007", "사용자 정보를 찾을 수 없습니다."),
+    NOT_DATE_FORM("E008", "날짜 형식이 다릅니다."),
+    NOT_POST_FORM("E009", "우편 번호 형식이 다릅니다."),
+    NOT_PHONE_FORM("E010", "핸드폰 번호 형식이 다릅니다.");
+    NOT_BRANCH_FORM("E011", "브랜치 형식이 다릅니다."),
+    NOT_CODE_FORM("E012", "코드 형식이 다릅니다."),
+    NOT_LEVEL_FORM("E013", "레벨 형식이 다릅니다,"),
+    NOT_FOUND_CATEGORY("E014", "카테고리를 찾을 수 없습니다.");
 
     private final String code; // final은 재할당 금지
     private final String message;
