@@ -13,8 +13,8 @@ class UserTest {
     @Test
     void 회원_가입_성공() {
         User user = new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                "01012345678", "GOOGLE","originalImage", "savedImage",
-                12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201");
+                "01012345678", "GOOGLE",new UploadedFile("originalImage", "savedImage"),
+                new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
 
         assertThat(user.getId()).isNull();
         assertThat(user.getEmail()).isEqualTo("hwamok@test.com");
@@ -36,8 +36,8 @@ class UserTest {
         User user = UserFixture.create();
 
         user.update("hwamok1@test.com", "12345", "hwamokhwa", "2023-11-16",
-                "01012345679", "NAVER", "originalImage1", "savedImage1",
-                12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202");
+                "01012345679", "NAVER", new UploadedFile("originalImage1", "savedImage1"),
+                new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
         assertThat(user.getId()).isNull();
         assertThat(user.getEmail()).isEqualTo("hwamok1@test.com");
@@ -68,8 +68,8 @@ class UserTest {
     void 회원_가입_실패_email_null_혹은_빈값(String email) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User(email, "1234", "hwamok", "2023-11-15",
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address( 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -77,8 +77,8 @@ class UserTest {
     void 회원_가입_실패_password_null_혹은_빈값(String password) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", password, "hwamok", "2023-11-15",
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -86,8 +86,8 @@ class UserTest {
     void 회원_가입_실패_name_null_혹은_빈값(String name) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", "1234", name, "2023-11-15",
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE",new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -95,8 +95,8 @@ class UserTest {
     void 회원_가입_실패_birthDay_null_혹은_빈값(String birthDay) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", "1234", "hwamok", birthDay,
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -104,8 +104,9 @@ class UserTest {
     void 회원_가입_실패_phone_null_혹은_빈값(String phone) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", phone, "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "2023-11-15", phone, "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -113,9 +114,9 @@ class UserTest {
     void 회원_가입_실패_platform_null_혹은_빈값(String platform) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", platform,"originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", platform,
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -123,8 +124,9 @@ class UserTest {
     void 회원_가입_실패_addr_null_혹은_빈값(String addr) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, addr, "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, addr, "201")));
     }
 
     @ParameterizedTest
@@ -132,9 +134,9 @@ class UserTest {
     void 회원_가입_실패_detailAddr_null_혹은_빈값(String detailAddr) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        detailAddr));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", detailAddr)));
     }
 
     @Test
@@ -143,8 +145,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User(fakeEmail, "1234", "hwamok", "2023-11-15",
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -153,8 +156,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User("hwamok@test.com", "1234", fakeName, "2023-11-15",
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -163,8 +167,8 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok", fakeBirthDay,
-                        "01012345678", "GOOGLE","originalImage", "savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201"));
+                        "01012345678", "GOOGLE",new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -173,9 +177,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", fakePhone, "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -184,9 +188,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", fakePlatform, "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", fakePlatform,
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -195,8 +199,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, fakeAddr,"201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, fakeAddr,"201")));
     }
 
     @Test
@@ -205,9 +210,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetail)));
     }
 
     @Test
@@ -216,20 +222,20 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
     void 회원_가입_실패_validate_name_두_글자_미만() {
         String fakeName = "화";
 
-                assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
+        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -238,9 +244,9 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -249,8 +255,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> new User(fakeEmail, "1234", "hwamok","2023-11-15",
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -259,8 +265,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> new User(fakeEmail, "1234", "hwamok","2023-11-15",
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -269,8 +275,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok",fakeBirthDay,
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -279,8 +285,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok",fakeBirthDay,
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -289,8 +295,8 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201")));
     }
 
     @Test
@@ -299,8 +305,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201")));
     }
 
     @Test
@@ -309,8 +315,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -319,8 +325,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -329,8 +335,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -339,8 +345,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -350,8 +356,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update(email, "12345", "hwamokhwa", "2023-11-16",
-                        "01012345679", "NAVER","originalImage1", "savedImage1",
-                        12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
+                        "01012345679", "NAVER",
+                        new UploadedFile("originalImage1","savedImage1"),
+                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -361,9 +369,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", password, "hwamokhwa",
-                        "2023-11-16", "01012345679", "NAVER","originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", "01012345679", "NAVER",
+                        new UploadedFile("originalImage1","savedImage1"),
+                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -373,8 +382,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", name, "2023-11-16",
-                        "01012345679", "NAVER","originalImage1", "savedImage1",
-                        12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
+                        "01012345679", "NAVER",
+                        new UploadedFile("originalImage1","savedImage1"),
+                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -384,8 +395,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamokhwa",
-                        birthDay, "01012345679", "NAVER","originalImage1", "savedImage1",
-                        12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
+                        birthDay, "01012345679", "NAVER",
+                        new UploadedFile("originalImage1","savedImage1"),
+                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -395,8 +408,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamokhwa",
-                        "2023-11-16", phone, "NAVER","originalImage1", "savedImage1",
-                        12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
+                        "2023-11-16", phone, "NAVER",
+                        new UploadedFile("originalImage1","savedImage1"),
+                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -406,9 +421,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamokhwa",
-                        "2023-11-16", "01012345679", platform, "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", "01012345679", platform,
+                        new UploadedFile("originalImage1","savedImage1"),
+                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202")));
     }
 
     @ParameterizedTest
@@ -418,8 +434,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamokhwa",
-                        "2023-11-16", "01012345679", "NAVER","originalImage",
-                        "savedImage1",12346, addr, "202"));
+                        "2023-11-16", "01012345679", "NAVER",
+                        new UploadedFile("originalImage1", "savedImage1"),
+                        new Address(12346, addr, "202")));
     }
 
     @ParameterizedTest
@@ -429,9 +446,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamokhwa",
-                        "2023-11-16", "01012345679", "NAVER", "originalImage",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        detailAddr));
+                        "2023-11-16", "01012345679", "NAVER",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", detailAddr)));
     }
 
     @Test
@@ -442,8 +459,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update(fakeEmail, "1234", "hwamokhwa", "2023-11-16",
-                        "01012345679", "NAVER","originalImage", "savedImage1",
-                        12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
+                        "01012345679", "NAVER",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -454,9 +472,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", fakeName,
-                        "2023-11-16", "01012345679", "NAVER","originalImage",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", "01012345679", "NAVER",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -468,9 +486,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345679", "NAVER", "originalImage",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        fakeBirthDay, "01012345679", "NAVER",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -481,9 +499,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-16", fakePhone, "NAVER","originalImage",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", fakePhone, "NAVER",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -494,9 +512,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy( () -> user.update("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-16", "01012345679", fakePlatform, "originalImage",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", "01012345679", fakePlatform,
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -507,9 +525,9 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -520,9 +538,9 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -533,9 +551,9 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -546,8 +564,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> user.update(fakeEmail, "1234", "hwamok","2023-11-15",
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -558,8 +576,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> user.update(fakeEmail, "1234", "hwamok","2023-11-15",
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -570,8 +588,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",fakeBirthDay,
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -582,8 +600,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",fakeBirthDay,
-                        "01012345678", "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        "01012345678", "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -594,9 +612,10 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15","01012345678", "GOOGLE", "originalImage",
-                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15","01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201")));
     }
 
     @Test
@@ -607,9 +626,10 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15","01012345678", "GOOGLE", "originalImage",
-                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15","01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                                "201")));
     }
 
     @Test
@@ -620,8 +640,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -632,8 +652,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -644,8 +664,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -656,8 +676,8 @@ class UserTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok", "2023-11-15",
-                        fakePhone, "GOOGLE", "originalImage","savedImage",
-                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        fakePhone, "GOOGLE", new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @Test
@@ -668,8 +688,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> user.update("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, fakeAddr,"201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, fakeAddr,"201")));
     }
 
     @Test
@@ -680,8 +701,9 @@ class UserTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()->user.update("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetail)));
     }
 }

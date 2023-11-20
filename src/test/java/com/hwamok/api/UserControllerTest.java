@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hwamok.api.dto.user.AddressCreateDto;
 import com.hwamok.api.dto.user.UploadedFileCreateDto;
 import com.hwamok.api.dto.user.UserCreateDto;
-import com.hwamok.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +36,7 @@ class UserControllerTest {
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user/create")
+        mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
                 .andDo(print())

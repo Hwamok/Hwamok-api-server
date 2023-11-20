@@ -1,10 +1,10 @@
 package com.hwamok.user.service;
 
+import com.hwamok.api.dto.user.AddressUpdateDto;
+import com.hwamok.api.dto.user.UploadedFileUpdateDto;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokException;
-import com.hwamok.user.domain.User;
-import com.hwamok.user.domain.UserRepository;
-import com.hwamok.user.domain.UserStatus;
+import com.hwamok.user.domain.*;
 import fixture.UserFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,9 +29,10 @@ class UserServiceImplTest {
     @Test
     void 회원_가입_성공() {
         User user = userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                "201"));
+                "2023-11-15", "01012345678", "GOOGLE",
+                new UploadedFile("originalImage", "savedImage"),
+                new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                "201")));
 
         assertThat(user.getId()).isNotNull();
     }
@@ -72,10 +73,12 @@ class UserServiceImplTest {
         User foundId = userRepository.findById(user.getId())
                 .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
 
+
+
         foundId = userService.update(foundId.getId(), "hwamok1@test.com", "12345", "hwamokhwa",
-                "2023-11-16", "01012345679", "NAVER", "originalImage1",
-                "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                "202");
+                "2023-11-16", "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
+                "savedImage1"), new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                "202"));
 
         assertThat(foundId.getId()).isNotNull();
         assertThat(foundId.getEmail()).isEqualTo(user.getEmail());
@@ -107,9 +110,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_email_null_혹은_빈값(String email) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User(email, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -117,9 +120,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_password_null_혹은_빈값(String password) {
         assertThatIllegalArgumentException().
                 isThrownBy(()->userRepository.save(new User("hwamok@test.com", password,
-                        "hwamok","2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "hwamok","2023-11-15", "01012345678", "GOOGLE",  new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -127,9 +130,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_name_null_혹은_빈값(String name) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        name, "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        name, "2023-11-15", "01012345678", "GOOGLE",  new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -137,9 +140,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_birthDay_null_혹은_빈값(String birthDay) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", birthDay, "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "hwamok", birthDay, "01012345678", "GOOGLE",  new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -147,9 +150,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_phone_혹은_빈값(String phone) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", phone, "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "hwamok", "2023-11-15", phone, "GOOGLE",  new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -157,9 +160,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_platform_혹은_빈값(String platform) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", "01012345678", platform, "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "hwamok", "2023-11-15", "01012345678", platform,  new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -167,9 +170,8 @@ class UserServiceImplTest {
     void 회원_가입_실패_addr_혹은_빈값(String addr) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, addr,
-                        "201")));
+                        "hwamok", "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, addr,"201"))));
     }
 
     @ParameterizedTest
@@ -177,9 +179,9 @@ class UserServiceImplTest {
     void 회원_가입_실패_detailAddr_혹은_빈값(String detailAddr) {
         assertThatIllegalArgumentException()
                 .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        detailAddr)));
+                        "hwamok", "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
+                        "savedImage"),new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        detailAddr))));
     }
 
     @Test
@@ -188,9 +190,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User(fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -199,9 +201,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -210,9 +212,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        fakeBirthDay, "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -221,9 +223,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -232,9 +234,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", fakePlatform,"originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", fakePlatform,new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -243,8 +245,8 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, fakeAddr,"201")));
+                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, fakeAddr,"201"))));
     }
 
     @Test
@@ -253,9 +255,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail)));
+                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetail))));
     }
 
     @Test
@@ -264,9 +266,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -275,9 +277,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -286,9 +288,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -297,9 +299,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> userRepository.save(new User(fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -308,9 +310,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> userRepository.save(new User(fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -319,9 +321,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        fakeBirthDay, "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -330,9 +332,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE","originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        fakeBirthDay, "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -341,9 +343,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -352,9 +354,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE","originalImage",
-                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -363,9 +365,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE","originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -374,9 +376,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE","originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -385,9 +387,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE","originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @Test
@@ -396,9 +398,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE","originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
+                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"))));
     }
 
     @ParameterizedTest
@@ -411,9 +413,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), email, "12345", "hwamokhwa",
-                "2023-11-16", "01012345679", "NAVER", "originalImage1",
-                "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                "202"));
+                "2023-11-16", "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
+                "savedImage1"),new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                "202")));
     }
 
     @ParameterizedTest
@@ -426,9 +428,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", password, "hwamokhwa",
-                        "2023-11-16", "01012345679", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
+                                "savedImage1"),new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -441,9 +443,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", name,
-                        "2023-11-16", "01012345679", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-16", "01012345679", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202")));
     }
 
     @ParameterizedTest
@@ -456,9 +459,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        birthDay, "01012345679", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        birthDay, "01012345679", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202")));
     }
 
     @ParameterizedTest
@@ -471,9 +475,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", phone, "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-15", phone, "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -486,9 +491,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", platform, "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-15", "01012345678", platform,
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @ParameterizedTest
@@ -501,8 +507,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
-                        "savedImage1",12346, addr,"202"));
+                        "2023-11-15", "01012345678", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, addr, "202")));
     }
 
     @ParameterizedTest
@@ -515,9 +522,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        detailAddr));
+                        "2023-11-15", "01012345678", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                detailAddr)));
     }
 
     @Test
@@ -531,9 +539,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-15", "01012345678", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -547,9 +556,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-15", "01012345678", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -563,9 +573,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        fakeBirthDay, "01012345678", "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -579,9 +590,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "NAVER", "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-15", fakePhone, "NAVER",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -595,9 +607,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", fakePlatform, "originalImage1",
-                        "savedImage1",12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202"));
+                        "2023-11-15", "01012345678", fakePlatform,
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -612,8 +625,9 @@ class UserServiceImplTest {
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234",
                         "hwamok","2023-11-15", "01012345678", "GOOGLE",
-                        "originalImage","savedImage",12345,
-                        "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -628,8 +642,9 @@ class UserServiceImplTest {
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234",
                         "hwamok","2023-11-15", "01012345678", "GOOGLE",
-                        "originalImage","savedImage",12345,
-                        "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -643,9 +658,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -659,9 +675,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -675,9 +692,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -691,9 +709,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        fakeBirthDay, "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -707,9 +726,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE", "originalImage",
-                        "savedImage",12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        fakeBirthDay, "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -723,9 +743,10 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(fakePost, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -739,9 +760,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage", fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(fakePost, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -755,9 +777,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", fakePhone, "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -771,9 +793,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", fakePhone, "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -787,9 +809,9 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", fakePhone, "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -803,9 +825,10 @@ class UserServiceImplTest {
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", "originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"));
+                        "2023-11-15", fakePhone, "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                "202")));
     }
 
     @Test
@@ -819,8 +842,9 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage", 12345, fakeAddr,"201"));
+                        "2023-11-15", "01012345678", "GOOGLE",
+                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, fakeAddr,"202")));
     }
 
     @Test
@@ -834,8 +858,8 @@ class UserServiceImplTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", "originalImage",
-                        "savedImage", 12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail));
+                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
+                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                                fakeDetail)));
     }
 }

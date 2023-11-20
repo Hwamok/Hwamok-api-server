@@ -45,8 +45,7 @@ public class User extends BaseEntity {
   private Address address;
 
   public User(String email, String password, String name, String birthDay, String phone, String platform,
-              String originalFileName, String savedFileName,
-              int post, String addr, String detailAddr) {
+              UploadedFile profile, Address address) {
     require(Strings.isNotBlank(email));
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
@@ -70,13 +69,12 @@ public class User extends BaseEntity {
     this.birthDay = birthDay;
     this.phone = phone;
     this.platform = JoinPlatform.converter(platform);
-    this.profile = new UploadedFile(originalFileName, savedFileName);
-    this.address = new Address(post, addr, detailAddr);
+    this.profile = profile;
+    this.address = address;
   }
 
   public void update(String email, String password, String name, String birthDay, String phone, String platform,
-                     String originalFileName, String savedFileName,
-                     int post, String addr, String detailAddr) {
+                     UploadedFile profile, Address address) {
 
     require(Strings.isNotBlank(email));
     require(Strings.isNotBlank(password));
@@ -101,8 +99,8 @@ public class User extends BaseEntity {
     this.birthDay=birthDay;
     this.phone=phone;
     this.platform = JoinPlatform.converter(platform);
-    this.profile = new UploadedFile(originalFileName, savedFileName);
-    this.address = new Address(post, addr, detailAddr);
+    this.profile = profile;
+    this.address = address;
   }
 
   public void delete() {

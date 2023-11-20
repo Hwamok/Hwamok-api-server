@@ -10,7 +10,6 @@ public class RegexUtil {
     // 이메일형식 : 일반적인 이메일주소형식 검증
     private static final String EMAIL_PATTERN = "^[_a-z0-9-]+(.[_a-z0-9-]+)@(?:\\w+\\.)+\\w+$";
 
-    public static Boolean matches(String s, RegexType type) {
     private static final String BIRTHDAY_PATTERN = "^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 
     private static final String POST_PATTERN = "^\\d{5}$";
