@@ -32,7 +32,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
+    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id,
+                                         @RequestBody UserUpdateDto.Request request) {
         User user = userService.update(id,
                 request.getEmail(),
                 request.getPassword(),
