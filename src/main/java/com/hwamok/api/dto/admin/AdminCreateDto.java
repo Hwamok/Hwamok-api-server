@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class AdminCreateDto {
-
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
