@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,8 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category saveCategory(String branch, String code, int level, String name, Category parent) {
-        Category category = Category.builder()
-                .branch(branch)
-                .code(code)
-                .level(level)
-                .name(name)
-                .build();
+    public Category saveCategory(String branch, String code, String name, Category parent) {
+        Category category = new Category(branch, code, name, parent);
 
         if (parent == null) {
             if (categoryRepository.existsByBranchAndName(branch, name)) {
@@ -37,14 +31,14 @@ public class CategoryServiceImpl implements CategoryService{
                                     .name("ROOT")
                                     .code("RT000")
                                     .branch(branch)
-                                    .level(0)
+                                    .level(0L)
                                     .build()
                     );
             if (!categoryRepository.existsByBranchAndName(branch, "ROOT")) {
                 categoryRepository.save(rootCategory);
             }
             category.registerParentCategory(rootCategory);
-            category.registerLevel(1);
+            category.registerLevel(1L);
 
         } else {
             category.registerLevel(parent.getLevel() + 1);
@@ -57,13 +51,14 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public List<Category> getAllByBranch(String branch) {
-        return categoryRepository.findAllByBranchaAndStatus(branch,CategoryStatus.ACTIVATE);
+        return categoryRepository.findAllByBranchAndStatus(branch,CategoryStatus.ACTIVATE);
     }
 
-    @Override
-    public List<Category> getAllByCodeType(String codeType) {
-        return categoryRepository.findAllByCodeTypeAndStatus(codeType, CategoryStatus.ACTIVATE);
-    }
+    // TODO: 2023-11-19 도메인 수정 후 추가 
+//    @Override
+//    public List<Category> getAllByCodeType(String codeType) {
+//        return categoryRepository.findAllByCodeTypeAndStatus(codeType, CategoryStatus.ACTIVATE);
+//    }
 
     @Override
     public Category getCategoryByCode(String code) {
@@ -74,5 +69,12 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<Category> getAllByName(String name) {
         return categoryRepository.findAllByNameAndStatus(name, CategoryStatus.ACTIVATE);
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+        category.deleteCategory();
     }
 }
