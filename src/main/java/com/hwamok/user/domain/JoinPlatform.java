@@ -1,9 +1,27 @@
 package com.hwamok.user.domain;
 
 public enum JoinPlatform {
-  // 자사 회원 가입
   SELF,
   KAKAO,
   NAVER,
-  GOOGLE
+  GOOGLE;
+
+  public static JoinPlatform converter(String platform) {
+    switch (platform.toUpperCase()) {
+      case "SELF":
+        return SELF;
+
+      case "KAKAO":
+        return KAKAO;
+
+      case "NAVER":
+        return NAVER;
+
+      case "GOOGLE":
+        return GOOGLE;
+
+      default:
+        throw new IllegalArgumentException("UNKNOWN PLATFORM: " + platform);
+    }
+  }
 }

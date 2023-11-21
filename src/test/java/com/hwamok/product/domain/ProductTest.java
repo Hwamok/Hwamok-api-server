@@ -21,7 +21,7 @@ class ProductTest {
     private Category category;
 
     @BeforeEach
-    private void setup(){
+    private void setup() {
         category = createCategory();
     }
 
@@ -33,7 +33,7 @@ class ProductTest {
         assertThat(product.getCode()).isEqualTo("s001");
         assertThat(product.getPrice()).isEqualTo(10000);
         assertThat(product.getCategory()).isSameAs(category);
-        assertThat(product.getProductStatus()).isEqualTo(ProductStatus.ACTIVATED);
+        assertThat(product.getStatus()).isEqualTo(ProductStatus.ACTIVATED);
         assertThat(product.getId()).isNull();
     }
 
@@ -85,7 +85,7 @@ class ProductTest {
 
         product.deleteProduct();
 
-        assertThat(product.getProductStatus()).isEqualTo(ProductStatus.INACTIVATED);
+        assertThat(product.getStatus()).isEqualTo(ProductStatus.INACTIVATED);
     }
 
     @Test

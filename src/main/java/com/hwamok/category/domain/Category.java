@@ -22,11 +22,12 @@ public class Category extends BaseEntity {
   @Column(length = 30, nullable = false)
   private String branch;
 
-  // TODO: 2023-11-18 코드 자동으로 올라가게 만들기, 유일값
+  // TODO: 2023-11-18 코드 자동으로 올라가게 만들기/ 유일값/ 코드 2자리+ 숫자 2개로 제한
   @Column(length = 5, nullable = false)
   private String code;
 
-  private String codeType= code.substring(0,2);
+  // TODO: 2023-11-19 codeType 추가(앞에 2글자만)
+//  private String codeType
 
   @Column(length = 30, nullable = false)
   private String name;
@@ -73,22 +74,18 @@ public class Category extends BaseEntity {
     this.level = level;
   }
 
-  public void updateCategory(String branch, String code, String name, Integer level, Category parentCategory){
+  public void updateCategory(String branch, String code, String name){
     PreConditions.require(Strings.isNotBlank(branch));
     PreConditions.require(Strings.isNotBlank(code));
     PreConditions.require(Strings.isNotBlank(name));
-    PreConditions.require(level != null);
 
     PreConditions.validate(branch.length() < 31, ExceptionCode.NOT_BRANCH_FORM);
     PreConditions.validate(code.length() < 6, ExceptionCode.NOT_CODE_FORM);
     PreConditions.validate(name.length() < 31, ExceptionCode.NOT_NAME_FORM);
-    PreConditions.validate(level > -1, ExceptionCode.NOT_LEVEL_FORM);
 
     this.branch = branch;
     this.code = code;
     this.name = name;
-    this.level = level;
-    this.parentCategory = parentCategory;
   }
 
   public void deleteCategory(){

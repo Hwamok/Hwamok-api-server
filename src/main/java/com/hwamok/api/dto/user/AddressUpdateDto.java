@@ -1,17 +1,16 @@
-package com.hwamok.api.dto.admin;
+package com.hwamok.api.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class AdminCreateDto {
+public class AddressUpdateDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-        private String loginId;
-        private String password;
-        private String name;
-        private String email;
+      private int post;
+      private String addr;
+      private String detailAddr;
     }
 }
