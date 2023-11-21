@@ -22,7 +22,8 @@ public enum ExceptionCode {
     NOT_FOUND_CATEGORY("E014", "카테고리를 찾을 수 없습니다."),
     OVER_LENGTH_TITLE("E015", "제목의 길이 초과되었습니다."),
     OVER_LENGTH_CONTENT("E016", "내용의 길이가 초과되었습니다."),
-    NOT_PRICE_FORM("E015", "가격 형식이 다릅니다."),
+    NOT_PRICE_FORM("E017", "가격 형식이 다릅니다."),
+    NOT_FOUND_PRODUCT("E018", "상품을 찾을 수 없습니다.")
     ;
 
     private final String code;
