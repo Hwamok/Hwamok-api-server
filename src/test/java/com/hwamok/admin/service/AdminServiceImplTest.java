@@ -19,13 +19,14 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class AdminServiceImplTest {
-
     @Autowired
     AdminService adminService;
+
     @Autowired
     AdminRepository adminRepository;
+
     @Autowired
-    PasswordEncoder p;
+    PasswordEncoder pwEncoder;
 
     @Test
     void 관리자_저장_성공() {
@@ -38,7 +39,7 @@ class AdminServiceImplTest {
     @Test
     void 관리자_단건조회_성공() {
         Admin admin = adminRepository
-                .save(new Admin("test123", p.encode("1234"), "이름", "test@test.com"));
+                .save(new Admin("test123", pwEncoder.encode("1234"), "이름", "test@test.com"));
 
         Admin foundedAmdin = adminService.getInfo(admin.getId());
 
@@ -49,7 +50,7 @@ class AdminServiceImplTest {
     void 관리자_단건조회_실패__관리자정보_없음() {
         Long fakeId = -1L;
         adminRepository
-                .save(new Admin("test123", p.encode("1234"), "이름", "test@test.com"));
+                .save(new Admin("test123", pwEncoder.encode("1234"), "이름", "test@test.com"));
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_FOUND_ADMIN)
                 .isThrownBy(() -> adminService.getInfo(fakeId));
@@ -58,9 +59,9 @@ class AdminServiceImplTest {
     @Test
     void 관리자_리스트조회_성공() {
         adminRepository
-                .save(new Admin("test123", p.encode("1234"), "이름", "test@test.com"));
+                .save(new Admin("test123", pwEncoder.encode("1234"), "이름", "test@test.com"));
         adminRepository
-                .save(new Admin("test1234", p.encode("12344"), "이름은", "test1@test1.com"));
+                .save(new Admin("test1234", pwEncoder.encode("12344"), "이름은", "test1@test1.com"));
 
         List<AdminReadDto.Response> adminList = adminService.getInfos();
 
@@ -76,11 +77,11 @@ class AdminServiceImplTest {
     @Test
     void 관리자_수정_성공() {
         Admin admin = adminRepository
-                .save(new Admin("test123", p.encode("1234"), "이름", "test@test.com"));
+                .save(new Admin("test123", pwEncoder.encode("1234"), "이름", "test@test.com"));
 
         Admin updateAdmin = adminService.update(admin.getId(), "update1234", "수정이름", "update@update.com");
 
-        assertThat(p.matches("update1234", updateAdmin.getPassword())).isTrue();
+        assertThat(pwEncoder.matches("update1234", updateAdmin.getPassword())).isTrue();
         assertThat(updateAdmin.getName()).isEqualTo("수정이름");
         assertThat(updateAdmin.getEmail()).isEqualTo("update@update.com");
     }
@@ -96,7 +97,7 @@ class AdminServiceImplTest {
     @Test
     void 관리자_삭제_성공() {
         Admin admin = adminRepository
-                .save(new Admin("test123", p.encode("1234"), "이름", "test@test.com"));
+                .save(new Admin("test123", pwEncoder.encode("1234"), "이름", "test@test.com"));
 
         Admin deletedAdmin = adminService.delete(admin.getId());
         assertThat(deletedAdmin.getStatus())
@@ -107,7 +108,7 @@ class AdminServiceImplTest {
     void 관리자_삭제_실패__유저정보_없음() {
         Long fakeId = -1L;
         adminRepository
-                .save(new Admin("test123", p.encode("1234"), "이름", "test@test.com"));
+                .save(new Admin("test123", pwEncoder.encode("1234"), "이름", "test@test.com"));
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_FOUND_ADMIN)
                 .isThrownBy(() -> adminService.delete(fakeId));

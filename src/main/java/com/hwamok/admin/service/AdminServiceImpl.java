@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class AdminServiceImpl implements AdminService{
-
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
