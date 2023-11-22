@@ -28,7 +28,6 @@ public class RegexUtil {
             case PHONE -> result = s.matches(PHONE_PATTERN);
             default -> result = false;
         }
-
         return result;
     }
 }

@@ -349,17 +349,14 @@ class UserTest {
                         new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_email_null_혹은_빈값(String email) {
-        User user = UserFixture.create();
+    @Test
+    void 회원_가입_실패_알_수_없는_platform () {
+        String fakePlatform = "Platform";
 
-        assertThatIllegalArgumentException()
-                .isThrownBy( () -> user.update(email, "12345", "hwamokhwa", "2023-11-16",
-                        "01012345679", "NAVER",
-                        new UploadedFile("originalImage1","savedImage1"),
-                        new Address(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
+        assertThatHwamokException(ExceptionCode.NOT_KNOWN_PLATFORM)
+                .isThrownBy(()-> new User("hwamok@test.com", "1234", "hwamok", "2023-11-15",
+                        "01012345678", fakePlatform, new UploadedFile("originalImage", "savedImage"),
+                        new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
     }
 
     @ParameterizedTest
@@ -705,5 +702,17 @@ class UserTest {
                         new UploadedFile("originalImage", "savedImage"),
                         new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         fakeDetail)));
+    }
+
+    @Test
+    void 회원_수정_실패_알_수_없는_platform () {
+        User user = UserFixture.create();
+
+        String fakePlatform = "Platform";
+
+        assertThatHwamokException(ExceptionCode.NOT_KNOWN_PLATFORM)
+                .isThrownBy(()-> user.update("1234", "hwamok", "2023-11-15",
+                        "01012345678", fakePlatform, "originalImage","savedImage",
+                        12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea","201"));
     }
 }

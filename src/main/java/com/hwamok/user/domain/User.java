@@ -76,7 +76,6 @@ public class User extends BaseEntity {
   public void update(String email, String password, String name, String birthDay, String phone, String platform,
                      UploadedFile profile, Address address) {
 
-    require(Strings.isNotBlank(email));
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(birthDay));
@@ -88,12 +87,10 @@ public class User extends BaseEntity {
     require(phone.length() <= 11);
     require(platform.length() <= 11);
 
-    validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
     validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
     validate(matches(phone, RegexType.PHONE),ExceptionCode.NOT_PHONE_FORM);
 
-    this.email=email;
     this.password=password;
     this.name=name;
     this.birthDay=birthDay;
