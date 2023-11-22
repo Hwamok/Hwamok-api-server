@@ -16,7 +16,7 @@ public class RegexUtil {
 
     private static final String PHONE_PATTERN = "^01([0|1|6|7|8|9])([0-9]{4})([0-9]{4})$";
 
-    public static Boolean matches(String s, RegexType type){
+    public static Boolean matches(String s, RegexType type) {
         boolean result;
 
         switch (type) {
@@ -28,6 +28,7 @@ public class RegexUtil {
             case PHONE -> result = s.matches(PHONE_PATTERN);
             default -> result = false;
         }
+
         return result;
     }
 }

@@ -24,7 +24,6 @@ public enum ExceptionCode {
     OVER_LENGTH_CONTENT("E016", "내용의 길이가 초과되었습니다."),
     NOT_KNOWN_PLATFORM("E017", "알 수 없는 플랫폼입니다.");
 
-
     private final String code;
     private final String message;
 

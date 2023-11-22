@@ -87,7 +87,7 @@ class UserServiceImplTest {
     @Test
     void 회원_수정_실패_존재하지_않는_회원() {
         assertThatHwamokException(ExceptionCode.NOT_FOUND_USER)
-                .isThrownBy(() -> userService.update(-1l, "1234", "hwamokhwa",
+                .isThrownBy(() -> userService.update(-1L, "1234", "hwamokhwa",
                         "2023-11-16", "01012345679", "NAVER",
                         new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
                         new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
@@ -106,6 +106,6 @@ class UserServiceImplTest {
     @Test
     void 회원_탈퇴_실패_존재하지_않는_회원() {
         assertThatHwamokException(ExceptionCode.NOT_FOUND_USER)
-                .isThrownBy(() -> userService.withdraw(-1l));
+                .isThrownBy(() -> userService.withdraw(-1L));
     }
 }
