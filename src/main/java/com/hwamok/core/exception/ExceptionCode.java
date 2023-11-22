@@ -15,11 +15,12 @@ public enum ExceptionCode {
     NOT_FOUND_USER("E007", "사용자 정보를 찾을 수 없습니다."),
     NOT_DATE_FORM("E008", "날짜 형식이 다릅니다."),
     NOT_POST_FORM("E009", "우편 번호 형식이 다릅니다."),
-    NOT_PHONE_FORM("E010", "핸드폰 번호 형식이 다릅니다.");
+    NOT_PHONE_FORM("E010", "핸드폰 번호 형식이 다릅니다."),
     NOT_BRANCH_FORM("E011", "브랜치 형식이 다릅니다."),
     NOT_CODE_FORM("E012", "코드 형식이 다릅니다."),
     NOT_LEVEL_FORM("E013", "레벨 형식이 다릅니다,"),
-    NOT_FOUND_CATEGORY("E014", "카테고리를 찾을 수 없습니다.");
+    NOT_FOUND_CATEGORY("E014", "카테고리를 찾을 수 없습니다."),
+    NOT_KNOWN_PLATFORM("E015", "알 수 없는 플랫폼입니다.");
 
     private final String code; // final은 재할당 금지
     private final String message;
