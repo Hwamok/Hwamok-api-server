@@ -57,7 +57,7 @@ class UserControllerTest {
     void 회원_수정_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "12345", "hwamokhwa", "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
@@ -69,7 +69,6 @@ class UserControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("S000"),
                         jsonPath("message").value("success"),
-                        jsonPath("data.email").value("hwamok1@test.com"),
                         jsonPath("data.password").value("12345"),
                         jsonPath("data.name").value("hwamokhwa"),
                         jsonPath("data.birthDay").value("2023-11-16"),
@@ -284,7 +283,7 @@ class UserControllerTest {
     void 회원_수정_실패_password_null_혹은_빈값(String password) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", password, "hwamokhwa", "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request(password, "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
@@ -304,7 +303,7 @@ class UserControllerTest {
     void 회원_수정_실패_name_null_혹은_빈값(String name) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "1234", name, "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request("1234", name, "2023-11-16",
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
@@ -324,7 +323,7 @@ class UserControllerTest {
     void 회원_수정_실패_birthDay_null_혹은_빈값(String birthDay) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "1234", "hwamok", birthDay,
+        UserUpdateDto.Request request = new UserUpdateDto.Request("1234", "hwamok", birthDay,
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
@@ -344,7 +343,7 @@ class UserControllerTest {
     void 회원_수정_실패_phone_null_혹은_빈값(String phone) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "1234", "hwamok", "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request("1234", "hwamok", "2023-11-16",
                 phone, "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
@@ -364,7 +363,7 @@ class UserControllerTest {
     void 회원_수정_실패_platform_null_혹은_빈값(String platform) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "1234", "hwamok", "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request("1234", "hwamok", "2023-11-16",
                 "01012345679", platform, new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", "202"));
 
@@ -384,7 +383,7 @@ class UserControllerTest {
     void 회원_수정_실패_addr_null_혹은_빈값(String addr) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "1234", "hwamok", "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request("1234", "hwamok", "2023-11-16",
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, addr, "202"));
 
@@ -404,7 +403,7 @@ class UserControllerTest {
     void 회원_수정_실패_detailAddr_null_혹은_빈값(String detailAddr) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
-        UserUpdateDto.Request request = new UserUpdateDto.Request("hwamok1@test.com", "1234", "hwamok", "2023-11-16",
+        UserUpdateDto.Request request = new UserUpdateDto.Request("1234", "hwamok", "2023-11-16",
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea", detailAddr));
 
