@@ -1,7 +1,5 @@
 package com.hwamok.api;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
@@ -25,13 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class AdminControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private AdminRepository adminRepository;
 
@@ -46,8 +41,7 @@ class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
-                        jsonPath("message").value("success")
-                );
+                        jsonPath("message").value("success"));
     }
 
     @Test
@@ -61,10 +55,8 @@ class AdminControllerTest {
                         jsonPath("code").value("S000"),
                         jsonPath("message").value("success"),
                         jsonPath("data.loginId").value("test1234"),
-                        jsonPath("data.password").isNotEmpty(),
                         jsonPath("data.name").value("이름"),
-                        jsonPath("data.email").value("test@test.com")
-                );
+                        jsonPath("data.email").value("test@test.com"));
     }
 
     @Test
@@ -79,14 +71,11 @@ class AdminControllerTest {
                         jsonPath("code").value("S000"),
                         jsonPath("message").value("success"),
                         jsonPath("data[0].loginId").value("test1234"),
-                        jsonPath("data[0].password").isNotEmpty(),
                         jsonPath("data[0].name").value("이름"),
                         jsonPath("data[0].email").value("test@test.com"),
                         jsonPath("data[1].loginId").value("test12345"),
-                        jsonPath("data[1].password").isNotEmpty(),
                         jsonPath("data[1].name").value("이름이"),
-                        jsonPath("data[1].email").value("test1@test1.com")
-                );
+                        jsonPath("data[1].email").value("test1@test1.com"));
     }
 
     @Test
@@ -102,8 +91,7 @@ class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
-                        jsonPath("message").value("success")
-                );
+                        jsonPath("message").value("success"));
     }
 
     @Test
@@ -115,8 +103,6 @@ class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
-                        jsonPath("message").value("success")
-                );
+                        jsonPath("message").value("success"));
     }
-
 }

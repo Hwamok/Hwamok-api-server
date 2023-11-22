@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum ExceptionCode {
-
     SUCCESS("S000", "success"),
     ERROR_SYSTEM("E000", "치명적 오류가 발생 했습니다."),
     REQUIRED_PARAMETER("E001", "필수 값이 누락되었습니다."),
@@ -22,8 +21,11 @@ public enum ExceptionCode {
     NOT_LEVEL_FORM("E013", "레벨 형식이 다릅니다,"),
     NOT_FOUND_CATEGORY("E014", "카테고리를 찾을 수 없습니다."),
     NOT_PRICE_FORM("E015", "가격 형식이 다릅니다.");
+    OVER_LENGTH_TITLE("E016", "제목의 길이 초과되었습니다."),
+    OVER_LENGTH_CONTENT("E017", "내용의 길이가 초과되었습니다."),
+    NOT_PRICE_FORM("E018", "가격 형식이 다릅니다.");
 
-    private final String code; // final은 재할당 금지
+    private final String code;
     private final String message;
 
     ExceptionCode(String code, String message) {
