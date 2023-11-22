@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
         Address address = new Address(reqAddress.getPost(), reqAddress.getAddr(), reqAddress.getDetailAddr());
 
         user.update(password, name, birthDay, phone, platform, profile, address);
+
         return user;
     }
 
