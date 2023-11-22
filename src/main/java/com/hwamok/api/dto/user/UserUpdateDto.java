@@ -9,7 +9,6 @@ public class UserUpdateDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-        private String email;
         private String password;
         private String name;
         private String birthDay;

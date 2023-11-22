@@ -32,9 +32,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
+    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id,
+                                                  @RequestBody UserUpdateDto.Request request) {
         User user = userService.update(id,
-                request.getEmail(),
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
@@ -56,7 +56,7 @@ public class UserController {
     @DeleteMapping ("/{id}")
     public ResponseEntity<ApiResult<?>> withdraw(@PathVariable long id) {
         userService.withdraw(id);
-      
+
         return Result.ok();
     }
 }
