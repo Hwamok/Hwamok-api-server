@@ -73,7 +73,7 @@ public class User extends BaseEntity {
     this.address = address;
   }
 
-  public void update(String email, String password, String name, String birthDay, String phone, String platform,
+  public void update(String password, String name, String birthDay, String phone, String platform,
                      UploadedFile profile, Address address) {
 
     require(Strings.isNotBlank(password));
@@ -81,7 +81,6 @@ public class User extends BaseEntity {
     require(Strings.isNotBlank(birthDay));
     require(Strings.isNotBlank(phone));
     require(Strings.isNotBlank(platform));
-    require(email.length() <= 50);
     require(name.length() <= 20);
     require(birthDay.length() <= 10);
     require(phone.length() <= 11);
