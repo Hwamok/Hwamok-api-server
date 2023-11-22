@@ -39,7 +39,9 @@ public class ProductServiceImpl implements ProductService{
     public Product updateProduct(Long id, String name, String code, Integer price, Category category) {
         Product product = productRepository.findProductByIdAndStatus(id, ProductStatus.ACTIVATED).orElseThrow(() ->
                 new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
+
         product.updateProduct(name, code, price, category);
+
         return product;
     }
 
@@ -47,6 +49,7 @@ public class ProductServiceImpl implements ProductService{
     public void deleteProduct(Long id) {
         Product product = productRepository.findProductByIdAndStatus(id, ProductStatus.ACTIVATED).orElseThrow(() ->
                 new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
+
         product.deleteProduct();
     }
 }
