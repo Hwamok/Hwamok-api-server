@@ -37,20 +37,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(long id, String email, String password, String name, String birthDay, String phone,
+    public User update(long id, String password, String name, String birthDay, String phone,
                        String platform, UploadedFileUpdateDto.Request reqProfile, AddressUpdateDto.Request reqAddress) {
         User user = userRepository.findById(id).orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_USER));
 
         UploadedFile profile = new UploadedFile(reqProfile.getOriginalFileName(), reqProfile.getSavedFileName());
         Address address = new Address(reqAddress.getPost(), reqAddress.getAddr(), reqAddress.getDetailAddr());
 
-        user.update(email, password, name, birthDay, phone, platform, profile, address);
+        user.update(password, name, birthDay, phone, platform, profile, address);
+
         return user;
     }
 
     @Override
     public void withdraw(long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER"));
+        User user = userRepository.findById(id).orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_USER));
         user.delete();
     }
 }

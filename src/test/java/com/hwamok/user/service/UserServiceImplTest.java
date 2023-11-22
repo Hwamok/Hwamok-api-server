@@ -1,14 +1,13 @@
 package com.hwamok.user.service;
 
+import com.hwamok.api.dto.user.AddressCreateDto;
 import com.hwamok.api.dto.user.AddressUpdateDto;
+import com.hwamok.api.dto.user.UploadedFileCreateDto;
 import com.hwamok.api.dto.user.UploadedFileUpdateDto;
 import com.hwamok.core.exception.ExceptionCode;
-import com.hwamok.core.exception.HwamokException;
 import com.hwamok.user.domain.*;
 import fixture.UserFixture;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +27,11 @@ class UserServiceImplTest {
 
     @Test
     void 회원_가입_성공() {
-        User user = userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
+        User user = userService.create("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFile("originalImage", "savedImage"),
-                new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                "201")));
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                "201"));
 
         assertThat(user.getId()).isNotNull();
     }
@@ -41,8 +40,7 @@ class UserServiceImplTest {
     void 회원_단건_정보_조회() {
         User user = userRepository.save(UserFixture.create());
 
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()->new HwamokException(ExceptionCode.NOT_FOUND_USER));
+        User foundId = userService.getInfo(user.getId());
 
         assertThat(foundId.getId()).isNotNull();
         assertThat(foundId.getEmail()).isEqualTo(user.getEmail());
@@ -60,806 +58,54 @@ class UserServiceImplTest {
 
     @Test
     void 회원_단건_정보_조회_실패_존재하지_않는_회원() {
-        User user = userRepository.save(UserFixture.create());
-
-        assertThatHwamokException(ExceptionCode.NOT_FOUND_USER).isThrownBy(() -> userRepository.findById(-1L)
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER)));
+        assertThatHwamokException(ExceptionCode.NOT_FOUND_USER).isThrownBy(() -> userService.getInfo(-1L));
     }
 
     @Test
     void 회원_수정_성공() {
         User user = userRepository.save(UserFixture.create());
 
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+        User updateInfo = userService.update(user.getId(), "12345", "hwamokhwa","2023-11-16",
+                "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
+                "savedImage1"), new AddressUpdateDto.Request(12346, 
+                        "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea","202"));
 
-
-
-        foundId = userService.update(foundId.getId(), "hwamok1@test.com", "12345", "hwamokhwa",
-                "2023-11-16", "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
-                "savedImage1"), new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                "202"));
-
-        assertThat(foundId.getId()).isNotNull();
-        assertThat(foundId.getEmail()).isEqualTo(user.getEmail());
-        assertThat(foundId.getPassword()).isEqualTo(user.getPassword());
-        assertThat(foundId.getName()).isEqualTo(user.getName());
-        assertThat(foundId.getBirthDay()).isEqualTo(user.getBirthDay());
-        assertThat(foundId.getPhone()).isEqualTo(user.getPhone());
-        assertThat(foundId.getPlatform()).isEqualTo(user.getPlatform());
-        assertThat(foundId.getProfile().getOriginalFileName()).isEqualTo(user.getProfile().getOriginalFileName());
-        assertThat(foundId.getProfile().getSavedFileName()).isEqualTo(user.getProfile().getSavedFileName());
-        assertThat(foundId.getAddress().getPost()).isEqualTo(user.getAddress().getPost());
-        assertThat(foundId.getAddress().getAddr()).isEqualTo(user.getAddress().getAddr());
-        assertThat(foundId.getAddress().getDetailAddr()).isEqualTo(user.getAddress().getDetailAddr());
+        assertThat(updateInfo.getId()).isNotNull();
+        assertThat(updateInfo.getEmail()).isEqualTo(user.getEmail());
+        assertThat(updateInfo.getPassword()).isEqualTo(user.getPassword());
+        assertThat(updateInfo.getName()).isEqualTo(user.getName());
+        assertThat(updateInfo.getBirthDay()).isEqualTo(user.getBirthDay());
+        assertThat(updateInfo.getPhone()).isEqualTo(user.getPhone());
+        assertThat(updateInfo.getPlatform()).isEqualTo(user.getPlatform());
+        assertThat(updateInfo.getProfile().getOriginalFileName()).isEqualTo(user.getProfile().getOriginalFileName());
+        assertThat(updateInfo.getProfile().getSavedFileName()).isEqualTo(user.getProfile().getSavedFileName());
+        assertThat(updateInfo.getAddress().getPost()).isEqualTo(user.getAddress().getPost());
+        assertThat(updateInfo.getAddress().getAddr()).isEqualTo(user.getAddress().getAddr());
+        assertThat(updateInfo.getAddress().getDetailAddr()).isEqualTo(user.getAddress().getDetailAddr());
     }
 
     @Test
-    void 회원_탈퇴_성공() {
-        User user = userRepository.save(UserFixture.create());
-
-        userRepository.findById(user.getId()).orElseThrow();
-
-        user.delete();
-
-        assertThat(user.getStatus()).isEqualTo(UserStatus.INACTIVATED);
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_email_null_혹은_빈값(String email) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User(email, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_password_null_혹은_빈값(String password) {
-        assertThatIllegalArgumentException().
-                isThrownBy(()->userRepository.save(new User("hwamok@test.com", password,
-                        "hwamok","2023-11-15", "01012345678", "GOOGLE",  new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_name_null_혹은_빈값(String name) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        name, "2023-11-15", "01012345678", "GOOGLE",  new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_birthDay_null_혹은_빈값(String birthDay) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", birthDay, "01012345678", "GOOGLE",  new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_phone_혹은_빈값(String phone) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", phone, "GOOGLE",  new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_platform_혹은_빈값(String platform) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", "01012345678", platform,  new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_addr_혹은_빈값(String addr) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, addr,"201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_가입_실패_detailAddr_혹은_빈값(String detailAddr) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(()->userRepository.save(new User("hwamok@test.com", "1234",
-                        "hwamok", "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
-                        "savedImage"),new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        detailAddr))));
-    }
-
-    @Test
-    void 회원_가입_실패_email_50글자_초과() {
-        String fakeEmail = "hwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamok@test.com";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User(fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_name_20글자_초과() {
-        String fakeName = "hwamokhwamokhwamokhwamok";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_birthDay_10글자_초과() {
-        String fakeBirthDay = "2023-11-1512";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_phone_11글자_초과() {
-        String fakePhone = "010123456789";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_platform_11글자_초과() {
-        String fakePlatform = "GOOGLEGOOGLE";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", fakePlatform,new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_addr_80글자_초과() {
-        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, fakeAddr,"201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_detail_10글자_초과() {
-        String fakeDetail = "10203405123";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_name_특수문자() {
-        String fakeName = "화목!";
-
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_name_두_글자_미만() {
-        String fakeName = "화";
-
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_name_영문한글_혼용() {
-        String fakeName = "화목hwamok";
-
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_email_골뱅이_없음() {
-        String fakeEmail = "hwamoktest.com";
-
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
-                .isThrownBy(()-> userRepository.save(new User(fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_email_점_없음() {
-        String fakeEmail = "hwamok@testcom";
-
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
-                .isThrownBy(()-> userRepository.save(new User(fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_birthDay_다시_없음() {
-        String fakeBirthDay = "20231115";
-
-        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_birthDay_슬래시_변경() {
-        String fakeBirthDay = "2023/11/15";
-
-        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_post_음수일때() {
-        int fakePost = -1;
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_post_5자리_미만() {
-        int fakePost = 1234;
-
-        assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_phone_숫자_제외_다른_문자() {
-        String fakePhone = "010-1234#56";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_phone_11자리_미만() {
-        String fakePhone = "0101234567";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_phone_첫째자리_0_제외() {
-        String fakePhone = "21012345678";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @Test
-    void 회원_가입_실패_validate_phone_두째자리_1_제외() {
-        String fakePhone = "00012345678";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userRepository.save(new User("hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE",new UploadedFile("originalImage",
-                        "savedImage"), new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_email_null_혹은_빈값(String email) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), email, "12345", "hwamokhwa",
-                "2023-11-16", "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
-                "savedImage1"),new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                "202")));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_password_null_혹은_빈값(String password) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", password, "hwamokhwa",
-                        "2023-11-16", "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
-                                "savedImage1"),new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_name_null_혹은_빈값(String name) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", name,
+    void 회원_수정_실패_존재하지_않는_회원() {
+        assertThatHwamokException(ExceptionCode.NOT_FOUND_USER)
+                .isThrownBy(() -> userService.update(-1L, "1234", "hwamokhwa",
                         "2023-11-16", "01012345679", "NAVER",
                         new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
                         new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202")));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_birthDay_null_혹은_빈값(String birthDay) {
+    @Test
+    void 회원_탈퇴_성공() {
         User user = userRepository.save(UserFixture.create());
 
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+        userService.withdraw(user.getId());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        birthDay, "01012345679", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202")));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_phone_null_혹은_빈값(String phone) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", phone, "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_platform_null_혹은_빈값(String platform) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", platform,
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_addr_null_혹은_빈값(String addr) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, addr, "202")));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    void 회원_수정_실패_detailAddr_null_혹은_빈값(String detailAddr) {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                detailAddr)));
+        assertThat(user.getStatus()).isEqualTo(UserStatus.INACTIVATED);
     }
 
     @Test
-    void 회원_수정_실패_email_50글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeEmail = "hwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamok@test.com";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234", "hwamok",
-                        "2023-11-15", "01012345678", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_name_20글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeName = "hwamokhwamokhwamokhwamok";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_birthDay_10글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeBirthDay = "2023-11-1516";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_phone_11글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakePhone = "010123456789";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_platform_11글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakePlatform= "NAVERNAVERNAVER";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", fakePlatform,
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_email_골뱅이_없음() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeEmail = "hwamoktest.com";
-
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234",
-                        "hwamok","2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_email_점_없음() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeEmail = "hwamok@testcom";
-
-        assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), fakeEmail, "1234",
-                        "hwamok","2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_name_특수문자() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeName = "화목!";
-
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_name_두_글자_미만() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeName = "화";
-
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_name_영문한글_혼용() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeName = "화목hwamok";
-
-        assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", fakeName,
-                        "2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_birthDay_다시_없음() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeBirthDay = "20231115";
-
-        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_birthDay_슬래시_변경() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeBirthDay = "2023/11/15";
-
-        assertThatHwamokException(ExceptionCode.NOT_DATE_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        fakeBirthDay, "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_post_음수일때() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        int fakePost = -1;
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(fakePost, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_post_5자리_미만() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        int fakePost = 1234;
-
-        assertThatHwamokException(ExceptionCode.NOT_POST_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(fakePost, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_phone_숫자_제외_다른_문자() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakePhone = "010-1234#56";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_phone_11자리_미만() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakePhone = "0101234567";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_phone_첫째자리_0_제외() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakePhone = "1101234567";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_validate_phone_두째자리_1_제외() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakePhone = "0001234567";
-
-        assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", fakePhone, "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                "202")));
-    }
-
-    @Test
-    void 회원_수정_실패_addr_80글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, fakeAddr,"202")));
-    }
-
-    @Test
-    void 회원_수정_실패_detail_10글자_초과() {
-        User user = userRepository.save(UserFixture.create());
-
-        User foundId = userRepository.findById(user.getId())
-                .orElseThrow(()-> new HwamokException(ExceptionCode.NOT_FOUND_USER));
-
-        String fakeDetail = "10203405123";
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> userService.update(foundId.getId(), "hwamok@test.com", "1234", "hwamok",
-                        "2023-11-15", "01012345678", "GOOGLE", new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
-                        new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                                fakeDetail)));
+    void 회원_탈퇴_실패_존재하지_않는_회원() {
+        assertThatHwamokException(ExceptionCode.NOT_FOUND_USER)
+                .isThrownBy(() -> userService.withdraw(-1L));
     }
 }
