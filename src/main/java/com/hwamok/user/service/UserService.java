@@ -12,7 +12,7 @@ public interface UserService {
 
     User getInfo(long id);
 
-    User update(long id, String email, String password, String name, String birthDay, String phone, String platform,
+    User update(long id, String password, String name, String birthDay, String phone, String platform,
                 UploadedFileUpdateDto.Request profile, AddressUpdateDto.Request address);
 
     void withdraw(long id);
