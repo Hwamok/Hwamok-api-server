@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product create(String name, String code, Integer price, Category category) {
-        return productRepository.save( new Product(name, code, price, category));
+        return productRepository.save(new Product(name, code, price, category));
     }
 
     @Override
