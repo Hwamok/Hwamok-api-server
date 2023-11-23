@@ -30,7 +30,7 @@ public class User extends BaseEntity {
   @Column(length = 11, nullable = false)
   private String phone;
 
-  @Column(length = 10, nullable = false)
+  @Column(length = 11, nullable = false)
   @Enumerated(EnumType.STRING)
   private JoinPlatform platform;
 
