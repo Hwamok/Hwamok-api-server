@@ -26,7 +26,6 @@ public enum ExceptionCode {
     NOT_FOUND_PRODUCT("E018", "상품을 찾을 수 없습니다."),
     NOT_FOUND_NOTICE("E019", "공지사항 정보를 찾을 수 없습니다."),
     NOT_KNOWN_PLATFORM("E020", "알 수 없는 플랫폼입니다.");
-   
     private final String code;
     private final String message;
 
