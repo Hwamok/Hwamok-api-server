@@ -49,7 +49,7 @@ public class Admin extends BaseEntity {
     this.email = email;
   }
 
-  public void update(String password, String name, String email){
+  public void update(String password, String name, String email) {
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(email));
@@ -63,7 +63,7 @@ public class Admin extends BaseEntity {
     this.email = email;
   }
 
-  public void delete(){
+  public void delete() {
     this.status = AdminStatus.INACTIVATED;
   }
 }
