@@ -37,8 +37,8 @@ public class Admin extends BaseEntity {
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(email));
-    require(email.length() <= 50);
 
+    validate(email.length() <= 50, OVER_LENGTH_EMAIL);
     validate(matches(loginId, RegexType.LOGINID), NOT_LOGINID_FORM);
     validate(matches(name, RegexType.NAME), NOT_NAME_FORM);
     validate(matches(email, RegexType.EMAIL), NOT_EMAIL_FORM);
@@ -53,8 +53,8 @@ public class Admin extends BaseEntity {
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(email));
-    require(email.length() <= 50);
 
+    validate(email.length() <= 50, OVER_LENGTH_EMAIL);
     validate(matches(name, RegexType.NAME), NOT_NAME_FORM);
     validate(matches(email, RegexType.EMAIL), NOT_EMAIL_FORM);
 
