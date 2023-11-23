@@ -26,12 +26,12 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-access-key-id: ${{ secrets.AWS_DEV_ACCESS }} #github repo setting -> secretandvariables -> actions
-          aws-secret-access-key: ${{ secrets.AWS_DEV_SECRET }}
-          aws-region: ${{ secrets.AWS_REGION }}
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@master
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_DEV_ACCESS }} #github repo setting -> secretandvariables -> actions
+#          aws-secret-access-key: ${{ secrets.AWS_DEV_SECRET }}
+#          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: build with gradle
         uses: gradle/gradle-build-action@main
