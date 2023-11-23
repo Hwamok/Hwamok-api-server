@@ -39,7 +39,7 @@ class CategoryServiceImplTest {
 
     @Test
     void 카테고리_추가_성공() {
-        Category category = categoryService.saveCategory("화목한스프링", "CA003", "식품", null);
+        Category category = categoryService.create("화목한스프링", "CA003", "식품", null);
         Category rootCategory = categoryRepository.findByBranchAndName("화목한스프링", "root")
                 .orElseThrow(() -> new RuntimeException());
 
@@ -53,7 +53,7 @@ class CategoryServiceImplTest {
     @Test
     void 카테고리_추가_성공__부모_추가() {
         Category parentCategory = new Category("화목한스프링", "CA005", "과자", 3L, null);
-        Category category = categoryService.saveCategory("화목한스프링", "CA001", "식품", parentCategory);
+        Category category = categoryService.create("화목한스프링", "CA001", "식품", parentCategory);
 
         assertThat(category.getBranch()).isEqualTo("화목한스프링");
         assertThat(category.getCode()).isEqualTo("CA001");
@@ -139,7 +139,7 @@ class CategoryServiceImplTest {
     void 카테고리_삭제_성공() {
         Long categoryId = category1.getId();
 
-        categoryService.deleteCategory(categoryId);
+        categoryService.delete(categoryId);
 
         assertThat(category1.getStatus()).isEqualTo(CategoryStatus.INACTIVATE);
     }
@@ -147,6 +147,6 @@ class CategoryServiceImplTest {
     @Test
     void 카테고리_삭제_실패__없는_Id() {
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_FOUND_CATEGORY)
-                .isThrownBy(() -> categoryService.deleteCategory(-1L));
+                .isThrownBy(() -> categoryService.delete(-1L));
     }
 }

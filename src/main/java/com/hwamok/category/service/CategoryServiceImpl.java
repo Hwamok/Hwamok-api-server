@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category saveCategory(String branch, String code, String name, Category parent) {
+    public Category create(String branch, String code, String name, Category parent) {
         Category category = new Category(branch, code, name, parent);
 
         if (parent == null) {
@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void deleteCategory(Long id) {
+    public void delete(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
         category.deleteCategory();

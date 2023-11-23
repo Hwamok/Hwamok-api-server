@@ -6,7 +6,7 @@ import com.hwamok.category.domain.Category;
 import java.util.List;
 
 public interface CategoryService {
-    public Category saveCategory(String branch, String code, String name, Category parent);
+    public Category create(String branch, String code, String name, Category parent);
 
     public List<Category> getAllByBranch (String branch);
 
@@ -17,5 +17,5 @@ public interface CategoryService {
 
     public List<Category> getAllByName (String name);
 
-    public void deleteCategory(Long id);
+    public void delete(Long id);
 }
