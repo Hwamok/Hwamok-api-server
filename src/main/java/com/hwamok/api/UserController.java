@@ -25,28 +25,23 @@ public class UserController {
                 request.getBirthDay(),
                 request.getPhone(),
                 request.getPlatform(),
-                request.getProfile().getOriginalFileName(),
-                request.getProfile().getSavedFileName(),
-                request.getAddress().getPost(),
-                request.getAddress().getAddr(),
-                request.getAddress().getDetailAddr());
+                request.getProfile(),
+                request.getAddress());
 
         return Result.created();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id, @RequestBody UserUpdateDto.Request request) {
-        User user = userService.update(id, request.getEmail(),
+    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id,
+                                                  @RequestBody UserUpdateDto.Request request) {
+        User user = userService.update(id,
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
                 request.getPhone(),
                 request.getPlatform(),
-                request.getProfile().getOriginalFileName(),
-                request.getProfile().getSavedFileName(),
-                request.getAddress().getPost(),
-                request.getAddress().getAddr(),
-                request.getAddress().getDetailAddr());
+                request.getProfile(),
+                request.getAddress());
 
         return Result.ok(user);
     }
