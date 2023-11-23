@@ -6,10 +6,10 @@ import com.hwamok.api.dto.user.UploadedFileCreateDto;
 import com.hwamok.api.dto.user.UploadedFileUpdateDto;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.user.domain.*;
+import fixture.UserFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.hwamok.core.exception.HwamokExceptionTest.*;
@@ -25,9 +25,6 @@ class UserServiceImplTest {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Test
     void 회원_가입_성공() {
         User user = userService.create("hwamok@test.com", "1234", "hwamok",
@@ -41,10 +38,7 @@ class UserServiceImplTest {
 
     @Test
     void 회원_단건_정보_조회() {
-        User user = userRepository.save(new User("hwamok@test.com", passwordEncoder.encode("1234"),
-                "hwamok","2023-11-15", "01012345678","GOOGLE",
-                new UploadedFile("originalImage", "savedImage"),
-                new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
+        User user = userRepository.save(UserFixture.create());
 
         User foundId = userService.getInfo(user.getId());
 
@@ -69,10 +63,7 @@ class UserServiceImplTest {
 
     @Test
     void 회원_수정_성공() {
-        User user = userRepository.save(new User("hwamok@test.com", passwordEncoder.encode("1234"),
-                "hwamok","2023-11-15", "01012345678","GOOGLE",
-                new UploadedFile("originalImage", "savedImage"),
-                new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
+        User user = userRepository.save(UserFixture.create());
 
         User updateInfo = userService.update(user.getId(), "12345", "hwamokhwa","2023-11-16",
                 "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
@@ -105,10 +96,7 @@ class UserServiceImplTest {
 
     @Test
     void 회원_탈퇴_성공() {
-        User user = userRepository.save(new User("hwamok@test.com", passwordEncoder.encode("1234"),
-                "hwamok","2023-11-15", "01012345678","GOOGLE",
-                new UploadedFile("originalImage", "savedImage"),
-                new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
+        User user = userRepository.save(UserFixture.create());
 
         userService.withdraw(user.getId());
 
