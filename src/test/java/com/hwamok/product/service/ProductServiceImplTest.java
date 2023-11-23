@@ -51,7 +51,7 @@ class ProductServiceImplTest {
 
     @Test
     void 상품_생성_성공() {
-        Product product = productService.createProduct("사과", "S001", 10000, category);
+        Product product = productService.create("사과", "S001", 10000, category);
 
         assertThat(product.getId()).isNotNull();
     }
@@ -60,26 +60,26 @@ class ProductServiceImplTest {
     @NullAndEmptySource
     void 상품_생성_실패__이름이_null_또는_빈값(String name) {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.createProduct(name, "S001", 10000, category));
+                .isThrownBy(()-> productService.create(name, "S001", 10000, category));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 상품_생성_실패__코드가_null_또는_빈값(String code) {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.createProduct("사과", code, 10000, category));
+                .isThrownBy(()-> productService.create("사과", code, 10000, category));
     }
 
     @Test
     void 상품_생성_실패__가격이_빈값() {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.createProduct("사과", "S001", null, category));
+                .isThrownBy(()-> productService.create("사과", "S001", null, category));
     }
 
     @Test
     void 상품_생성_실패__카테고리가_빈값() {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.createProduct("사과", "S001", 10000, null));
+                .isThrownBy(()-> productService.create("사과", "S001", 10000, null));
     }
 
     @Test
@@ -87,7 +87,7 @@ class ProductServiceImplTest {
         String wrongName = "사과사과사과사과사과사과사과사과사과사과사";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(() -> productService.createProduct(wrongName, "S001", 10000, category));
+                .isThrownBy(() -> productService.create(wrongName, "S001", 10000, category));
     }
 
     @Test
@@ -95,7 +95,7 @@ class ProductServiceImplTest {
         Integer wrongPrice = -1;
 
         assertThatHwamokException(ExceptionCode.NOT_PRICE_FORM)
-                .isThrownBy(() -> productService.createProduct("사과", "S001", wrongPrice, category));
+                .isThrownBy(() -> productService.create("사과", "S001", wrongPrice, category));
     }
 
     @Test
@@ -131,7 +131,7 @@ class ProductServiceImplTest {
     void 상품_수정하기_성공() {
         Long id = product.getId();
 
-        Product updatedProduct = productService.updateProduct(id, "변경", "L1111", 10, category);
+        Product updatedProduct = productService.update(id, "변경", "L1111", 10, category);
 
         assertThat(updatedProduct.getId()).isEqualTo(product.getId());
         assertThat(updatedProduct.getName()).isEqualTo("변경");
@@ -142,7 +142,7 @@ class ProductServiceImplTest {
     @Test
     void 상품_수정하기_실패__없는_id() {
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_FOUND_PRODUCT)
-                .isThrownBy(() -> productService.updateProduct(-1L,"변경", "L1111", 10, category));
+                .isThrownBy(() -> productService.update(-1L,"변경", "L1111", 10, category));
     }
 
     @ParameterizedTest
@@ -151,7 +151,7 @@ class ProductServiceImplTest {
         Long productId = product.getId();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.updateProduct(productId, null, "L1111", 10, category));
+                .isThrownBy(()-> productService.update(productId, null, "L1111", 10, category));
     }
 
     @ParameterizedTest
@@ -160,7 +160,7 @@ class ProductServiceImplTest {
         Long productId = product.getId();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.updateProduct(productId, "변경", code, 10, category));
+                .isThrownBy(()-> productService.update(productId, "변경", code, 10, category));
     }
 
     @Test
@@ -168,7 +168,7 @@ class ProductServiceImplTest {
         Long productId = product.getId();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.updateProduct(productId, "변경", "T123", null, category));
+                .isThrownBy(()-> productService.update(productId, "변경", "T123", null, category));
     }
 
     @Test
@@ -176,7 +176,7 @@ class ProductServiceImplTest {
         Long productId = product.getId();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> productService.updateProduct(productId, "변경", "T123", 100, null));
+                .isThrownBy(()-> productService.update(productId, "변경", "T123", 100, null));
     }
 
     @Test
@@ -185,7 +185,7 @@ class ProductServiceImplTest {
         Long productId = product.getId();
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> productService.updateProduct(productId, wrongName, "T123", 100, category));
+                .isThrownBy(()-> productService.update(productId, wrongName, "T123", 100, category));
     }
 
     @Test
@@ -193,14 +193,14 @@ class ProductServiceImplTest {
         Long productId = product.getId();
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_PRICE_FORM)
-                .isThrownBy(()-> productService.updateProduct(productId, "감귤", "T123", -1, category));
+                .isThrownBy(()-> productService.update(productId, "감귤", "T123", -1, category));
     }
 
     @Test
     void 상품_삭제_성공() {
         Long productId = product.getId();
 
-        productService.deleteProduct(productId);
+        productService.delete(productId);
 
         assertThat(product.getStatus()).isEqualTo(ProductStatus.INACTIVATED);
     }
@@ -208,6 +208,6 @@ class ProductServiceImplTest {
     @Test
     void 상품_삭제_실패__없는_id() {
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_FOUND_PRODUCT)
-                .isThrownBy(()->productService.deleteProduct(-1L));
+                .isThrownBy(()->productService.delete(-1L));
     }
 }

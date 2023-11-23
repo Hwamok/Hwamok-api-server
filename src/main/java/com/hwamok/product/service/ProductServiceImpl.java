@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     @Override
-    public Product createProduct(String name, String code, Integer price, Category category) {
+    public Product create(String name, String code, Integer price, Category category) {
         return productRepository.save( new Product(name, code, price, category));
     }
 
@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProduct(Long id, String name, String code, Integer price, Category category) {
+    public Product update(Long id, String name, String code, Integer price, Category category) {
         Product product = productRepository.findProductByIdAndStatus(id, ProductStatus.ACTIVATED).orElseThrow(() ->
                 new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
 
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void delete(Long id) {
         Product product = productRepository.findProductByIdAndStatus(id, ProductStatus.ACTIVATED).orElseThrow(() ->
                 new HwamokException(ExceptionCode.NOT_FOUND_PRODUCT));
 
