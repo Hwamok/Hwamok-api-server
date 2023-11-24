@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -738,5 +737,4 @@ class UserControllerTest {
                         jsonPath("message").value("알 수 없는 플랫폼입니다.")
                 );
     }
-
 }

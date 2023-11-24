@@ -25,7 +25,8 @@ public enum ExceptionCode {
     NOT_PRICE_FORM("E017", "가격 형식이 다릅니다."),
     NOT_FOUND_PRODUCT("E018", "상품을 찾을 수 없습니다."),
     NOT_FOUND_NOTICE("E019", "공지사항 정보를 찾을 수 없습니다."),
-    NOT_KNOWN_PLATFORM("E020", "알 수 없는 플랫폼입니다.");
+    NOT_KNOWN_PLATFORM("E020", "알 수 없는 플랫폼입니다."),
+    OVER_LENGTH_EMAIL("E021", "이메일의 길이가 초과되었습니다.");
 
     private final String code;
     private final String message;
