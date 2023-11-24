@@ -12,7 +12,6 @@ import fixture.AdminFixture;
 import fixture.NoticeFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +50,6 @@ class NoticeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .sessionAttr("admin",admin))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -69,7 +66,6 @@ class NoticeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .sessionAttr("admin",admin))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -86,7 +82,6 @@ class NoticeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .sessionAttr("admin",admin))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E015"),
@@ -103,7 +98,6 @@ class NoticeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .sessionAttr("admin",admin))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -120,7 +114,6 @@ class NoticeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request))
                         .sessionAttr("admin",admin))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E016"),
@@ -139,7 +132,6 @@ class NoticeControllerTest {
         Notice notice = noticeRepository.save(NoticeFixture.createNotice(admin));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/{id}", notice.getId()))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -154,7 +146,6 @@ class NoticeControllerTest {
         Long fakeNoticeId = -1L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/{id}", fakeNoticeId))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
@@ -170,7 +161,6 @@ class NoticeControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/list")
                         .param("keyword", keyword))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -197,7 +187,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/list")
                         .param("keyword", "test")
                         .param("filter", "전체"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -224,7 +213,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/list")
                         .param("keyword", "test")
                         .param("filter", "제목"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -247,7 +235,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/list")
                         .param("keyword", "test")
                         .param("filter", "내용"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -264,7 +251,6 @@ class NoticeControllerTest {
     @Test
     void 공지사항_리스트조회_실패__조회정보_없음() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/notice/list"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
@@ -280,7 +266,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/notice/{id}", notice.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -297,7 +282,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/notice/{id}", notice.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -314,7 +298,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/notice/{id}", notice.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E015"),
@@ -331,7 +314,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/notice/{id}", notice.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -348,7 +330,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/notice/{id}", notice.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E016"),
@@ -363,7 +344,6 @@ class NoticeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/notice/{id}", fakeNoticeId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
@@ -376,7 +356,6 @@ class NoticeControllerTest {
         Notice notice = noticeRepository.save(new Notice("제목test", "내용1", admin));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/notice/{id}", notice.getId()))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -388,7 +367,6 @@ class NoticeControllerTest {
         Long fakeNoticeId = 1L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/notice/{id}", fakeNoticeId))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
