@@ -45,7 +45,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -66,7 +65,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -79,7 +77,6 @@ class UserControllerTest {
         User user = userRepository.save(UserFixture.create());
 
         mockMvc.perform(get("/user/{id}", user.getId()))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -103,7 +100,6 @@ class UserControllerTest {
         User user = userRepository.save(UserFixture.create());
 
         mockMvc.perform(delete("/user/{id}", user.getId()))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -123,7 +119,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -143,7 +138,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -163,7 +157,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -185,7 +178,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -207,7 +199,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -229,7 +220,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -240,7 +230,6 @@ class UserControllerTest {
     @Test
     void 회원_수정_실패_존재하지_않는_회원() throws Exception {
         mockMvc.perform(get("/user/{id}", -1l))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E007"),
@@ -261,7 +250,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E003"),
@@ -282,7 +270,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E003"),
@@ -303,7 +290,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E004"),
@@ -324,7 +310,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E004"),
@@ -345,7 +330,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E004"),
@@ -366,7 +350,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E008"),
@@ -387,7 +370,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E008"),
@@ -408,7 +390,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E009"),
@@ -429,7 +410,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -450,7 +430,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -471,7 +450,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -492,7 +470,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -513,7 +490,6 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E020"),
@@ -536,7 +512,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E004"),
@@ -559,7 +534,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E004"),
@@ -582,7 +556,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E004"),
@@ -605,7 +578,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E008"),
@@ -628,7 +600,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E008"),
@@ -651,7 +622,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E009"),
@@ -674,7 +644,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -697,7 +666,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -720,7 +688,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -743,7 +710,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E010"),
@@ -766,7 +732,6 @@ class UserControllerTest {
         mockMvc.perform(patch("/user/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E020"),
