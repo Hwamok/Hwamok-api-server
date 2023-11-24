@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryTest {
   @Test
   void 카테고리_생성_성공() {
-    Category category = new Category("화목한쇼핑몰", "CA001", "식품", 0, null);
+    Category category = new Category("화목한쇼핑몰", "CA001", "식품", 0L, null);
 
     assertThat(category.getBranch()).isEqualTo("화목한쇼핑몰");
     assertThat(category.getCode()).isEqualTo("CA001");
@@ -25,9 +25,9 @@ class CategoryTest {
 
   @Test
   void 하위_카테고리_생성_성공() {
-    Category parentCategory = new Category("화목한쇼핑몰", "CA001", "식품", 0, null);
+    Category parentCategory = new Category("화목한쇼핑몰", "CA001", "식품", 0L, null);
 
-    Category subCategory = new Category("화목한쇼핑몰", "CA002", "가공식품", 1, parentCategory);
+    Category subCategory = new Category("화목한쇼핑몰", "CA002", "가공식품", 1L, parentCategory);
 
     assertThat(subCategory.getBranch()).isEqualTo("화목한쇼핑몰");
     assertThat(subCategory.getCode()).isEqualTo("CA002");
@@ -38,9 +38,9 @@ class CategoryTest {
 
   @Test
   void 부모_카테고리로_서브_카테고리들_조회() {
-    Category parentCategory = new Category("화목한쇼핑몰", "CA001", "식품", 0, null);
-    Category subCategory1 = new Category("화목한쇼핑몰", "CA002", "가공식품", 1, parentCategory);
-    Category subCategory2 = new Category("화목한쇼핑몰", "CA003", "신선식품", 1, parentCategory);
+    Category parentCategory = new Category("화목한쇼핑몰", "CA001", "식품", 0L, null);
+    Category subCategory1 = new Category("화목한쇼핑몰", "CA002", "가공식품", 1L, parentCategory);
+    Category subCategory2 = new Category("화목한쇼핑몰", "CA003", "신선식품", 1L, parentCategory);
 
     parentCategory.getSubCategory().add(subCategory1);
     parentCategory.getSubCategory().add(subCategory2);
@@ -53,26 +53,26 @@ class CategoryTest {
   @NullAndEmptySource
   void 카테고리_생성_실패__브랜치_null_혹은_빈값(String branch) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
-            new Category(branch, "CA001", "식품", 0, null));
+            new Category(branch, "CA001", "식품", 0L, null));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void 카테고리_생성_실패__코드_null_혹은_빈값(String code) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
-            new Category("화목한쇼핑몰", code, "식품", 0, null));
+            new Category("화목한쇼핑몰", code, "식품", 0L, null));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void 카테고리_생성_실패__이름_null_혹은_빈값(String name) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
-            new Category("화목한쇼핑몰", "CA001", name, 0, null));
+            new Category("화목한쇼핑몰", "CA001", name, 0L, null));
   }
 
   @ParameterizedTest
   @NullSource
-  void 카테고리_생성_실패__레벨_null_혹은_빈값(Integer level) {
+  void 카테고리_생성_실패__레벨_null_혹은_빈값(Long level) {
     Assertions.assertThatIllegalArgumentException().isThrownBy(() ->
             new Category("화목한쇼핑몰", "CA001", "식품", level, null));
   }
@@ -82,7 +82,7 @@ class CategoryTest {
     String wrongBranch = "화목한쇼핑몰화목한쇼핑몰화목한쇼핑몰화목한쇼핑몰화목한쇼핑몰화";
 
     HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_BRANCH_FORM)
-            .isThrownBy(()-> new Category(wrongBranch, "CA001", "식품", 0, null));
+            .isThrownBy(()-> new Category(wrongBranch, "CA001", "식품", 0L, null));
   }
 
   @Test
@@ -90,7 +90,7 @@ class CategoryTest {
     String wrongCode = "CA77777";
 
     HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_CODE_FORM)
-            .isThrownBy(()-> new Category("화목한쇼핑몰", wrongCode, "식품", 0, null));
+            .isThrownBy(()-> new Category("화목한쇼핑몰", wrongCode, "식품", 0L, null));
   }
 
   @Test
@@ -98,12 +98,12 @@ class CategoryTest {
     String wrongName = "식품식품식품식품식품식품식품식품식품식품식품식품식품식품식품식";
 
     HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-            .isThrownBy(()-> new Category("화목한쇼핑몰", "CA001", wrongName, 0, null));
+            .isThrownBy(()-> new Category("화목한쇼핑몰", "CA001", wrongName, 0L, null));
   }
 
   @Test
   void 카테고리_생성_실패__레벨_음수() {
-    Integer level = -1;
+    Long level = -1L;
 
     HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_LEVEL_FORM)
             .isThrownBy(()-> new Category("화목한쇼핑몰", "CA001", "식품", level, null));
