@@ -1,6 +1,7 @@
 package com.hwamok.admin.domain;
 
 import com.hwamok.core.exception.ExceptionCode;
+import com.hwamok.core.exception.HwamokExceptionTest;
 import fixture.AdminFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -141,7 +142,7 @@ class AdminTest {
     void 관리자_생성_실패__이메일_50글자초과() {
         String fakeEmail = "testtesttesttesttesttest@testtesttesttesttest11.com";
 
-        assertThatIllegalArgumentException()
+        HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_EMAIL)
                 .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
     }
 
@@ -242,8 +243,8 @@ class AdminTest {
         String fakeEmail = "testtesttesttesttest@testtesttesttesttesttest11.com";
         Admin admin = AdminFixture.createAdmin();
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(()-> admin.update("update1234","이름",fakeEmail));
+        HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_EMAIL)
+                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
     }
     
     @Test

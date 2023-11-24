@@ -37,8 +37,8 @@ public class Admin extends BaseEntity {
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(email));
-    require(email.length() <= 50);
 
+    validate(email.length() <= 50, OVER_LENGTH_EMAIL);
     validate(matches(loginId, RegexType.LOGINID), NOT_LOGINID_FORM);
     validate(matches(name, RegexType.NAME), NOT_NAME_FORM);
     validate(matches(email, RegexType.EMAIL), NOT_EMAIL_FORM);
@@ -49,12 +49,12 @@ public class Admin extends BaseEntity {
     this.email = email;
   }
 
-  public void update(String password, String name, String email){
+  public void update(String password, String name, String email) {
     require(Strings.isNotBlank(password));
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(email));
-    require(email.length() <= 50);
 
+    validate(email.length() <= 50, OVER_LENGTH_EMAIL);
     validate(matches(name, RegexType.NAME), NOT_NAME_FORM);
     validate(matches(email, RegexType.EMAIL), NOT_EMAIL_FORM);
 
@@ -63,7 +63,7 @@ public class Admin extends BaseEntity {
     this.email = email;
   }
 
-  public void delete(){
+  public void delete() {
     this.status = AdminStatus.INACTIVATED;
   }
 }
