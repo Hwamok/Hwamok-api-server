@@ -15,8 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.hwamok.utils.CreateValueUtil.stringLength;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -735,6 +737,290 @@ class UserControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("E020"),
                         jsonPath("message").value("알 수 없는 플랫폼입니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_email_50글자_초과() throws Exception {
+        String fakeEmail = stringLength(51);
+
+        UserCreateDto.Request request = new UserCreateDto.Request(fakeEmail, "1234", "hwamok",
+                "2023-11-15", "01012345678", "GOOGLE",
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E021"),
+                        jsonPath("message").value("이메일의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_name_20글자_초과() throws Exception {
+        String fakeName = stringLength(21);
+
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", fakeName,
+                "2023-11-15", "01012345678", "GOOGLE",
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E022"),
+                        jsonPath("message").value("이름의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_birthDay_10글자_초과() throws Exception {
+        String fakeBirthDay = stringLength(11);
+
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
+                fakeBirthDay, "01012345678", "GOOGLE",
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E023"),
+                        jsonPath("message").value("날짜의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_phone_11글자_초과() throws Exception {
+        String fakePhone = stringLength(12);
+
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
+                "2023-11-15", fakePhone, "GOOGLE",
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E024"),
+                        jsonPath("message").value("핸드폰 번호의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_platform_11글자_초과() throws Exception {
+        String fakePlatform = stringLength(12);
+
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
+                "2023-11-15", "01012345678", fakePlatform,
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        "201"));
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E025"),
+                        jsonPath("message").value("플랫폼의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_addr_80글자_초과() throws Exception {
+        String fakeAddr = stringLength(81);
+
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
+                "2023-11-15", "01012345678", "GOOGLE",
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345, fakeAddr,
+                        "201"));
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E026"),
+                        jsonPath("message").value("주소의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_가입_실패_detailAddr_10글자_초과() throws Exception {
+        String fakeDetailAddr = stringLength(11);
+
+        UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
+                "2023-11-15", "01012345678", "GOOGLE",
+                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
+                new AddressCreateDto.Request(12345, "5, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
+                        fakeDetailAddr));
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E027"),
+                        jsonPath("message").value("주소 상세의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_수정_실패_name_20글자_초과() throws Exception {
+        User user = userRepository.save(UserFixture.create());
+
+        String fakeName = stringLength(21);
+
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", fakeName, "2023-11-16",
+                "01012345679", "NAVER",
+                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
+                new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
+
+        mockMvc.perform(patch("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E022"),
+                        jsonPath("message").value("이름의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_수정_실패_birthDay_10글자_초과() throws Exception {
+        User user = userRepository.save(UserFixture.create());
+
+        String fakeBirthDay = stringLength(11);
+
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", fakeBirthDay,
+                "01012345679", "NAVER",
+                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
+                new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
+
+        mockMvc.perform(patch("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E023"),
+                        jsonPath("message").value("날짜의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_수정_실패_phone_11글자_초과() throws Exception {
+        User user = userRepository.save(UserFixture.create());
+
+        String fakePhone = stringLength(12);
+
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
+                fakePhone, "NAVER",
+                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
+                new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
+
+        mockMvc.perform(patch("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E024"),
+                        jsonPath("message").value("핸드폰 번호의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_수정_실패_platform_11글자_초과() throws Exception {
+        User user = userRepository.save(UserFixture.create());
+
+        String fakePlatform = stringLength(12);
+
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
+                "01012345679", fakePlatform,
+                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
+                new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        "202"));
+
+        mockMvc.perform(patch("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E025"),
+                        jsonPath("message").value("플랫폼의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_수정_실패_addr_80글자_초과() throws Exception {
+        User user = userRepository.save(UserFixture.create());
+
+        String fakeAddr = stringLength(81);
+
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
+                "01012345679", "NAVER",
+                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
+                new AddressUpdateDto.Request(12346, fakeAddr,"202"));
+
+        mockMvc.perform(patch("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E026"),
+                        jsonPath("message").value("주소의 길이가 초과되었습니다.")
+                );
+    }
+
+    @Test
+    void 회원_수정_실패_detailAddr_10글자_초과() throws Exception {
+        User user = userRepository.save(UserFixture.create());
+
+        String fakeDetailAddr = stringLength(11);
+
+        UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
+                "01012345679", "NAVER",
+                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
+                new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
+                        fakeDetailAddr));
+
+        mockMvc.perform(patch("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("E027"),
+                        jsonPath("message").value("주소 상세의 길이가 초과되었습니다.")
                 );
     }
 }
