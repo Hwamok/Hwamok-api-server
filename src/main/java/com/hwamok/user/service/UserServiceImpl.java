@@ -11,14 +11,20 @@ import com.hwamok.user.domain.UploadedFile;
 import com.hwamok.user.domain.User;
 import com.hwamok.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.hwamok.utils.PreConditions.require;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User create(String email, String password, String name, String birthDay, String phone, String platform,
@@ -27,7 +33,9 @@ public class UserServiceImpl implements UserService {
         UploadedFile profile = new UploadedFile(reqProfile.getOriginalFileName(), reqProfile.getSavedFileName());
         Address address = new Address(reqAddress.getPost(), reqAddress.getAddr(), reqAddress.getDetailAddr());
 
-        return userRepository.save(new User(email, password, name, birthDay, phone, platform,
+        require(Strings.isNotBlank(password));
+
+        return userRepository.save(new User(email, passwordEncoder.encode(password), name, birthDay, phone, platform,
                 profile, address));
     }
 
@@ -44,7 +52,9 @@ public class UserServiceImpl implements UserService {
         UploadedFile profile = new UploadedFile(reqProfile.getOriginalFileName(), reqProfile.getSavedFileName());
         Address address = new Address(reqAddress.getPost(), reqAddress.getAddr(), reqAddress.getDetailAddr());
 
-        user.update(password, name, birthDay, phone, platform, profile, address);
+        require(Strings.isNotBlank(password));
+
+        user.update(passwordEncoder.encode(password), name, birthDay, phone, platform, profile, address);
 
         return user;
     }

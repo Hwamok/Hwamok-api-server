@@ -22,9 +22,17 @@ public enum ExceptionCode {
     NOT_FOUND_CATEGORY("E014", "카테고리를 찾을 수 없습니다."),
     OVER_LENGTH_TITLE("E015", "제목의 길이 초과되었습니다."),
     OVER_LENGTH_CONTENT("E016", "내용의 길이가 초과되었습니다."),
+    NOT_PRICE_FORM("E017", "가격 형식이 다릅니다."),
+    NOT_FOUND_PRODUCT("E018", "상품을 찾을 수 없습니다."),
+    NOT_FOUND_NOTICE("E019", "공지사항 정보를 찾을 수 없습니다."),
     NOT_KNOWN_PLATFORM("E020", "알 수 없는 플랫폼입니다."),
-    OVER_LENGTH_EMAIL("E021", "이메일의 길이가 초과되었습니다.")
-    ;
+    OVER_LENGTH_EMAIL("E021", "이메일의 길이가 초과되었습니다."),
+    OVER_LENGTH_NAME("E022", "이름의 길이가 초과되었습니다."),
+    OVER_LENGTH_DATE("E023", "날짜의 길이가 초과되었습니다."),
+    OVER_LENGTH_PHONE("E024", "핸드폰 번호의 길이가 초과되었습니다."),
+    OVER_LENGTH_PLATFORM("E025", "플랫폼의 길이가 초과되었습니다."),
+    OVER_LENGTH_ADDR("E026", "주소의 길이가 초과되었습니다."),
+    OVER_LENGTH_DETAILADDR("E027", "주소 상세의 길이가 초과되었습니다.");
 
     private final String code;
     private final String message;

@@ -32,9 +32,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<User>> update(@PathVariable Long id,
+    public ResponseEntity<ApiResult<?>> update(@PathVariable Long id,
                                                   @RequestBody UserUpdateDto.Request request) {
-        User user = userService.update(id,
+        userService.update(id,
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
@@ -43,7 +43,7 @@ public class UserController {
                 request.getProfile(),
                 request.getAddress());
 
-        return Result.ok(user);
+        return Result.ok();
     }
 
     @GetMapping("/{id}")
