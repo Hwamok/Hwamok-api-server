@@ -6,6 +6,7 @@ import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokException;
 import com.hwamok.notice.domain.Notice;
 import com.hwamok.notice.domain.NoticeRepository;
+import com.hwamok.utils.PreConditions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,11 @@ public class NoticeServiceImpl implements NoticeService{
     public Page<Notice> getNotices(String keyword, String filter, int curPage, int pageSize) {
         PageRequest pageRequest = PageRequest.of(curPage-1, pageSize);
 
-        return noticeRepository.getNotices(keyword, filter, pageRequest);
+        Page<Notice> notices = noticeRepository.getNotices(keyword, filter, pageRequest);
+
+        PreConditions.validate(notices.getTotalElements() != 0, ExceptionCode.NOT_FOUND_NOTICE);
+
+        return notices;
     }
 
     @Override
