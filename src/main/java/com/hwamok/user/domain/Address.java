@@ -29,9 +29,9 @@ public class Address {
     require(Strings.isNotBlank(addr));
     require(Strings.isNotBlank(detailAddr));
     require(post > 0);
-    require(addr.length() <= 80);
-    require(detailAddr.length() <= 10);
 
+    validate(addr.length() <= 80, ExceptionCode.OVER_LENGTH_ADDR);
+    validate(detailAddr.length() <= 10, ExceptionCode.OVER_LENGTH_DETAILADDR);
     validate(matches(String.valueOf(post), RegexType.POST), ExceptionCode.NOT_POST_FORM);
 
     this.post = post;
