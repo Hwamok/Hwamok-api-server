@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,10 +54,11 @@ class NoticeServiceImplTest {
     @NullAndEmptySource
     void 공지사항_리스트조회_성공__키워드_null_또는_공백(String keyword) {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
+        Pageable pageable = PageRequest.of(1, 10);
         noticeRepository.save(new Notice("제목test", "내용1", admin));
         noticeRepository.save(new Notice("제목2", "내용test", admin));
 
-        Page<Notice> notices = noticeService.getNotices(keyword, "전체", 1, 10);
+        Page<Notice> notices = noticeService.getNotices(keyword, "전체", pageable);
 
         assertThat(notices.getTotalPages()).isEqualTo(1);
         assertThat(notices.getTotalElements()).isEqualTo(2);
@@ -65,10 +67,11 @@ class NoticeServiceImplTest {
     @Test
     void 공지사항_리스트조회_성공__필터_전체조회() {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
+        Pageable pageable = PageRequest.of(1, 10);
         noticeRepository.save(new Notice("제목test", "내용", admin));
         noticeRepository.save(new Notice("제목", "내용test", admin));
 
-        Page<Notice> notices = noticeService.getNotices("test","전체",1,10);
+        Page<Notice> notices = noticeService.getNotices("test","전체", pageable);
 
         assertThat(notices.getTotalPages()).isEqualTo(1);
         assertThat(notices.getTotalElements()).isEqualTo(2);
@@ -77,10 +80,11 @@ class NoticeServiceImplTest {
     @Test
     void 공지사항_리스트조회_성공__필터_제목조회() {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
+        Pageable pageable = PageRequest.of(1, 10);
         noticeRepository.save(new Notice("제목test", "내용1", admin));
         noticeRepository.save(new Notice("제목2", "내용test", admin));
 
-        Page<Notice> notices = noticeService.getNotices("제목","제목",1,10);
+        Page<Notice> notices = noticeService.getNotices("제목","제목", pageable);
 
         assertThat(notices.getTotalPages()).isEqualTo(1);
         assertThat(notices.getTotalElements()).isEqualTo(2);
@@ -89,10 +93,11 @@ class NoticeServiceImplTest {
     @Test
     void 공지사항_리스트조회_성공__필터_내용조회() {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
+        Pageable pageable = PageRequest.of(1, 10);
         noticeRepository.save(new Notice("제목test", "내용1", admin));
         noticeRepository.save(new Notice("제목2", "내용test", admin));
 
-        Page<Notice> notices = noticeService.getNotices("내용","내용",1,10);
+        Page<Notice> notices = noticeService.getNotices("내용","내용", pageable);
 
         assertThat(notices.getTotalPages()).isEqualTo(1);
         assertThat(notices.getTotalElements()).isEqualTo(2);
