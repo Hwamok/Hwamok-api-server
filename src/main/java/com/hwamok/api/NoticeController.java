@@ -11,6 +11,8 @@ import com.hwamok.notice.service.NoticeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,11 +44,10 @@ public class NoticeController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResult<Page<NoticeReadDto.Response>>> getNotices(@RequestParam(required = false) String keyword,
-                                                              @RequestParam(required = false) String filter,
-                                                              @RequestParam(defaultValue = "1") int curPage,
-                                                              @RequestParam(defaultValue = "10") int pageSize) {
-        Page<Notice> notices = noticeService.getNotices(keyword, filter, curPage, pageSize);
+    public ResponseEntity<ApiResult<Page<NoticeReadDto.Response>>> getNotices(@PageableDefault(page = 1, size = 10) Pageable pageable,
+                                                                              @RequestParam(required = false) String keyword,
+                                                                              @RequestParam(required = false) String filter) {
+        Page<Notice> notices = noticeService.getNotices(keyword, filter, pageable);
 
         Page<NoticeReadDto.Response> responses = notices.map(Response::new);
 

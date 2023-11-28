@@ -10,6 +10,7 @@ import com.hwamok.utils.PreConditions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +34,8 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public Page<Notice> getNotices(String keyword, String filter, int curPage, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(curPage-1, pageSize);
+    public Page<Notice> getNotices(String keyword, String filter, Pageable pageable) {
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize());
 
         Page<Notice> notices = noticeRepository.getNotices(keyword, filter, pageRequest);
 
