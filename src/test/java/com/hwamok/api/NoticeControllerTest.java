@@ -149,7 +149,7 @@ class NoticeControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
-                        jsonPath("message").value("공지사항 졍보를 찾을 수 없습니다."));
+                        jsonPath("message").value("공지사항 정보를 찾을 수 없습니다."));
     }
 
     @ParameterizedTest
@@ -254,7 +254,7 @@ class NoticeControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
-                        jsonPath("message").value("공지사항 졍보를 찾을 수 없습니다."));
+                        jsonPath("message").value("공지사항 정보를 찾을 수 없습니다."));
     }
 
     @Test
@@ -347,7 +347,7 @@ class NoticeControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
-                        jsonPath("message").value("공지사항 졍보를 찾을 수 없습니다."));
+                        jsonPath("message").value("공지사항 정보를 찾을 수 없습니다."));
     }
 
     @Test
@@ -370,6 +370,6 @@ class NoticeControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E019"),
-                        jsonPath("message").value("공지사항 졍보를 찾을 수 없습니다."));
+                        jsonPath("message").value("공지사항 정보를 찾을 수 없습니다."));
     }
 }
