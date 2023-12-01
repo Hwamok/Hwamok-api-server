@@ -44,6 +44,9 @@ public class User extends BaseEntity {
   @Embedded
   private Address address;
 
+  @Enumerated(EnumType.STRING)
+  private Role role = Role.USER;
+
   public User(String email, String password, String name, String birthDay, String phone, String platform,
               UploadedFile profile, Address address) {
     require(Strings.isNotBlank(email));
