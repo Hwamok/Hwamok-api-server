@@ -8,14 +8,16 @@ import java.util.List;
 public interface CategoryService {
     public Category create(String branch, String code, String name, Category parent);
 
-    public List<Category> getAllByBranch (String branch);
+    public List<Category> getAll (String branch);
 
     // TODO: 2023-11-19 도메인 수정 후 추가 
 //    public List<Category> getAllByCodeType (String codeType);
 
-    public Category getCategoryByCode (String code);
+    public Category getOneByCode (String code);
 
-    public List<Category> getAllByName (String name);
+    public Category getOneByName (String name);
+
+    public void update(Long id, String branch, String code, String name);
 
     public void delete(Long id);
 }
