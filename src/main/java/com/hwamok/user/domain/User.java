@@ -30,7 +30,7 @@ public class User extends BaseEntity {
   @Column(length = 11, nullable = false)
   private String phone;
 
-  @Column(length = 10, nullable = false)
+  @Column(length = 11, nullable = false)
   @Enumerated(EnumType.STRING)
   private JoinPlatform platform;
 
@@ -52,12 +52,12 @@ public class User extends BaseEntity {
     require(Strings.isNotBlank(birthDay));
     require(Strings.isNotBlank(phone));
     require(Strings.isNotBlank(platform));
-    require(email.length() <= 50);
-    require(name.length() <= 20);
-    require(birthDay.length() <= 10);
-    require(phone.length() <= 11);
-    require(platform.length() <= 11);
 
+    validate(email.length() <= 50, ExceptionCode.OVER_LENGTH_EMAIL);
+    validate(name.length() <= 20, ExceptionCode.OVER_LENGTH_NAME);
+    validate(birthDay.length() <= 10, ExceptionCode.OVER_LENGTH_DATE);
+    validate(phone.length() <= 11, ExceptionCode.OVER_LENGTH_PHONE);
+    validate(platform.length() <= 11, ExceptionCode.OVER_LENGTH_PLATFORM);
     validate(matches(email, RegexType.EMAIL),ExceptionCode.NOT_EMAIL_FORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
     validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
@@ -81,11 +81,11 @@ public class User extends BaseEntity {
     require(Strings.isNotBlank(birthDay));
     require(Strings.isNotBlank(phone));
     require(Strings.isNotBlank(platform));
-    require(name.length() <= 20);
-    require(birthDay.length() <= 10);
-    require(phone.length() <= 11);
-    require(platform.length() <= 11);
 
+    validate(name.length() <= 20, ExceptionCode.OVER_LENGTH_NAME);
+    validate(birthDay.length() <= 10, ExceptionCode.OVER_LENGTH_DATE);
+    validate(phone.length() <= 11, ExceptionCode.OVER_LENGTH_PHONE);
+    validate(platform.length() <= 11, ExceptionCode.OVER_LENGTH_PLATFORM);
     validate(matches(name, RegexType.NAME),ExceptionCode.NOT_NAME_FORM);
     validate(matches(birthDay, RegexType.BIRTHDAY),ExceptionCode.NOT_DATE_FORM);
     validate(matches(phone, RegexType.PHONE),ExceptionCode.NOT_PHONE_FORM);

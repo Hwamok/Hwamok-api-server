@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static com.hwamok.core.exception.HwamokExceptionTest.assertThatHwamokException;
+import static com.hwamok.utils.CreateValueUtil.stringLength;
 import static org.assertj.core.api.Assertions.*;
 
 class UserTest {
@@ -140,9 +141,9 @@ class UserTest {
 
     @Test
     void 회원_가입_실패_email_50글자_초과() {
-        String fakeEmail = "hwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamokhwamok@test.com";
+        String fakeEmail = stringLength(51);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_EMAIL)
                 .isThrownBy(()->new User(fakeEmail, "1234", "hwamok", "2023-11-15",
                         "01012345678", "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
@@ -151,9 +152,9 @@ class UserTest {
 
     @Test
     void 회원_가입_실패_name_20글자_초과() {
-        String fakeName = "hwamokhwamokhwamokhwamok";
+        String fakeName = stringLength(21);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_NAME)
                 .isThrownBy(()->new User("hwamok@test.com", "1234", fakeName, "2023-11-15",
                         "01012345678", "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
@@ -162,9 +163,9 @@ class UserTest {
 
     @Test
     void 회원_가입_실패_birthDay_10글자_초과() {
-        String fakeBirthDay = "2023-11-1512";
+        String fakeBirthDay = stringLength(11);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_DATE)
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok", fakeBirthDay,
                         "01012345678", "GOOGLE",new UploadedFile("originalImage", "savedImage"),
                         new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea", "201")));
@@ -172,9 +173,9 @@ class UserTest {
 
     @Test
     void 회원_가입_실패_phone_11글자_초과() {
-        String fakePhone = "010123456789";
+        String fakePhone = stringLength(12);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_PHONE)
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
                         "2023-11-15", fakePhone, "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
@@ -182,10 +183,10 @@ class UserTest {
     }
 
     @Test
-    void 회원_가입_실패_platform_10글자_초과() {
-        String fakePlatform = "GOOGLEGOOGLE";
+    void 회원_가입_실패_platform_11글자_초과() {
+        String fakePlatform = stringLength(12);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_PLATFORM)
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
                         "2023-11-15", "01012345678", fakePlatform,
                         new UploadedFile("originalImage", "savedImage"),
@@ -194,9 +195,9 @@ class UserTest {
 
     @Test
     void 회원_가입_실패_addr_80글자_초과() {
-        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
+        String fakeAddr = stringLength(81);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_ADDR)
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
                         "2023-11-15", "01012345678", "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
@@ -205,14 +206,14 @@ class UserTest {
 
     @Test
     void 회원_가입_실패_detail_10글자_초과() {
-        String fakeDetail = "10203405123";
+        String fakeDetailAddr = stringLength(11);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_DETAILADDR)
                 .isThrownBy(()->new User("hwamok@test.com", "1234", "hwamok",
                         "2023-11-15", "01012345678", "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
                         new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail)));
+                        fakeDetailAddr)));
     }
 
     @Test
@@ -451,9 +452,9 @@ class UserTest {
     void 회원_수정_실패_name_20글자_초과() {
         User user = UserFixture.create();
 
-        String fakeName = "hwamokhwamokhwamokhwamok";
+        String fakeName = stringLength(21);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_NAME)
                 .isThrownBy( () -> user.update( "1234", fakeName,
                         "2023-11-16", "01012345679", "NAVER",
                         new UploadedFile("originalImage", "savedImage"),
@@ -464,10 +465,10 @@ class UserTest {
     void 회원_수정_실패_birthDay_10글자_초과() {
         User user = UserFixture.create();
 
-        String fakeBirthDay = "2023-11-1512";
+        String fakeBirthDay = stringLength(11);
 
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_DATE)
                 .isThrownBy( () -> user.update( "1234", "hwamok",
                         fakeBirthDay, "01012345679", "NAVER",
                         new UploadedFile("originalImage", "savedImage"),
@@ -478,9 +479,9 @@ class UserTest {
     void 회원_수정_실패_phone_11글자_초과() {
         User user = UserFixture.create();
 
-        String fakePhone = "010123456789";
+        String fakePhone = stringLength(12);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_PHONE)
                 .isThrownBy( () -> user.update( "1234", "hwamok",
                         "2023-11-16", fakePhone, "NAVER",
                         new UploadedFile("originalImage", "savedImage"),
@@ -488,12 +489,12 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_platform_10글자_초과() {
+    void 회원_수정_실패_platform_11글자_초과() {
         User user = UserFixture.create();
 
-        String fakePlatform = "NAVERNAVERNAVER";
+        String fakePlatform = stringLength(12);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_PLATFORM)
                 .isThrownBy( () -> user.update( "1234", "hwamok",
                         "2023-11-16", "01012345679", fakePlatform,
                         new UploadedFile("originalImage", "savedImage"),
@@ -595,7 +596,7 @@ class UserTest {
     void 회원_수정_실패_validate_phone_11자리_미만() {
         User user = UserFixture.create();
 
-        String fakePhone = "0101234567";
+        String fakePhone = stringLength(10);
 
         assertThatHwamokException(ExceptionCode.NOT_PHONE_FORM)
                 .isThrownBy(()-> user.update( "1234", "hwamok", "2023-11-15",
@@ -631,9 +632,9 @@ class UserTest {
     void 회원_수정_실패_addr_80글자_초과() {
         User user = UserFixture.create();
 
-        String fakeAddr = "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea, 15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea";
+        String fakeAddr = stringLength(81);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_ADDR)
                 .isThrownBy(()-> user.update( "1234", "hwamok",
                         "2023-11-15", "01012345678", "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
@@ -641,17 +642,17 @@ class UserTest {
     }
 
     @Test
-    void 회원_수정_실패_detail_10글자_초과() {
+    void 회원_수정_실패_detailAddr_10글자_초과() {
         User user = UserFixture.create();
 
-        String fakeDetail = "10203405123";
+        String fakeDetailAddr = stringLength(11);
 
-        assertThatIllegalArgumentException()
+        assertThatHwamokException(ExceptionCode.OVER_LENGTH_DETAILADDR)
                 .isThrownBy(()->user.update( "1234", "hwamok",
                         "2023-11-15", "01012345678", "GOOGLE",
                         new UploadedFile("originalImage", "savedImage"),
                         new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        fakeDetail)));
+                        fakeDetailAddr)));
     }
 
     @Test
