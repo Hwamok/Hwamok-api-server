@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public List<Category> getAllByBranch(String branch) {
+    public List<Category> getAll(String branch) {
         return categoryRepository.findAllByBranchAndStatus(branch,CategoryStatus.ACTIVATE);
     }
 
@@ -61,20 +61,38 @@ public class CategoryServiceImpl implements CategoryService{
 //    }
 
     @Override
-    public Category getCategoryByCode(String code) {
+    public Category getOneByCode(String code) {
         return categoryRepository.findByCodeAndStatus(code, CategoryStatus.ACTIVATE)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
     }
 
     @Override
-    public List<Category> getAllByName(String name) {
-        return categoryRepository.findAllByNameAndStatus(name, CategoryStatus.ACTIVATE);
+    public Category getOneByName(String name) {
+        return categoryRepository.findByNameAndStatus(name, CategoryStatus.ACTIVATE)
+                .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+    }
+
+    @Override
+    public void update(Long id, String branch, String code, String name) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+
+        if(category.getStatus().equals(CategoryStatus.INACTIVATE)){
+            return;
+        }
+
+        category.updateCategory(branch, code, name);
     }
 
     @Override
     public void delete(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+
+        if(category.getStatus().equals(CategoryStatus.INACTIVATE)){
+            return;
+        }
+
         category.deleteCategory();
     }
 }
