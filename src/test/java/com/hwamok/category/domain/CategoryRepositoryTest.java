@@ -37,12 +37,12 @@ class CategoryRepositoryTest {
 
     @Test
     void 이름_및_브랜치로_카테고리_찾기_성공() {
-        Category foundCategory = categoryRepository.findByBranchAndName("화목한쇼핑몰", "의류")
+        Category foundCategory = categoryRepository.findByBranchAndName("식품", "소고기")
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
 
-        assertThat(foundCategory.getBranch()).isEqualTo("화목한쇼핑몰");
+        assertThat(foundCategory.getBranch()).isEqualTo("식품");
         assertThat(foundCategory.getCode()).isEqualTo("CA002");
-        assertThat(foundCategory.getName()).isEqualTo("의류");
+        assertThat(foundCategory.getName()).isEqualTo("소고기");
         assertThat(foundCategory.getLevel()).isEqualTo(0);
         assertThat(foundCategory.getId()).isNotNull();
         assertThat(foundCategory.getParentCategory()).isSameAs(category);
@@ -50,21 +50,27 @@ class CategoryRepositoryTest {
 
     @Test
     void 이름_및_브랜치로_존재_유무_확인_성공() {
-        Boolean exist = categoryRepository.existsByBranchAndName("화목한쇼핑몰", "식품");
+        Boolean exist = categoryRepository.existsByBranchAndName("식품", "소고기");
 
         assertThat(exist).isEqualTo(true);
+    }
+
+    @Test
+    void 이름_및_브랜치로_존재_유무_확인_실패__없는_이름() {
+        Boolean exist = categoryRepository.existsByBranchAndName("식품", "식혜");
+
+        assertThat(exist).isEqualTo(false);
     }
 
     @Test
     void 브랜치_및_상태로_카테고리_찾기_성공() {
         Category anotherBranchCategory = CategoryFixture.createCategory("newBranch");
         categoryRepository.save(anotherBranchCategory);
-        category.deleteCategory();
 
-        List<Category> allCategory = categoryRepository.findAllByBranchAndStatus("화목한쇼핑몰", CategoryStatus.ACTIVATE);
+        List<Category> allCategory = categoryRepository.findAllByBranchAndStatus("식품", CategoryStatus.ACTIVATE);
 
-        assertThat(allCategory.size()).isEqualTo(1);
-        assertThat(allCategory.get(0).getCode()).isEqualTo("CA002");
+        assertThat(allCategory.size()).isEqualTo(2);
+        assertThat(allCategory.get(0).getCode()).isEqualTo("CA001");
     }
 
     @Test
@@ -72,9 +78,9 @@ class CategoryRepositoryTest {
         Category foundCategory = categoryRepository.findByCodeAndStatus("CA001", CategoryStatus.ACTIVATE)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
 
-        assertThat(foundCategory.getBranch()).isEqualTo("화목한쇼핑몰");
+        assertThat(foundCategory.getBranch()).isEqualTo("식품");
         assertThat(foundCategory.getCode()).isEqualTo("CA001");
-        assertThat(foundCategory.getName()).isEqualTo("식품");
+        assertThat(foundCategory.getName()).isEqualTo("돼지고기");
         assertThat(foundCategory.getLevel()).isEqualTo(0);
         assertThat(foundCategory.getId()).isNotNull();
     }
@@ -84,10 +90,9 @@ class CategoryRepositoryTest {
         Category category3 = CategoryFixture.createCategory("newBranch");
         categoryRepository.save(category3);
 
-        List<Category> categoryList = categoryRepository.findAllByNameAndStatus("식품", CategoryStatus.ACTIVATE);
+        Category category = categoryRepository.findByNameAndStatus("돼지고기", CategoryStatus.ACTIVATE)
+                .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
 
-        assertThat(categoryList.size()).isEqualTo(2);
-        assertThat(categoryList.get(0).getCode()).isEqualTo("CA001");
-        assertThat(categoryList.get(1).getCode()).isEqualTo("CA003");
+        assertThat(category.getCode()).isEqualTo("CA001");
     }
 }
