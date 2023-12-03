@@ -15,6 +15,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // TODO: 2023-11-19 도메인 수정 후 추가 예정
 //    List<Category> findAllByCodeTypeAndStatus (String codeType, CategoryStatus status);
 
+    Optional<Category> findByIdAndStatus (Long id, CategoryStatus status);
+
     Optional<Category> findByCodeAndStatus (String code, CategoryStatus status);
 
     Optional<Category> findByNameAndStatus (String name, CategoryStatus status);
