@@ -23,18 +23,14 @@ public class AdminController {
 
     @PostMapping
     public ResponseEntity<ApiResult<?>> create(@RequestBody AdminCreateDto.Request request){
-        adminService.create(request.getLoginId(),request.getPassword(),request.getName(),request.getEmail());
+        adminService.create(request.getLoginId(),request.getPassword(),request.getName(),request.getEmail(), request.getRoles());
 
         return Result.created();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResult<AdminReadDto.Response>> getInfo(@PathVariable Long id){
-        Admin admin = adminService.getInfo(id);
-
-        AdminReadDto.Response response = new AdminReadDto.Response(admin.getId(), admin.getCreatedAt(), admin.getLoginId(), admin.getName(), admin.getEmail(), admin.getStatus());
-
-        return Result.ok(response);
+        return Result.ok(adminService.getInfo(id));
     }
 
     @GetMapping("/list")
