@@ -56,8 +56,8 @@ class UserControllerTest {
                         "201"));
 
         mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isCreated())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -109,8 +109,8 @@ class UserControllerTest {
                         "202"));
 
         mockMvc.perform(patch("/user/{id}", user.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -194,7 +194,8 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("data.address.detailAddr").type(JsonFieldType.STRING).description("201"),
                                                         PayloadDocumentation.fieldWithPath("data.status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                        PayloadDocumentation.fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
+                                                        PayloadDocumentation.fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
+                                                        PayloadDocumentation.fieldWithPath("data.role").type(JsonFieldType.STRING).description("USER")
                                                 )
                                         )
                                         .responseSchema(Schema.schema("UserUpdateDto.Response"))
@@ -300,8 +301,8 @@ class UserControllerTest {
                         "201"));
 
         mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -1952,8 +1953,8 @@ class UserControllerTest {
                         "201"));
 
         mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(

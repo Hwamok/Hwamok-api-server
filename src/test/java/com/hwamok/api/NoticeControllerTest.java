@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,7 +108,7 @@ class NoticeControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("E001"),
                         jsonPath("message").value("필수 값이 누락되었습니다.")
-                )
+                        )
                 .andDo(document("공지사항 생성 실패 제목 NULL 또는 공백 API",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -296,8 +297,9 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
+                                                        PayloadDocumentation.fieldWithPath("data.createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
-                                                        )
+                                                )
                                         )
                                         .responseSchema(Schema.schema("NoticeCreateDto.Response"))
                                         .build()
@@ -352,10 +354,12 @@ class NoticeControllerTest {
                         jsonPath("data.content[0].content").value("내용test"),
                         jsonPath("data.content[0].status").value("CREATED"),
                         jsonPath("data.content[0].createdBy.loginId").value("test123"),
+                        jsonPath("data.content[0].createdBy.roles").isArray(),
                         jsonPath("data.content[1].title").value("제목test"),
                         jsonPath("data.content[1].content").value("내용1"),
                         jsonPath("data.content[1].status").value("CREATED"),
                         jsonPath("data.content[1].createdBy.loginId").value("test123"),
+                        jsonPath("data.content[0].createdBy.roles").isArray(),
                         jsonPath("data.pageable.pageSize").value(10),
                         jsonPath("data.pageable.pageNumber").value(0)
                 )
@@ -391,6 +395,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("true"),
@@ -425,10 +430,12 @@ class NoticeControllerTest {
                         jsonPath("data.content[0].content").value("내용test"),
                         jsonPath("data.content[0].status").value("CREATED"),
                         jsonPath("data.content[0].createdBy.loginId").value("test123"),
+                        jsonPath("data.content[0].createdBy.roles").isArray(),
                         jsonPath("data.content[1].title").value("제목test"),
                         jsonPath("data.content[1].content").value("내용1"),
                         jsonPath("data.content[1].status").value("CREATED"),
                         jsonPath("data.content[1].createdBy.loginId").value("test123"),
+                        jsonPath("data.content[1].createdBy.roles").isArray(),
                         jsonPath("data.pageable.pageSize").value(10),
                         jsonPath("data.pageable.pageNumber").value(0)
                 )
@@ -451,6 +458,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
@@ -497,6 +505,7 @@ class NoticeControllerTest {
                         jsonPath("data.content[0].content").value("내용1"),
                         jsonPath("data.content[0].status").value("CREATED"),
                         jsonPath("data.content[0].createdBy.loginId").value("test123"),
+                        jsonPath("data.content[0].createdBy.roles").isArray(),
                         jsonPath("data.pageable.pageSize").value(10),
                         jsonPath("data.pageable.pageNumber").value(0)
                 )
@@ -519,6 +528,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
@@ -565,6 +575,7 @@ class NoticeControllerTest {
                         jsonPath("data.content[0].content").value("내용test"),
                         jsonPath("data.content[0].status").value("CREATED"),
                         jsonPath("data.content[0].createdBy.loginId").value("test123"),
+                        jsonPath("data.content[0].createdBy.roles").isArray(),
                         jsonPath("data.pageable.pageSize").value(10),
                         jsonPath("data.pageable.pageNumber").value(0)
                 )
@@ -588,6 +599,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("true"),

@@ -19,11 +19,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @Transactional
 class AdminControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -70,7 +72,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -112,7 +115,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").ignored(),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -154,7 +158,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description(fakeLoginId),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -196,7 +201,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description(fakeLoginId),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -238,7 +244,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description(fakeLoginId),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -280,7 +287,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -322,7 +330,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -364,7 +373,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -406,7 +416,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -448,7 +459,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -490,7 +502,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com")
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -532,7 +545,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail)
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -574,7 +588,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail)
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -616,7 +631,8 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("loginId").type(JsonFieldType.STRING).description("test123"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail)
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail),
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
@@ -644,37 +660,39 @@ class AdminControllerTest {
                         jsonPath("code").value("S000"),
                         jsonPath("message").value("success"),
                         jsonPath("data.loginId").value("test1234"),
+                        jsonPath("data.name").value("이름"),
                         jsonPath("data.email").value("test@test.com"),
                         jsonPath("data.roles").isArray()
                 )
                 .andDo(document("관리자 단건 조회 API",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        ResourceDocumentation.resource(
-                                new ResourceSnippetParametersBuilder()
-                                        .tag("Admin")
-                                        .responseFields(
-                                                List.of(
-                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
-                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data.id").type(JsonFieldType.NUMBER).description(1),
-                                                        PayloadDocumentation.fieldWithPath("data.loginId").type(JsonFieldType.STRING).description("test1234"),
-                                                        PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("data.status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                        PayloadDocumentation.fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
-                                                )
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                ResourceDocumentation.resource(
+                        new ResourceSnippetParametersBuilder()
+                                .tag("Admin")
+                                .responseFields(
+                                        List.of(
+                                                PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
+                                                PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
+                                                PayloadDocumentation.fieldWithPath("data.id").type(JsonFieldType.NUMBER).description(1),
+                                                PayloadDocumentation.fieldWithPath("data.loginId").type(JsonFieldType.STRING).description("test1234"),
+                                                PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                                                PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                PayloadDocumentation.fieldWithPath("data.status").type(JsonFieldType.STRING).description("ACTIVATED"),
+                                                PayloadDocumentation.fieldWithPath("data.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                PayloadDocumentation.fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
                                         )
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
-                                        .build()
-                        )
-                ));
+                                )
+                                .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                .build()
+                )
+        ));
     }
 
     @Test
     void 관리자_단건조회_실패__관리자정보_없음() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/{id}", 1L))
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/{id}", -1L))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/{id}", -1L))
+
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
@@ -710,60 +728,33 @@ class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
-                        jsonPath("message").value("success"))
+                jsonPath("message").value("success"))
                 .andExpectAll(관리자_리스트_검증(1, admin1))
                 .andExpectAll(  관리자_리스트_검증(2, admin2)
                 )
                 .andDo(document("관리자 리스트 조회 API",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        ResourceDocumentation.resource(
-                                new ResourceSnippetParametersBuilder()
-                                        .tag("Admin")
-                                        .responseFields(
-                                                List.of(
-                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
-                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description(1),
-                                                        PayloadDocumentation.fieldWithPath("data[].loginId").type(JsonFieldType.STRING).description("test1234"),
-                                                        PayloadDocumentation.fieldWithPath("data[].name").type(JsonFieldType.STRING).description("이름"),
-                                                        PayloadDocumentation.fieldWithPath("data[].email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("data[].status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                        PayloadDocumentation.fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
-                                                )
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                ResourceDocumentation.resource(
+                        new ResourceSnippetParametersBuilder()
+                                .tag("Admin")
+                                .responseFields(
+                                        List.of(
+                                                PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
+                                                PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
+                                                PayloadDocumentation.fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description(1),
+                                                PayloadDocumentation.fieldWithPath("data[].loginId").type(JsonFieldType.STRING).description("test1234"),
+                                                PayloadDocumentation.fieldWithPath("data[].name").type(JsonFieldType.STRING).description("이름"),
+                                                PayloadDocumentation.fieldWithPath("data[].email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                PayloadDocumentation.fieldWithPath("data[].status").type(JsonFieldType.STRING).description("ACTIVATED"),
+                                                PayloadDocumentation.fieldWithPath("data[].roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                PayloadDocumentation.fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
                                         )
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
-                                        .build()
-                        )
-                ));
-    }
-
-    @Test
-    void 관리자_리스트조회_실패__관리자정보_없음() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/list"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpectAll(
-                        jsonPath("code").value("E005"),
-                        jsonPath("message").value("관리자정보를 찾을 수 없습니다.")
+                                )
+                                .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                .build()
                 )
-                .andDo(document("관리자 리스트 조회 실패 관리자 정보 없음 API",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        ResourceDocumentation.resource(
-                                new ResourceSnippetParametersBuilder()
-                                        .tag("Admin")
-                                        .responseFields(
-                                                List.of(
-                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E005"),
-                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("관리자정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
-                                                )
-                                        )
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
-                                        .build()
-                        )
-                ));
+        ));
     }
 
     @Test
