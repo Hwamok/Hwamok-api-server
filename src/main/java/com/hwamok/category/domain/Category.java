@@ -29,7 +29,7 @@ public class Category extends BaseEntity {
   @Column(length = 30, nullable = false)
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "parent_category_id")
   private Category parentCategory;
 

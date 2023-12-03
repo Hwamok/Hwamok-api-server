@@ -81,11 +81,12 @@ class CategoryControllerTest {
 
     @Test
     void 브랜치로_모든_카테고리_가져오기_성공() throws  Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/category/branch"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/category/branch")
+                        .param("branch", "식품"))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(
-                        jsonPath("code").value("S001"),
+                        jsonPath("code").value("S000"),
                         jsonPath("message").value("success")
 //                        jsonPath("data[0].getBranch").value("화목한쇼핑몰"),
 //                        jsonPath("data[0].getCode").value("CA002"),

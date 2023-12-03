@@ -15,6 +15,6 @@ public class CategoryCreateDTO {
         private String branch;
         private String code;
         private String name;
-        private Category parent;
+        private Long parentId;
     }
 }

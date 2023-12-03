@@ -22,17 +22,17 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<ApiResult<?>> createCategory(@RequestBody CategoryCreateDTO.Request request) {
-        categoryService.create(request.getBranch(), request.getCode(), request.getName(), request.getParent());
+        categoryService.create(request.getBranch(), request.getCode(), request.getName(), request.getParentId());
 
         return Result.created();
     }
 
-//    @GetMapping("/branch")
-//    public ResponseEntity<ApiResult<List<Category>>> getAllBranchCategory(@RequestParam("branch")String branch) {
-//        List<Category> categoryList = categoryService.getAllByBranch(branch);
-//
-//        return Result.ok(categoryList);
-//    }
+    @GetMapping("/branch")
+    public ResponseEntity<ApiResult<List<Category>>> getAllBranchCategory(@RequestParam("branch")String branch) {
+        List<Category> categoryList = categoryService.getAll(branch);
+
+        return Result.ok(categoryList);
+    }
 
     @GetMapping("/name")
     public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategoryByName(@RequestParam String name) {
@@ -43,7 +43,7 @@ public class CategoryController {
                 .level(category.getLevel())
                 .name(category.getName())
                 .code(category.getCode())
-                .parent(category.getParentCategory())
+                .parentId(category.getParentCategory().getId())
                 .build();
 
         return Result.ok(response);
@@ -54,7 +54,7 @@ public class CategoryController {
         Category category = categoryService.getOneByCode(code);
 
         CategoryReadDTO.Response response = new CategoryReadDTO.Response(category.getBranch(), category.getCode(),
-                category.getName(), category.getLevel() ,category.getParentCategory());
+                category.getName(), category.getLevel() ,category.getParentCategory().getId());
 
         return Result.ok(response);
     }

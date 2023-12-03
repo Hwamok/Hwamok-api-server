@@ -16,6 +16,6 @@ public class CategoryReadDTO {
         private String code;
         private String name;
         private Long level;
-        private Category parent;
+        private Long parentId;
     }
 }
