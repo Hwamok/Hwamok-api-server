@@ -6,7 +6,7 @@ import com.hwamok.category.domain.Category;
 import java.util.List;
 
 public interface CategoryService {
-    public Category create(String branch, String code, String name, Category parent);
+    public Category create(String branch, String code, String name, Long parentId);
 
     public List<Category> getAll (String branch);
 

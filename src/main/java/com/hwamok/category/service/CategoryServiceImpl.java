@@ -18,10 +18,10 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category create(String branch, String code, String name, Category parent) {
-        Category category = new Category(branch, code, name, parent);
+    public Category create(String branch, String code, String name, Long parentId) {
+        Category category;
 
-        if (parent == null) {
+        if (parentId == null) {
             if (categoryRepository.existsByBranchAndName(branch, name)) {
                 throw new RuntimeException();
             }
@@ -37,12 +37,15 @@ public class CategoryServiceImpl implements CategoryService{
             if (!categoryRepository.existsByBranchAndName(branch, "ROOT")) {
                 categoryRepository.save(rootCategory);
             }
-            category.registerParentCategory(rootCategory);
+            category = new Category(branch, code, name, rootCategory);
             category.registerLevel(1L);
 
         } else {
+            Category parent = categoryRepository.findById(parentId)
+                    .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+
+            category = new Category(branch, code, name, parent);
             category.registerLevel(parent.getLevel() + 1);
-            category.registerParentCategory(parent);
             parent.getSubCategory().add(category);
         }
 
@@ -74,24 +77,16 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void update(Long id, String branch, String code, String name) {
-        Category category = categoryRepository.findById(id)
+        Category category = categoryRepository.findByIdAndStatus(id, CategoryStatus.ACTIVATE)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
-
-        if(category.getStatus().equals(CategoryStatus.INACTIVATE)){
-            return;
-        }
 
         category.updateCategory(branch, code, name);
     }
 
     @Override
     public void delete(Long id) {
-        Category category = categoryRepository.findById(id)
+        Category category = categoryRepository.findByIdAndStatus(id, CategoryStatus.ACTIVATE)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
-
-        if(category.getStatus().equals(CategoryStatus.INACTIVATE)){
-            return;
-        }
 
         category.deleteCategory();
     }

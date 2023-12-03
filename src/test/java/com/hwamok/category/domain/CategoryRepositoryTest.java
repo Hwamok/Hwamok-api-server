@@ -74,6 +74,18 @@ class CategoryRepositoryTest {
     }
 
     @Test
+    void Id와_상태로_찾기_성공() {
+        Long id = category.getId();
+        Category foundCategory = categoryRepository.findByIdAndStatus(id, CategoryStatus.ACTIVATE)
+                .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
+
+        assertThat(foundCategory.getBranch()).isEqualTo("식품");
+        assertThat(foundCategory.getCode()).isEqualTo("CA001");
+        assertThat(foundCategory.getName()).isEqualTo("돼지고기");
+        assertThat(foundCategory.getLevel()).isEqualTo(0);
+    }
+
+    @Test
     void 코드와_상태로_찾기_성공() {
         Category foundCategory = categoryRepository.findByCodeAndStatus("CA001", CategoryStatus.ACTIVATE)
                 .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));

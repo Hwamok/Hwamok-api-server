@@ -54,7 +54,8 @@ class CategoryServiceImplTest {
     @Test
     void 카테고리_추가_성공__부모_추가() {
         Category parentCategory = new Category("식품", "CA005", "식혜", 3L, null);
-        Category category = categoryService.create("식품", "CA001", "수정과", parentCategory);
+        categoryRepository.save(parentCategory);
+        Category category = categoryService.create("식품", "CA001", "수정과", parentCategory.getId());
 
         assertThat(category.getBranch()).isEqualTo("식품");
         assertThat(category.getCode()).isEqualTo("CA001");
