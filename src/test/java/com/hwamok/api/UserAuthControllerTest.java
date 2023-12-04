@@ -1,5 +1,8 @@
 package com.hwamok.api;
 
+import com.epages.restdocs.apispec.ResourceDocumentation;
+import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder;
+import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hwamok.api.dto.auth.UserLoginDto;
 import com.hwamok.user.domain.Address;
@@ -10,20 +13,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @Transactional
 public class UserAuthControllerTest {
     @Autowired
@@ -56,7 +69,32 @@ public class UserAuthControllerTest {
                         jsonPath("message").value("success"),
                         jsonPath("data.accessToken").isNotEmpty(),
                         jsonPath("data.refreshToken").isNotEmpty()
-                );
+                )
+                .andDo(document("유저로그인 API",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        ResourceDocumentation.resource(
+                                new ResourceSnippetParametersBuilder()
+                                        .tag("Auth")
+                                        .requestFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
+                                                )
+                                        )
+                                        .responseFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
+                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
+                                                        PayloadDocumentation.fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("access token"),
+                                                        PayloadDocumentation.fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("refresh token")
+                                                )
+                                        )
+                                        .requestSchema(Schema.schema("UserLoginDto.Request"))
+                                        .responseSchema(Schema.schema("UserLoginDto.Response"))
+                                        .build()
+                        )
+                ));
     }
 
     @ParameterizedTest
@@ -76,7 +114,31 @@ public class UserAuthControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("E007"),
                         jsonPath("message").value("사용자 정보를 찾을 수 없습니다.")
-                );
+                )
+                .andDo(document("유저로그인 실패, 필수값_NULL_또는_공백",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        ResourceDocumentation.resource(
+                                new ResourceSnippetParametersBuilder()
+                                        .tag("Auth")
+                                        .requestFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).optional().description(parameter),
+                                                        PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
+                                                )
+                                        )
+                                        .responseFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E007"),
+                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("사용자 정보를 찾을 수 없습니다."),
+                                                        PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.NULL).description("NULL")
+                                                )
+                                        )
+                                        .requestSchema(Schema.schema("UserLoginDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_USER"))
+                                        .build()
+                        )
+                ));
     }
 
     @Test
@@ -90,7 +152,31 @@ public class UserAuthControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("E007"),
                         jsonPath("message").value("사용자 정보를 찾을 수 없습니다.")
-                );
+                )
+                .andDo(document("유저로그인 실패, 유저정보 없음",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        ResourceDocumentation.resource(
+                                new ResourceSnippetParametersBuilder()
+                                        .tag("Auth")
+                                        .requestFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).optional().description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
+                                                )
+                                        )
+                                        .responseFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E007"),
+                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("사용자 정보를 찾을 수 없습니다."),
+                                                        PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.NULL).description("NULL")
+                                                )
+                                        )
+                                        .requestSchema(Schema.schema("UserLoginDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_USER"))
+                                        .build()
+                        )
+                ));
     }
 
     @Test
@@ -110,6 +196,30 @@ public class UserAuthControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("E007"),
                         jsonPath("message").value("사용자 정보를 찾을 수 없습니다.")
-                );
+                )
+                .andDo(document("유저로그인 실패, 패스워드 불일치",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        ResourceDocumentation.resource(
+                                new ResourceSnippetParametersBuilder()
+                                        .tag("Auth")
+                                        .requestFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).optional().description("test@test.com"),
+                                                        PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
+                                                )
+                                        )
+                                        .responseFields(
+                                                List.of(
+                                                        PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E007"),
+                                                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("사용자 정보를 찾을 수 없습니다."),
+                                                        PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.NULL).description("NULL")
+                                                )
+                                        )
+                                        .requestSchema(Schema.schema("UserLoginDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_USER"))
+                                        .build()
+                        )
+                ));
     }
 }

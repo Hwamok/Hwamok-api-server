@@ -19,7 +19,7 @@ public class AdminAuthController {
     private final AdminAuthService adminAuthService;
 
     @PostMapping("/adminLogin")
-    public ResponseEntity<ApiResult<AdminLoginDto.Response>> adminLogin(@RequestBody AdminLoginDto.Request request){
+    public ResponseEntity<ApiResult<AdminLoginDto.Response>> login(@RequestBody AdminLoginDto.Request request){
         Pair<String,String> pair = adminAuthService.login(request.getLoginId(), request.getPassword());
 
         return Result.ok(new AdminLoginDto.Response(pair.getFirst(), pair.getSecond()));

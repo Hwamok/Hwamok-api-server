@@ -20,7 +20,7 @@ public class UserAuthController {
     private final UserAuthService userAuthService;
 
     @PostMapping("/userLogin")
-    public ResponseEntity<ApiResult<UserLoginDto.Response>> userLogin(@RequestBody UserLoginDto.Request request){
+    public ResponseEntity<ApiResult<UserLoginDto.Response>> login(@RequestBody UserLoginDto.Request request){
         Pair<String,String> pair = userAuthService.login(request.getEmail(), request.getPassword());
 
         return Result.ok(new UserLoginDto.Response(pair.getFirst(), pair.getSecond()));
