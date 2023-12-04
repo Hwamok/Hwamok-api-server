@@ -32,7 +32,8 @@ public enum ExceptionCode {
     OVER_LENGTH_PHONE("E024", "핸드폰 번호의 길이가 초과되었습니다."),
     OVER_LENGTH_PLATFORM("E025", "플랫폼의 길이가 초과되었습니다."),
     OVER_LENGTH_ADDR("E026", "주소의 길이가 초과되었습니다."),
-    OVER_LENGTH_DETAILADDR("E027", "주소 상세의 길이가 초과되었습니다.");
+    OVER_LENGTH_DETAILADDR("E027", "주소 상세의 길이가 초과되었습니다."),
+    ACCESS_DENIED("E028", "권한이 없습니다.");
 
     private final String code;
     private final String message;

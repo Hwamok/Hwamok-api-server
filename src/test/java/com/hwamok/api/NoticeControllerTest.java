@@ -25,6 +25,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.snippet.Attributes;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,14 +56,14 @@ class NoticeControllerTest {
     private NoticeRepository noticeRepository;
 
     @Test
+    @WithUserDetails
     void 공지사항_생성_성공() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         NoticeCreateDto.Request request = new NoticeCreateDto.Request("제목", "내용");
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/notice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request))
-                        .sessionAttr("admin",admin))
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
@@ -96,14 +97,14 @@ class NoticeControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 공지사항_생성_실패__제목_NULL_또는_공백(String title) throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         NoticeCreateDto.Request request = new NoticeCreateDto.Request(title, "내용");
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/notice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request))
-                        .sessionAttr("admin",admin))
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -136,6 +137,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_생성_실패__제목_90글자_초과() throws Exception {
         String fakeTitle = CreateValueUtil.stringLength(91);
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
@@ -143,8 +145,7 @@ class NoticeControllerTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/notice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request))
-                        .sessionAttr("admin",admin))
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E015"),
@@ -178,14 +179,14 @@ class NoticeControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 공지사항_생성_실패__내용_NULL_또는_공백(String content) throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         NoticeCreateDto.Request request = new NoticeCreateDto.Request("제목", content);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/notice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request))
-                        .sessionAttr("admin",admin))
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E001"),
@@ -218,6 +219,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_생성_실패__내용_1000글자_초과() throws Exception {
         String fakeContent = CreateValueUtil.stringLength(1001);
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
@@ -225,8 +227,7 @@ class NoticeControllerTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/notice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request))
-                        .sessionAttr("admin",admin))
+                        .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E016"),
@@ -258,13 +259,8 @@ class NoticeControllerTest {
                 ));
     }
 
-    // TODO: 2023-11-22 Jwt 구현 후 테스트 예정
     @Test
-    void 공지사항_생성_실패__작성자_NULL() throws Exception {
-
-    }
-
-    @Test
+    @WithUserDetails
     void 공지사항_단건조회_성공() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         Notice notice = noticeRepository.save(NoticeFixture.createNotice(admin));
@@ -308,6 +304,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_단건조회_실패__조회정보_없음() throws Exception {
         Long fakeNoticeId = -1L;
 
@@ -338,6 +335,7 @@ class NoticeControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 공지사항_리스트조회_성공__키워드_NULL_또는_공백(String keyword) throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -413,6 +411,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_리스트조회_성공__필터_전체조회() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -488,6 +487,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_리스트조회_성공__필터_제목조회() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -558,6 +558,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_리스트조회_성공__필터_내용조회() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -628,6 +629,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_리스트조회_실패__조회정보_없음() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/notice/list"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -655,6 +657,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_수정_성공() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         Notice notice = noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -696,6 +699,7 @@ class NoticeControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 공지사항_수정_실패__제목_NULL_또는_공백(String title) throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         Notice notice = noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -736,6 +740,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_수정_실패__제목_90글자_초과() throws Exception {
         String fakeTitle = CreateValueUtil.stringLength(91);
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
@@ -778,6 +783,7 @@ class NoticeControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 공지사항_수정_실패__내용_NULL_또는_공백(String content) throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         Notice notice = noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -818,6 +824,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_수정_실패__내용_1000글자_초과() throws Exception {
         String fakeContent = CreateValueUtil.stringLength(1001);
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
@@ -859,6 +866,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_수정_실패__조회정보_없음() throws Exception {
         Long fakeNoticeId = 1L;
         NoticeUpdateDto.Request request = new NoticeUpdateDto.Request("수정제목", "수정내용");
@@ -898,6 +906,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_삭제_성공() throws Exception {
         Admin admin = adminRepository.save(AdminFixture.createAdmin());
         Notice notice = noticeRepository.save(new Notice("제목test", "내용1", admin));
@@ -928,6 +937,7 @@ class NoticeControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 공지사항_삭제_실패__조회정보_없음() throws Exception {
         Long fakeNoticeId = 1L;
 
