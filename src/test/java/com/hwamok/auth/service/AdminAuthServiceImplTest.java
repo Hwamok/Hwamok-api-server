@@ -4,10 +4,8 @@ import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
 import com.hwamok.admin.domain.Role;
 import com.hwamok.core.exception.ExceptionCode;
-import com.hwamok.core.exception.HwamokExceptionTest;
 import com.hwamok.security.jwt.JwtService;
 import com.hwamok.security.jwt.JwtType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-class AuthServiceImplTest {
+class AdminAuthServiceImplTest {
     @Autowired
     private AdminAuthService adminAuthService;
 
