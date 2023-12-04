@@ -84,7 +84,7 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("NoticeCreateDto.Request"))
@@ -117,7 +117,7 @@ class NoticeControllerTest {
                                         .tag("Notice")
                                         .requestFields(
                                                 List.of(
-                                                        PayloadDocumentation.fieldWithPath("title").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("title").optional().type(JsonFieldType.STRING).description(title),
                                                         PayloadDocumentation.fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
                                                 )
                                         )
@@ -125,11 +125,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeCreateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeCreateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeCreateNoTitleDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -166,11 +166,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E015"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("제목의 길이 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeCreateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeCreateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeCreateFakeTitleDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_TITLE"))
                                         .build()
                         )
                 ));
@@ -200,18 +200,18 @@ class NoticeControllerTest {
                                         .requestFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                                                        PayloadDocumentation.fieldWithPath("content").ignored()
+                                                        PayloadDocumentation.fieldWithPath("content").optional().type(JsonFieldType.STRING).description(content)
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeCreateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeCreateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeCreateNoContentDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -248,11 +248,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E016"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("내용의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeCreateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeCreateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeCreateFakeContentDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_CONTENT"))
                                         .build()
                         )
                 ));
@@ -297,7 +297,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                        PayloadDocumentation.fieldWithPath("data.createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                        PayloadDocumentation.fieldWithPath("data.createdBy.roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
                                                 )
                                         )
@@ -327,10 +327,10 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E019"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("공지사항 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                         )
                                         )
-                                        .responseSchema(Schema.schema("NoticeCreateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_NOTICE"))
                                         .build()
                         )
                 ));
@@ -395,7 +395,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
-                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("true"),
@@ -458,7 +458,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
@@ -528,7 +528,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
@@ -599,7 +599,7 @@ class NoticeControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.status").type(JsonFieldType.STRING).description("ACTIVATED"),
                                                         PayloadDocumentation.fieldWithPath("data.content[].createdBy.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
-                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                        PayloadDocumentation.fieldWithPath("data.content[].createdBy.roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description(0),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description(10),
                                                         PayloadDocumentation.fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("true"),
@@ -645,10 +645,10 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E019"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("공지사항 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("NoticeCreateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_NOTICE"))
                                         .build()
                         )
                 ));
@@ -684,7 +684,7 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("NoticeUpdateDto.Request"))
@@ -717,7 +717,7 @@ class NoticeControllerTest {
                                         .tag("Notice")
                                         .requestFields(
                                                 List.of(
-                                                        PayloadDocumentation.fieldWithPath("title").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("title").optional().type(JsonFieldType.STRING).description(title),
                                                         PayloadDocumentation.fieldWithPath("content").type(JsonFieldType.STRING).description("수정내용")
                                                 )
                                         )
@@ -725,11 +725,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeUpdateNoTitleDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -766,11 +766,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E015"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("제목의 길이 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeUpdateFakeTitleDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_TITLE"))
                                         .build()
                         )
                 ));
@@ -800,18 +800,18 @@ class NoticeControllerTest {
                                         .requestFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("title").type(JsonFieldType.STRING).description("수정제목"),
-                                                        PayloadDocumentation.fieldWithPath("content").ignored()
+                                                        PayloadDocumentation.fieldWithPath("content").optional().type(JsonFieldType.STRING).description(content)
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeUpdateNoContentDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -848,11 +848,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E016"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("내용의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeUpdateFakeContentDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_CONTENT"))
                                         .build()
                         )
                 ));
@@ -887,11 +887,11 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E019"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("공지사항 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("NoticeUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("NoticeUpdateFakeNoticeIdDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_NOTICE"))
                                         .build()
                         )
                 ));
@@ -918,10 +918,10 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("NoticeDeleteDto.Response"))
                                         .build()
                         )
                 ));
@@ -947,10 +947,10 @@ class NoticeControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E019"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("공지사항 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("NoticeUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_NOTICE"))
                                         .build()
                         )
                 ));

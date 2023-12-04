@@ -19,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.snippet.Attributes;
@@ -73,14 +72,14 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("AdminCreateDto.Request"))
@@ -112,22 +111,22 @@ class AdminControllerTest {
                                         .tag("Admin")
                                         .requestFields(
                                                 List.of(
-                                                        PayloadDocumentation.fieldWithPath("loginId").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("loginId").optional().type(JsonFieldType.STRING).description(parameter),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateNoLoginIdDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -159,18 +158,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E002"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("아이디형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeLoginIdDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_LOGINID_FORM"))
                                         .build()
                         )
                 ));
@@ -202,18 +201,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E002"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("아이디형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeLoginIdDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_LOGINID_FORM"))
                                         .build()
                         )
                 ));
@@ -245,18 +244,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E002"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("아이디형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeLoginIdDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_LOGINID_FORM"))
                                         .build()
                         )
                 ));
@@ -288,18 +287,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -331,18 +330,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -374,18 +373,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -417,18 +416,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -460,18 +459,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -503,18 +502,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("test@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -546,18 +545,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -589,18 +588,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -632,18 +631,18 @@ class AdminControllerTest {
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description(fakeEmail),
-                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
+                                                        PayloadDocumentation.fieldWithPath("roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN"))
                                                 )
                                         )
                                         .responseFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminCreateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminCreateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -679,7 +678,7 @@ class AdminControllerTest {
                                                 PayloadDocumentation.fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
                                                 PayloadDocumentation.fieldWithPath("data.email").type(JsonFieldType.STRING).description("test@test.com"),
                                                 PayloadDocumentation.fieldWithPath("data.status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                PayloadDocumentation.fieldWithPath("data.roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                PayloadDocumentation.fieldWithPath("data.roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                 PayloadDocumentation.fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
                                         )
                                 )
@@ -709,10 +708,10 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E005"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("관리자정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL").type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("AdminCreateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_ADMIN"))
                                         .build()
                         )
                 ));
@@ -747,7 +746,7 @@ class AdminControllerTest {
                                                 PayloadDocumentation.fieldWithPath("data[].name").type(JsonFieldType.STRING).description("이름"),
                                                 PayloadDocumentation.fieldWithPath("data[].email").type(JsonFieldType.STRING).description("test@test.com"),
                                                 PayloadDocumentation.fieldWithPath("data[].status").type(JsonFieldType.STRING).description("ACTIVATED"),
-                                                PayloadDocumentation.fieldWithPath("data[].roles").type(JsonFieldType.ARRAY).description("사용자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
+                                                PayloadDocumentation.fieldWithPath("data[].roles").type(JsonFieldType.ARRAY).description("관리자 역할").attributes(Attributes.key("constraints").value("SUPER, ADMIN")),
                                                 PayloadDocumentation.fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created")
                                         )
                                 )
@@ -788,7 +787,7 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("AdminUpdateDto.Request"))
@@ -822,7 +821,7 @@ class AdminControllerTest {
                                         .requestFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("update1234"),
-                                                        PayloadDocumentation.fieldWithPath("name").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("name").optional().type(JsonFieldType.STRING).description(parameter),
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("update@update.com")
                                                 )
                                         )
@@ -830,11 +829,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateNoNameDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -872,11 +871,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -914,11 +913,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -956,11 +955,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -998,11 +997,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -1040,11 +1039,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -1082,11 +1081,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -1124,11 +1123,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E021"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_EMAIL"))
                                         .build()
                         )
                 ));
@@ -1166,11 +1165,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -1208,11 +1207,11 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("AdminUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("AdminUpdateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -1240,10 +1239,10 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("AdminDeleteDto.Response"))
                                         .build()
                         )
                 ));
@@ -1268,10 +1267,10 @@ class AdminControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E005"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("관리자정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("AdminUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_ADMIN"))
                                         .build()
                         )
                 ));
