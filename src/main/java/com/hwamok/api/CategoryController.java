@@ -35,7 +35,7 @@ public class CategoryController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategoryByName(@RequestParam String name) {
+    public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategoryByName(@RequestParam("name")String name) {
         Category category = categoryService.getOneByName(name);
 
         CategoryReadDTO.Response response = CategoryReadDTO.Response.builder()
@@ -43,24 +43,24 @@ public class CategoryController {
                 .level(category.getLevel())
                 .name(category.getName())
                 .code(category.getCode())
-                .parentId(category.getParentCategory().getId())
+                .parentId(category.getParentId())
                 .build();
 
         return Result.ok(response);
     }
 
-    @GetMapping("/{code}")
-    public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategory(@PathVariable("code")String code) {
+    @GetMapping("/code")
+    public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategory(@RequestParam("code")String code) {
         Category category = categoryService.getOneByCode(code);
 
         CategoryReadDTO.Response response = new CategoryReadDTO.Response(category.getBranch(), category.getCode(),
-                category.getName(), category.getLevel() ,category.getParentCategory().getId());
+                category.getName(), category.getLevel() , category.getParentId());
 
         return Result.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<?>> updateCategory(@PathVariable("id")Long id, CategoryUpdateDTO.Request request) {
+    public ResponseEntity<ApiResult<?>> updateCategory(@PathVariable("id")Long id, @RequestBody CategoryUpdateDTO.Request request) {
         categoryService.update(id, request.getBranch(), request.getCode(), request.getName());
 
         return Result.ok();
