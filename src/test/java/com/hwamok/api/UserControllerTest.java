@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,6 +100,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -151,6 +153,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_정보_단건_조회_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -205,6 +208,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_정보_단건_조회_실패_존재하지_않는_회원() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -234,6 +238,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_탈퇴_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -263,6 +268,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_탈퇴_실패_존재하지_않는_회원() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -450,6 +456,7 @@ class UserControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 회원_수정_실패_password_필수값_입력_null_혹은_빈값(String password) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -503,6 +510,7 @@ class UserControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 회원_수정_실패_name_필수값_입력_null_혹은_빈값(String name) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -556,6 +564,7 @@ class UserControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 회원_수정_실패_birthDay_필수값_입력_null_혹은_빈값(String birthDay) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -608,6 +617,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_존재하지_않는_회원() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1349,6 +1359,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_특수문자() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1403,6 +1414,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_두_글자_미만() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1457,6 +1469,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_영문한글_혼용() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1511,6 +1524,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_birthDay_다시_없음() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1565,6 +1579,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_birthDay_슬래시_변경() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1619,6 +1634,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_post_5자리_아래일때() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1673,6 +1689,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_숫자_제외_다른_문자() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1727,6 +1744,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_11자리_미만() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1781,6 +1799,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_첫째자리_0_제외() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1835,6 +1854,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_두째자리_1_제외() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1889,6 +1909,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_알_수_없는_platform () throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2321,6 +2342,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_20글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2376,6 +2398,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_birthDay_10글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2431,6 +2454,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_11글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2486,6 +2510,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_platform_11글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2541,6 +2566,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_addr_80글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2595,6 +2621,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_detailAddr_10글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 

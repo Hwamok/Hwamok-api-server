@@ -23,6 +23,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.snippet.Attributes;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -650,6 +651,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_단건조회_성공() throws Exception {
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
 
@@ -690,6 +692,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_단건조회_실패__관리자정보_없음() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/{id}", -1L))
 
@@ -719,18 +722,19 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_리스트조회_성공() throws Exception {
-        Admin admin1 = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
-        Admin admin2 = adminRepository.save(new Admin("test12345", "12345", "이름이", "test1@test1.com", List.of(Role.SUPER, Role.ADMIN)));
+        Admin admin2 = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
+        Admin admin3 = adminRepository.save(new Admin("test12345", "12345", "이름이", "test1@test1.com", List.of(Role.SUPER, Role.ADMIN)));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/list"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
-                jsonPath("message").value("success"))
-                .andExpectAll(관리자_리스트_검증(1, admin1))
-                .andExpectAll(  관리자_리스트_검증(2, admin2)
+                        jsonPath("message").value("success"))
+                .andExpectAll(관리자_리스트_검증(2, admin2))
+                .andExpectAll(  관리자_리스트_검증(3, admin3)
                 )
                 .andDo(document("관리자 리스트 조회 API",
                 preprocessRequest(prettyPrint()),
@@ -758,6 +762,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_성공() throws Exception {
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
         AdminUpdateDto.Request request = new AdminUpdateDto.Request("update1234", "수정이름", "update@update.com");
@@ -800,6 +805,7 @@ class AdminControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 관리자_수정_실패__필수값_null_또는_공백(String parameter) throws Exception {
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
         AdminUpdateDto.Request request = new AdminUpdateDto.Request("1234", parameter, "update@update.com");
@@ -841,6 +847,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이름_한글_2글자_미만() throws Exception {
         String fakeName = CreateValueUtil.stringLength(1);
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -883,6 +890,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이름_한글_6글자_초과() throws Exception {
         String fakeName = CreateValueUtil.stringLength(7);
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -925,6 +933,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이름_영어_2글자_미만() throws Exception {
         String fakeName = "n";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -967,6 +976,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이름_영어_20글자_초과() throws Exception {
         String fakeName = "namenamenamenamenamen";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -1009,6 +1019,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이름_한글영어혼용() throws Exception {
         String fakeName = "이름name";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -1051,6 +1062,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이름_특수문자사용() throws Exception {
         String fakeName = "이름!";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -1093,6 +1105,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이메일_50글자초과() throws Exception {
         String fakeEmail = "testtesttesttesttest@testtesttesttesttesttest11.com";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -1135,6 +1148,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이메일_골뱅이없음() throws Exception {
         String fakeEmail = "testtest.com";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -1177,6 +1191,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_수정_실패__이메일_점없음() throws Exception {
         String fakeEmail = "test@testcom";
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
@@ -1220,6 +1235,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_삭제_성공() throws Exception {
         Admin admin = adminRepository.save(new Admin("test1234", "1234", "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
 
@@ -1250,6 +1266,7 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 관리자_삭제_실패__관리자정보_없음() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/admin/{id}", -1L))
                 .andDo(MockMvcResultHandlers.print())
