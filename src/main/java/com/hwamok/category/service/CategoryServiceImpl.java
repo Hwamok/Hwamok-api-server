@@ -20,22 +20,9 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Category create(String branch, String code, String name, long parentId) {
-        AtomicReference<Category> category = new AtomicReference<>();
-
-        categoryRepository.findById(parentId).ifPresentOrElse(parentCategory -> {
-            Category subCategory = new Category(branch, code, name, parentCategory.getLevel() + 1,parentCategory);
-
-            category.set(categoryRepository.save(subCategory));
-        }, () -> {
-            Category parentCategory = categoryRepository.save(new Category(branch, "RT000", "ROOT", 0L, null));
-            Category subCategory = new Category(branch, code, name, parentCategory.getLevel() + 1, parentCategory);
-
-            parentCategory.getSubCategory().add(subCategory);
-
-            category.set(categoryRepository.save(subCategory));
-        });
-
-        return category.get();
+        return categoryRepository.findById(parentId)
+                .map(parentCategory -> createSubCategory(branch, code, name, parentCategory))
+                .orElseGet(() -> createRootAndSubCategory(branch, code, name));
     }
 
     @Override
@@ -76,4 +63,15 @@ public class CategoryServiceImpl implements CategoryService{
 
         category.deleteCategory();
     }
+
+    private Category createSubCategory(String branch, String code, String name, Category parentCategory) {
+        Category subCategory = new Category(branch, code, name, parentCategory.getLevel() + 1, parentCategory);
+        return categoryRepository.save(subCategory);
+    }
+
+    private Category createRootAndSubCategory(String branch, String code, String name) {
+        Category rootCategory = categoryRepository.save(new Category(branch, "RT000", "ROOT", 0L, null));
+        return createSubCategory(branch, code, name, rootCategory);
+    }
+
 }
