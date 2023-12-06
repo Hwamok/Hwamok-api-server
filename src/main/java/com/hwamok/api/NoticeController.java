@@ -28,7 +28,6 @@ public class NoticeController {
 
     @PostMapping
     public ResponseEntity<ApiResult<?>> create(@RequestBody NoticeCreateDto.Request request, @AuthenticationPrincipal HwamokAdmin hwamokAdmin) {
-        hwamokAdmin.getId();
         noticeService.create(request.getTitle(), request.getContent(), hwamokAdmin.getId());
 
         return Result.created();

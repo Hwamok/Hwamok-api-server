@@ -2,12 +2,11 @@ package com.hwamok.auth.service;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
-import com.hwamok.admin.domain.Role;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokException;
 import com.hwamok.security.jwt.JwtService;
 import com.hwamok.security.jwt.JwtType;
-import com.hwamok.user.domain.UserRepository;
+import com.hwamok.utils.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;

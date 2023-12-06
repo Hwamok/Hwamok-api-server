@@ -3,6 +3,7 @@ package com.hwamok.user.domain;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.support.BaseEntity;
 import com.hwamok.utils.RegexType;
+import com.hwamok.utils.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

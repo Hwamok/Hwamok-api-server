@@ -2,11 +2,11 @@ package com.hwamok.admin.service;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
-import com.hwamok.admin.domain.Role;
 import com.hwamok.api.dto.admin.AdminReadDto;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokException;
 import com.hwamok.utils.PreConditions;
+import com.hwamok.utils.Role;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

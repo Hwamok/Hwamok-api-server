@@ -1,6 +1,8 @@
-package com.hwamok.user.domain;
+package com.hwamok.utils;
 
 public enum Role {
+    ADMIN("어드민"),
+    SUPER("슈퍼 어드민"),
     USER("일반 회원");
 
     private final String name;

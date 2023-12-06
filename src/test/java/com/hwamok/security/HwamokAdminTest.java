@@ -2,8 +2,8 @@ package com.hwamok.security;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
-import com.hwamok.admin.domain.Role;
 import com.hwamok.security.userDetails.HwamokAdmin;
+import com.hwamok.utils.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

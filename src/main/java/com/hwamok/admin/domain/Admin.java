@@ -2,6 +2,7 @@ package com.hwamok.admin.domain;
 
 import com.hwamok.support.BaseEntity;
 import com.hwamok.utils.RegexType;
+import com.hwamok.utils.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

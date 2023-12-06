@@ -1,5 +1,6 @@
 package com.hwamok.admin.domain;
 
+import com.hwamok.utils.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.hwamok.api.dto.admin;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminStatus;
-import com.hwamok.admin.domain.Role;
+import com.hwamok.utils.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

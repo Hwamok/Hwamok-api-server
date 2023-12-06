@@ -3,6 +3,7 @@ package com.hwamok.config;
 import com.hwamok.security.authenticationProvider.DefaultAuthenticationProvider;
 import com.hwamok.security.jwt.JwtService;
 import com.hwamok.security.jwt.JwtTokenFilter;
+import com.hwamok.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,17 +50,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.GET, "/notice/**").permitAll())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.GET, "/user/**").authenticated())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST, "/notice").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.POST, "/notice").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.PATCH, "/notice/**", "/admin/**").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.PATCH, "/notice/**", "/admin/**").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.PATCH, "/user/**").authenticated())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.DELETE, "/notice/**", "/admin/**").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.DELETE, "/notice/**", "/admin/**").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.DELETE, "/user/**").authenticated())
                 .authorizeHttpRequests(request ->

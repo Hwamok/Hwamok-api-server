@@ -1,9 +1,8 @@
 package com.hwamok.admin.service;
 
 import com.hwamok.admin.domain.Admin;
-import com.hwamok.admin.domain.Role;
-import com.hwamok.api.dto.admin.AdminCreateDto;
 import com.hwamok.api.dto.admin.AdminReadDto;
+import com.hwamok.utils.Role;
 
 import java.util.List;
 
