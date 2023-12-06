@@ -40,7 +40,7 @@ class CategoryServiceImplTest {
 
     @Test
     void 카테고리_추가_성공() {
-        Category category = categoryService.create("식품", "CA003", "과자", null);
+        Category category = categoryService.create("식품", "CA003", "과자", 0L);
         Category rootCategory = categoryRepository.findByBranchAndName("식품", "root")
                 .orElseThrow(() -> new RuntimeException());
 

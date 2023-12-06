@@ -18,38 +18,10 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category create(String branch, String code, String name, Long parentId) {
-        Category category;
-
-        if (parentId == null) {
-            if (categoryRepository.existsByBranchAndName(branch, name)) {
-                throw new RuntimeException();
-            }
-            Category rootCategory = categoryRepository.findByBranchAndName(branch,"ROOT")
-                    .orElseGet( () ->
-                            Category.builder()
-                                    .name("ROOT")
-                                    .code("RT000")
-                                    .branch(branch)
-                                    .level(0L)
-                                    .build()
-                    );
-            if (!categoryRepository.existsByBranchAndName(branch, "ROOT")) {
-                categoryRepository.save(rootCategory);
-            }
-            category = new Category(branch, code, name, rootCategory);
-            category.registerLevel(1L);
-
-        } else {
-            Category parent = categoryRepository.findById(parentId)
-                    .orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_CATEGORY));
-
-            category = new Category(branch, code, name, parent);
-            category.registerLevel(parent.getLevel() + 1);
-            parent.getSubCategory().add(category);
-        }
-
-        return categoryRepository.save(category);
+    public Category create(String branch, String code, String name, long parentId) {
+        return categoryRepository.findById(parentId)
+                .map(parentCategory -> createSubCategory(branch, code, name, parentCategory))
+                .orElseGet(() -> createRootAndSubCategory(branch, code, name));
     }
 
     @Override
@@ -90,4 +62,15 @@ public class CategoryServiceImpl implements CategoryService{
 
         category.deleteCategory();
     }
+
+    private Category createSubCategory(String branch, String code, String name, Category parentCategory) {
+        Category subCategory = new Category(branch, code, name, parentCategory.getLevel() + 1, parentCategory);
+        return categoryRepository.save(subCategory);
+    }
+
+    private Category createRootAndSubCategory(String branch, String code, String name) {
+        Category rootCategory = categoryRepository.save(new Category(branch, "RT000", "ROOT", 0L, null));
+        return createSubCategory(branch, code, name, rootCategory);
+    }
+
 }
