@@ -47,25 +47,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(reqeust ->
                         reqeust.requestMatchers(HttpMethod.POST,POST_PERMIT_MATCHERS).permitAll())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET, "/notice").permitAll())
+                        request.requestMatchers(HttpMethod.GET, "/notice/**").permitAll())
+                .authorizeHttpRequests(request ->
+                        request.requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                .authorizeHttpRequests(request ->
+                        request.requestMatchers(HttpMethod.GET, "/user/**").authenticated())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "/notice").hasAnyAuthority("어드민", "슈퍼 어드민"))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.PATCH, "/notice").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.PATCH, "/notice/**", "/admin/**").hasAnyAuthority("어드민", "슈퍼 어드민"))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.DELETE, "/notice").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.PATCH, "/user/**").authenticated())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET,"/admin").hasAnyAuthority("어드민", "슈퍼 어드민"))
+                        request.requestMatchers(HttpMethod.DELETE, "/notice/**", "/admin/**").hasAnyAuthority("어드민", "슈퍼 어드민"))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.PATCH,"/admin").hasAnyAuthority("어드민", "슈퍼 어드민"))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.DELETE,"/admin").hasAnyAuthority("어드민", "슈퍼 어드민"))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET, "/user").authenticated())
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.PATCH, "/user").authenticated())
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.DELETE, "/user").authenticated())
+                        request.requestMatchers(HttpMethod.DELETE, "/user/**").authenticated())
                 .authorizeHttpRequests(request ->
                                 request.anyRequest().permitAll())
                 .csrf(c -> c.disable())

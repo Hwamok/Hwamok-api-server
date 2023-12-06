@@ -1,6 +1,5 @@
 package com.hwamok.security.jwt;
 
-
 import com.hwamok.core.exception.ExceptionCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
