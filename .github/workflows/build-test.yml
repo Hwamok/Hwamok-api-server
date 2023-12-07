@@ -6,8 +6,6 @@
 # CI/CD, devops, gitops
 
 #env는 git action에서 사용하는 환경변수
-permissions: write-all
-
 env:
   DB_PASSWORD: root
 
