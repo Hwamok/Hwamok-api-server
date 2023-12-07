@@ -49,7 +49,7 @@ jobs:
         uses: gradle/gradle-build-action@main
         with:
           gradle-version: wrapper
-          arguments: test --no-daemon
+          arguments: test
 
       # job 결과를 slack으로 알려줌
       - name: send slack message
