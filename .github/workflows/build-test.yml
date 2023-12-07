@@ -10,10 +10,16 @@ env:
   DB_PASSWORD: root
 
 #action 이름
-name: pr-test
+name: build-test
 
-#action trigger PR오픈시 동작하도록 한다.
-on: pull_request
+#action trigger develop, prod를 제외한 나머지 브랜치에 대해서 푸시되면 동작하도록 한다.
+on:
+  push:
+    #제외할 브랜치
+    branches-ignore: [ develop, prod ]
+    #제외할 태그(모든태그)
+    tags-ignore: '**'
+
 
 
 #실행단위 - 메소드같은 애
