@@ -6,16 +6,18 @@ import com.hwamok.category.domain.Category;
 import java.util.List;
 
 public interface CategoryService {
-    public Category create(String branch, String code, String name, Category parent);
+    Category create(String branch, String code, String name, long parentId);
 
-    public List<Category> getAllByBranch (String branch);
+    List<Category> getAll (String branch);
 
     // TODO: 2023-11-19 도메인 수정 후 추가 
 //    public List<Category> getAllByCodeType (String codeType);
 
-    public Category getCategoryByCode (String code);
+    Category getOneByCode (String code);
 
-    public List<Category> getAllByName (String name);
+    Category getOneByName (String name);
 
-    public void delete(Long id);
+    void update(Long id, String branch, String code, String name);
+
+    void delete(Long id);
 }
