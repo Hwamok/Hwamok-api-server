@@ -51,10 +51,9 @@ jobs:
           gradle-version: wrapper
           arguments: test --no-daemon
 
-      # job 실패시 slack으로 알려줌
+      # job 결과를 slack으로 알려줌
       - name: send slack message
         uses: 8398a7/action-slack@v3
-        if: failure()
         with:
           status: ${{ job.status }}
           fields: repo,message,author,ref,workflow,took
