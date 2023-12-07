@@ -2,6 +2,7 @@ package com.hwamok.admin.domain;
 
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokExceptionTest;
+import com.hwamok.utils.Role;
 import fixture.AdminFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

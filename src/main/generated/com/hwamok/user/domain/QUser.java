@@ -46,6 +46,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final QUploadedFile profile;
 
+    public final EnumPath<Role> role = createEnum("role", Role.class);
+
     public final EnumPath<UserStatus> status = createEnum("status", UserStatus.class);
 
     public QUser(String variable) {

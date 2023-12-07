@@ -2,10 +2,10 @@ package com.hwamok.auth.service;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminRepository;
-import com.hwamok.admin.domain.Role;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.security.jwt.JwtService;
 import com.hwamok.security.jwt.JwtType;
+import com.hwamok.utils.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
