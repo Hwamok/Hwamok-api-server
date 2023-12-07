@@ -46,7 +46,7 @@ public class Admin extends BaseEntity {
     require(Strings.isNotBlank(name));
     require(Strings.isNotBlank(email));
     require(Objects.nonNull(roles));
-    require(roles.size() > 1);
+    require(roles.size() >= 1);
 
     validate(email.length() <= 50, OVER_LENGTH_EMAIL);
     validate(matches(loginId, RegexType.LOGINID), NOT_LOGINID_FORM);
