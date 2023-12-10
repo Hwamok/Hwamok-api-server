@@ -86,6 +86,31 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.named("bootJar") {
+    enabled = true
+    archiveFileName.set("hwamok.jar")
+}
+
+
+tasks.register("zip", Zip.class) {
+    //실행가능한 jar파일 만들어야함
+    dependsOn("bootJar")
+
+    //zip파일을 하나 생성해줘야함
+    archiveFileName.set("hwamok.zip")
+
+    //.ebextentions(optional)
+    // Procfile
+    // .platform
+    // 우리의 jar파일
+    from("build/libs/hwamok-with-tdd-0.1.jar") { into("") }
+    from(".platform") { into(".platform") }
+    from("procfiles/Procfile") { into("") }
+
+
+
+}
+
 def getServerUrl(profile) {
     switch (profile) {
         case "dev":
