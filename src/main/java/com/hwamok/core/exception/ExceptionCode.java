@@ -24,7 +24,7 @@ public enum ExceptionCode {
     OVER_LENGTH_CONTENT("E016", "내용의 길이가 초과되었습니다."),
     NOT_PRICE_FORM("E017", "가격형식이 다릅니다."),
     NOT_FOUND_PRODUCT("E018", "상품을 찾을 수 없습니다."),
-    NOT_FOUND_NOTICE("E019", "공지사항 졍보를 찾을 수 없습니다."),
+    NOT_FOUND_NOTICE("E019", "공지사항 정보를 찾을 수 없습니다."),
     NOT_KNOWN_PLATFORM("E020", "알 수 없는 플랫폼입니다."),
     OVER_LENGTH_EMAIL("E021", "이메일의 길이가 초과되었습니다."),
     OVER_LENGTH_NAME("E022", "이름의 길이가 초과되었습니다."),
