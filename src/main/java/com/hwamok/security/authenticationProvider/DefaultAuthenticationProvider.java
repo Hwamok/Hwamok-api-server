@@ -1,7 +1,13 @@
 package com.hwamok.security.authenticationProvider;
 
+import com.hwamok.admin.domain.Admin;
+import com.hwamok.admin.domain.AdminRepository;
+import com.hwamok.core.exception.ExceptionCode;
+import com.hwamok.core.exception.HwamokException;
 import com.hwamok.security.userDetails.HwamokAdmin;
 import com.hwamok.security.userDetails.HwamokUser;
+import com.hwamok.user.domain.User;
+import com.hwamok.user.domain.UserRepository;
 import com.hwamok.utils.Role;
 import com.mysema.commons.lang.Pair;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,18 +17,23 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.ListResourceBundle;
 
 @Component
 public class DefaultAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Pair<Long, String> idAndRole = (Pair<Long, String>) authentication.getPrincipal();
+        Pair<Long, List<Role>> pair = (Pair<Long, List<Role>>) authentication.getPrincipal();
 
-        if(idAndRole.getSecond().equals(Role.USER.getName())){
-            return new UsernamePasswordAuthenticationToken(new HwamokUser(idAndRole.getFirst(), idAndRole.getSecond()),null,new ArrayList<>());
+        if(pair.getSecond().contains(Role.USER)) {
+            HwamokUser hwamokUser = new HwamokUser(pair.getFirst(), pair.getSecond());
 
-        } else {
-            return new UsernamePasswordAuthenticationToken(new HwamokAdmin(idAndRole.getFirst(), idAndRole.getSecond()),null,new ArrayList<>());
+            return new UsernamePasswordAuthenticationToken(hwamokUser, "", hwamokUser.getAuthorities());
+        }else {
+            HwamokAdmin hwamokAdmin = new HwamokAdmin(pair.getFirst(), pair.getSecond());
+
+            return new UsernamePasswordAuthenticationToken(hwamokAdmin, "", hwamokAdmin.getAuthorities());
         }
     }
 

@@ -25,6 +25,6 @@ public class HwamokAdminTest implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Admin admin = adminRepository.save(new Admin("test123", passwordEncoder.encode("1234"), "이름", "test@test.com", List.of(Role.SUPER, Role.ADMIN)));
 
-        return new HwamokAdmin(admin.getId(), "슈퍼 어드민");
+        return new HwamokAdmin(admin.getId(), List.of(Role.SUPER));
     }
 }

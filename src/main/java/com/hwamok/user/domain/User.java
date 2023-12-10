@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.hwamok.utils.PreConditions.*;
 import static com.hwamok.utils.RegexUtil.*;
 
@@ -45,8 +48,9 @@ public class User extends BaseEntity {
   @Embedded
   private Address address;
 
+  @ElementCollection(targetClass = Role.class)
   @Enumerated(EnumType.STRING)
-  private Role role = Role.USER;
+  private List<Role> roles = List.of(Role.USER);
 
   public User(String email, String password, String name, String birthDay, String phone, String platform,
               UploadedFile profile, Address address) {

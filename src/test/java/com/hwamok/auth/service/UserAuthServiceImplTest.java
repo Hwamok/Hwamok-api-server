@@ -44,8 +44,8 @@ public class UserAuthServiceImplTest {
 
         Pair<String, String> pair = userAuthService.login(user.getEmail(), "1234");
 
-        assertThat(pair.getFirst()).isEqualTo(jwtService.issue(user.getId(), user.getRole().getName(), JwtType.ACCESS));
-        assertThat(pair.getSecond()).isEqualTo(jwtService.issue(user.getId(), user.getRole().getName(), JwtType.REFRESH));
+        assertThat(pair.getFirst()).isEqualTo(jwtService.issue(user.getId(), user.getRoles(), JwtType.ACCESS));
+        assertThat(pair.getSecond()).isEqualTo(jwtService.issue(user.getId(), user.getRoles(), JwtType.REFRESH));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.hwamok.security.jwt;
 
+import com.hwamok.utils.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -10,9 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.hwamok.utils.PreConditions.notNull;
 
@@ -27,10 +26,10 @@ public class JwtServiceImpl implements JwtService {
     private String secretKey;
 
     @Override
-    public String issue(Long id, String role, JwtType type) {
+    public String issue(Long id, List<Role> roles, JwtType type) {
         Map<String,String> claims = new HashMap<>();
         claims.put("id", String.valueOf(id));
-        claims.put("role", role);
+        claims.put("roles", roles.toString());
 
         Date now = new Date();
         Date expiration = null;
@@ -76,8 +75,23 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String getRole(String token) {
-        return Jwts.parser().verifyWith(generateSecretKey()).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    public List<Role> getRoles(String token) {
+        Object rolesObject = Jwts.parser().verifyWith(generateSecretKey()).build().parseSignedClaims(token).getPayload().get("roles");
+
+        if (rolesObject instanceof List<?> rolesList) {
+            List<Role> roles = new ArrayList<>();
+            for (Object obj : rolesList) {
+                if (obj instanceof Role) {
+                    roles.add((Role) obj);
+                } else {
+                    throw new IllegalStateException("Role list contains non-role objects");
+                }
+            }
+            return roles;
+        } else {
+            throw new IllegalStateException("Roles are not in list format");
+        }
+
     }
 
     private SecretKey generateSecretKey(){
