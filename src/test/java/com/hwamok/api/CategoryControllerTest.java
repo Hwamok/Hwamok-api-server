@@ -1,7 +1,6 @@
 package com.hwamok.api;
 
 import com.epages.restdocs.apispec.ResourceDocumentation;
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,11 +12,12 @@ import fixture.CategoryFixture;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,13 +27,15 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @Transactional
 class CategoryControllerTest {
     @Autowired
@@ -80,8 +82,8 @@ class CategoryControllerTest {
                                                                 .type(JsonFieldType.STRING).description("CA003"),
                                                         PayloadDocumentation.fieldWithPath("name")
                                                                 .type(JsonFieldType.STRING).description("과자"),
-                                                        PayloadDocumentation.fieldWithPath("branch")
-                                                                .type(JsonFieldType.NUMBER).description(null)
+                                                        PayloadDocumentation.fieldWithPath("parentId")
+                                                                .type(JsonFieldType.NULL).description("null")
                                                 )
                                         )
                                         .responseFields(
@@ -89,7 +91,9 @@ class CategoryControllerTest {
                                                         PayloadDocumentation.fieldWithPath("code")
                                                                 .type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message")
-                                                                .type(JsonFieldType.STRING).description("success")
+                                                                .type(JsonFieldType.STRING).description("success"),
+                                                        PayloadDocumentation.fieldWithPath("data")
+                                                                .type(JsonFieldType.NULL).description("null")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("CategoryCreateDTO.Request"))
@@ -120,7 +124,7 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
-                        jsonPath("data.length()").value("2")
+                        jsonPath("data.length()").value("1")
                 );
     }
 
