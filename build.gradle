@@ -106,12 +106,9 @@ tasks.register("zip", Zip.class) {
     // Procfile
     // .platform
     // 우리의 jar파일
-    from("build/libs/hwamok-with-tdd-0.1.jar") { into("") }
+    from("build/libs/hwamok.jar") { into("") }
     from(".platform") { into(".platform") }
     from("procfiles/Procfile") { into("") }
-
-
-
 }
 
 def getServerUrl(profile) {
