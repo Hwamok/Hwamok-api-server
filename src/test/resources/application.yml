@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hwamoktest
-    username: root
-    password: 1234
+    url: ${db.url:jdbc:mysql://localhost:3306/hwamoktest}
+    username: ${db.username:root}
+    password: ${db.password:1234}
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -12,3 +12,6 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+
+jwt:
+  secretKey: hwamokJwtSecretKey20231102PM1057

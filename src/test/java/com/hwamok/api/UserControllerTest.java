@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,7 +89,7 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("UserCreateDto.Request"))
@@ -99,6 +100,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -140,7 +142,7 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("UserUpdateDto.Request"))
@@ -151,6 +153,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_정보_단건_조회_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -205,6 +208,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     void 회원_정보_단건_조회_실패_존재하지_않는_회원() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -224,16 +228,17 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E007"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("사용자 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_USER"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_탈퇴_성공() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -253,16 +258,17 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("S000"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("success"),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("UserDeleteDto.Response"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_탈퇴_실패_존재하지_않는_회원() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -282,10 +288,10 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E007"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("사용자 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_USER"))
                                         .build()
                         )
                 ));
@@ -316,7 +322,7 @@ class UserControllerTest {
                                         .tag("User")
                                         .requestFields(
                                                 List.of(
-                                                        PayloadDocumentation.fieldWithPath("email").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("email").optional().type(JsonFieldType.STRING).description(email),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamok"),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
@@ -333,11 +339,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateNoEmailDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -369,8 +375,7 @@ class UserControllerTest {
                                         .requestFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("hwamok@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("password").ignored(),
-                                                        PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamok"),
+                                                        PayloadDocumentation.fieldWithPath("password").optional().type(JsonFieldType.STRING).description(password),                                                        PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamok"),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
@@ -385,11 +390,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateNoPasswordDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -423,7 +428,7 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("hwamok@test.com"),
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("1234"),
-                                                        PayloadDocumentation.fieldWithPath("name").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("name").optional().type(JsonFieldType.STRING).description(name),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
@@ -438,11 +443,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateNoNameDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -450,6 +455,7 @@ class UserControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 회원_수정_실패_password_필수값_입력_null_혹은_빈값(String password) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -475,7 +481,7 @@ class UserControllerTest {
                                         .tag("User")
                                         .requestFields(
                                                 List.of(
-                                                        PayloadDocumentation.fieldWithPath("password").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("password").optional().type(JsonFieldType.STRING).description(password),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamokhwa"),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
@@ -491,11 +497,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateNoPasswordDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -503,6 +509,7 @@ class UserControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 회원_수정_실패_name_필수값_입력_null_혹은_빈값(String name) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -529,7 +536,7 @@ class UserControllerTest {
                                         .requestFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("12345"),
-                                                        PayloadDocumentation.fieldWithPath("name").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("name").optional().type(JsonFieldType.STRING).description(name),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
@@ -544,11 +551,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateNoNameDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
@@ -556,6 +563,7 @@ class UserControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @WithUserDetails
     void 회원_수정_실패_birthDay_필수값_입력_null_혹은_빈값(String birthDay) throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -583,7 +591,7 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("12345"),
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamokhwa"),
-                                                        PayloadDocumentation.fieldWithPath("birthDay").ignored(),
+                                                        PayloadDocumentation.fieldWithPath("birthDay").optional().type(JsonFieldType.STRING).description(birthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
                                                         PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
@@ -597,17 +605,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E001"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("필수 값이 누락되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateNoBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("REQUIRED_PARAMETER"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_존재하지_않는_회원() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -649,11 +658,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E007"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("사용자 정보를 찾을 수 없습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
                                         .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .responseSchema(Schema.schema("NOT_FOUND_USER"))
                                         .build()
                         )
                 ));
@@ -702,11 +711,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -755,11 +764,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E003"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_EMAIL_FORM"))
                                         .build()
                         )
                 ));
@@ -808,11 +817,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -861,11 +870,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -914,11 +923,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
@@ -967,11 +976,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E008"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("날짜 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_DATE_FORM"))
                                         .build()
                         )
                 ));
@@ -1020,11 +1029,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E008"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("날짜 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_DATE_FORM"))
                                         .build()
                         )
                 ));
@@ -1073,11 +1082,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E009"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("우편 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePostDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_POST_FORM"))
                                         .build()
                         )
                 ));
@@ -1126,11 +1135,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
@@ -1179,11 +1188,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
@@ -1232,11 +1241,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
@@ -1285,11 +1294,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
@@ -1338,17 +1347,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E020"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("알 수 없는 플랫폼입니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePlatformDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_KNOWN_PLATFORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_특수문자() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1392,17 +1402,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_두_글자_미만() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1446,17 +1457,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_영문한글_혼용() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1500,17 +1512,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E004"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_NAME_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_birthDay_다시_없음() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1554,17 +1567,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E008"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("날짜 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_DATE_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_birthDay_슬래시_변경() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1608,17 +1622,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E008"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("날짜 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_DATE_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_post_5자리_아래일때() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1662,17 +1677,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E009"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("우편 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePostDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_POST_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_숫자_제외_다른_문자() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1716,17 +1732,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_11자리_미만() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1770,17 +1787,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_첫째자리_0_제외() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1824,17 +1842,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_두째자리_1_제외() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1878,17 +1897,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E010"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호 형식이 다릅니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_PHONE_FORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_알_수_없는_platform () throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -1932,11 +1952,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E020"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("알 수 없는 플랫폼입니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePlatformDto.Request"))
+                                        .responseSchema(Schema.schema("NOT_KNOWN_PLATFORM"))
                                         .build()
                         )
                 ));
@@ -1986,11 +2006,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E021"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이메일의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeEmailDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_EMAIL"))
                                         .build()
                         )
                 ));
@@ -2040,11 +2060,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E022"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_NAME"))
                                         .build()
                         )
                 ));
@@ -2094,11 +2114,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E023"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("날짜의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_DATE"))
                                         .build()
                         )
                 ));
@@ -2148,11 +2168,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E024"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_PHONE"))
                                         .build()
                         )
                 ));
@@ -2202,11 +2222,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E025"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("플랫폼의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakePlatformDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_PLATFORM"))
                                         .build()
                         )
                 ));
@@ -2256,11 +2276,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E026"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("주소의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeAddrDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_ADDR"))
                                         .build()
                         )
                 ));
@@ -2310,17 +2330,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E027"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("주소 상세의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserCreateDto.Request"))
-                                        .responseSchema(Schema.schema("UserCreateDto.Response"))
+                                        .requestSchema(Schema.schema("UserCreateFakeDetailAddrDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_DETAILADDR"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_name_20글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2365,17 +2386,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E022"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("이름의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeNameDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_NAME"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_birthDay_10글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2420,17 +2442,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E023"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("날짜의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeBirthDayDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_DATE"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_phone_11글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2475,17 +2498,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E024"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("핸드폰 번호의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePhoneDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_PHONE"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_platform_11글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2530,17 +2554,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E025"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("플랫폼의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakePlatformDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_PLATFORM"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_addr_80글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2584,17 +2609,18 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E026"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("주소의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeAddrDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_ADDR"))
                                         .build()
                         )
                 ));
     }
 
     @Test
+    @WithUserDetails
     void 회원_수정_실패_detailAddr_10글자_초과() throws Exception {
         User user = userRepository.save(UserFixture.create());
 
@@ -2639,11 +2665,11 @@ class UserControllerTest {
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.STRING).description("E027"),
                                                         PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("주소 상세의 길이가 초과되었습니다."),
-                                                        PayloadDocumentation.fieldWithPath("data").ignored()
+                                                        PayloadDocumentation.fieldWithPath("data").optional().type(JsonFieldType.NULL).description("NULL")
                                                 )
                                         )
-                                        .requestSchema(Schema.schema("UserUpdateDto.Request"))
-                                        .responseSchema(Schema.schema("UserUpdateDto.Response"))
+                                        .requestSchema(Schema.schema("UserUpdateFakeDetailAddrDto.Request"))
+                                        .responseSchema(Schema.schema("OVER_LENGTH_DETAILADDR"))
                                         .build()
                         )
                 ));
