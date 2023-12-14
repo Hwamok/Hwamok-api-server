@@ -30,8 +30,8 @@ public class UserAuthServiceImpl implements UserAuthService{
             throw new HwamokException(ExceptionCode.NOT_FOUND_USER);
         }
 
-        String accessToken = jwtService.issue(user.getId(), user.getRole().getName(), JwtType.ACCESS);
-        String refreshToken = jwtService.issue(user.getId(), user.getRole().getName(), JwtType.REFRESH);
+        String accessToken = jwtService.issue(user.getId(), user.getRoles(), JwtType.ACCESS);
+        String refreshToken = jwtService.issue(user.getId(), user.getRoles(), JwtType.REFRESH);
 
         return Pair.of(accessToken,refreshToken);
     }
