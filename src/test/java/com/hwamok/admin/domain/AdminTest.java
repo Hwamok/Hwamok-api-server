@@ -2,18 +2,34 @@ package com.hwamok.admin.domain;
 
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokExceptionTest;
+import com.hwamok.utils.Role;
 import fixture.AdminFixture;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.hwamok.core.exception.HwamokExceptionTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 class AdminTest {
+    
+    private List<Role> roles = new ArrayList<>();
+
+    @BeforeEach
+    void setUp() {
+        roles.add(Role.SUPER);
+        roles.add(Role.ADMIN);
+    }
+
     @Test
     void 관리자_생성_성공() {
-        Admin admin = new Admin("test123", "1234", "이름", "test@test.com");
+        Admin admin = new Admin("test123", "1234", "이름", "test@test.com", roles);
 
         assertThat(admin.getId()).isNull();
         assertThat(admin.getLoginId()).isEqualTo("test123");
@@ -26,7 +42,7 @@ class AdminTest {
     @NullAndEmptySource
     void 관리자_생성_실패__아이디_null_또는_공백(String loginId) {
         assertThatIllegalArgumentException()
-                .isThrownBy(()->new Admin(loginId, "1234", "이름", "test@test.com"));
+                .isThrownBy(()->new Admin(loginId, "1234", "이름", "test@test.com", roles));
     }
 
     @Test
@@ -34,7 +50,7 @@ class AdminTest {
         String fakeLoginId = "t";
 
         assertThatHwamokException(ExceptionCode.NOT_LOGINID_FORM)
-                .isThrownBy(()-> new Admin(fakeLoginId, "1234", "이름", "test@test.com"));
+                .isThrownBy(()-> new Admin(fakeLoginId, "1234", "이름", "test@test.com", roles));
     }
 
     @Test
@@ -42,7 +58,7 @@ class AdminTest {
         String fakeLoginId = "testtesttestt";
 
         assertThatHwamokException(ExceptionCode.NOT_LOGINID_FORM)
-                .isThrownBy(()-> new Admin(fakeLoginId, "1234", "이름", "test@test.com"));
+                .isThrownBy(()-> new Admin(fakeLoginId, "1234", "이름", "test@test.com", roles));
     }
 
     @Test
@@ -50,21 +66,21 @@ class AdminTest {
         String fakeLoginId = "test!";
 
         assertThatHwamokException(ExceptionCode.NOT_LOGINID_FORM)
-                .isThrownBy(()-> new Admin(fakeLoginId, "1234", "이름", "test@test.com"));
+                .isThrownBy(()-> new Admin(fakeLoginId, "1234", "이름", "test@test.com", roles));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 관리자_생성_실패__비밀번호_null_또는_공백(String password) {
         assertThatIllegalArgumentException()
-                .isThrownBy(()->new Admin("test123",password,"이름","test@test.com"));
+                .isThrownBy(()->new Admin("test123",password,"이름","test@test.com", roles));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 관리자_생성_실패__이름_null_또는_공백(String name) {
         assertThatIllegalArgumentException()
-                .isThrownBy(()->new Admin("test123","1234",name,"test@test.com"));
+                .isThrownBy(()->new Admin("test123","1234",name,"test@test.com", roles));
     }
 
     @Test
@@ -72,7 +88,7 @@ class AdminTest {
         String fakeName = "이";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123","1234", fakeName,"test@test.com"));
+                .isThrownBy(()-> new Admin("test123","1234", fakeName,"test@test.com", roles));
     }
 
     @Test
@@ -80,7 +96,7 @@ class AdminTest {
         String fakeName = "이름이름이름이";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com"));
+                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com", roles));
     }
 
     @Test
@@ -88,7 +104,7 @@ class AdminTest {
         String fakeName = "n";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123","1234", fakeName,"test@test.com"));
+                .isThrownBy(()-> new Admin("test123","1234", fakeName,"test@test.com", roles));
     }
 
     @Test
@@ -96,7 +112,7 @@ class AdminTest {
         String fakeName = "namenamenamenamenamen";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com"));
+                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com", roles));
     }
 
     @Test
@@ -104,7 +120,7 @@ class AdminTest {
         String fakeName = "이름name";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com"));
+                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com", roles));
     }
 
     @Test
@@ -112,14 +128,14 @@ class AdminTest {
         String fakeName = "이름!";
 
         assertThatHwamokException(ExceptionCode.NOT_NAME_FORM)
-                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com"));
+                .isThrownBy(()-> new Admin("test123", "1234", fakeName, "test@test.com", roles));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void 관리자_생성_실패__이메일_null_또는_공백(String email) {
         assertThatIllegalArgumentException()
-                .isThrownBy(()->new Admin("test123", "1234", "이름", email));
+                .isThrownBy(()->new Admin("test123", "1234", "이름", email, roles));
     }
 
     @Test
@@ -127,7 +143,7 @@ class AdminTest {
         String fakeEmail = "testtest.com";
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
-                .isThrownBy(()-> new Admin("test123", "1234", "이름", fakeEmail));
+                .isThrownBy(()-> new Admin("test123", "1234", "이름", fakeEmail, roles));
     }
 
     @Test
@@ -135,7 +151,7 @@ class AdminTest {
         String fakeEmail = "test@testcom";
 
         assertThatHwamokException(ExceptionCode.NOT_EMAIL_FORM)
-                .isThrownBy(()-> new Admin("test123", "1234", "이름", fakeEmail));
+                .isThrownBy(()-> new Admin("test123", "1234", "이름", fakeEmail, roles));
     }
 
     @Test
@@ -143,7 +159,19 @@ class AdminTest {
         String fakeEmail = "testtesttesttesttesttest@testtesttesttesttest11.com";
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_EMAIL)
-                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
+                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail, roles));
+    }
+
+    @Test
+    void 관리자_생성_실패__권한이_null() {
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(()-> new Admin("test123","1234","이름", "email", null));
+    }
+
+    @Test
+    void 관리자_생성_실패__권한이_비어있음() {
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(()-> new Admin("test123","1234","이름", "email", List.of()));
     }
 
     @Test
@@ -244,7 +272,7 @@ class AdminTest {
         Admin admin = AdminFixture.createAdmin();
 
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.OVER_LENGTH_EMAIL)
-                .isThrownBy(()-> new Admin("test123","1234","이름",fakeEmail));
+                .isThrownBy(()-> admin.update("1234","이름", fakeEmail));
     }
     
     @Test

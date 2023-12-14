@@ -8,12 +8,14 @@ import com.hwamok.core.response.ApiResult;
 import com.hwamok.core.response.Result;
 import com.hwamok.notice.domain.Notice;
 import com.hwamok.notice.service.NoticeService;
+import com.hwamok.security.userDetails.HwamokAdmin;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static com.hwamok.api.dto.notice.NoticeReadDto.*;
@@ -24,12 +26,9 @@ import static com.hwamok.api.dto.notice.NoticeReadDto.*;
 public class NoticeController {
     private final NoticeService noticeService;
 
-    // TODO: 2023-11-20 Jwt 구현 후 @AuthenticationPrincipal을 통해 SecurityContextHolder에 저장된 HwamokAdmin을 받아올 예정
     @PostMapping
-    public ResponseEntity<ApiResult<?>> create(@RequestBody NoticeCreateDto.Request request, HttpSession session) {
-        Admin admin = (Admin)session.getAttribute("admin");
-
-        noticeService.create(request.getTitle(), request.getContent(), admin.getId());
+    public ResponseEntity<ApiResult<?>> create(@RequestBody NoticeCreateDto.Request request, @AuthenticationPrincipal HwamokAdmin hwamokAdmin) {
+        noticeService.create(request.getTitle(), request.getContent(), hwamokAdmin.getId());
 
         return Result.created();
     }

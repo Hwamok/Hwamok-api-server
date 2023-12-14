@@ -2,10 +2,12 @@ package com.hwamok.api.dto.admin;
 
 import com.hwamok.admin.domain.Admin;
 import com.hwamok.admin.domain.AdminStatus;
+import com.hwamok.utils.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 public class AdminReadDto {
     @Getter
@@ -17,15 +19,7 @@ public class AdminReadDto {
         private String name;
         private String email;
         private AdminStatus status;
-
-        public Response(Long id, Instant createdAt, String loginId, String name, String email, AdminStatus status) {
-            this.id = id;
-            this.createdAt = createdAt;
-            this.loginId = loginId;
-            this.name = name;
-            this.email = email;
-            this.status = status;
-        }
+        private List<Role> roles;
 
         public Response(Admin admin) {
             this.id = admin.getId();
@@ -34,6 +28,7 @@ public class AdminReadDto {
             this.name = admin.getName();
             this.email = admin.getEmail();
             this.status = admin.getStatus();
+            this.roles = admin.getRoles();
         }
     }
 }
