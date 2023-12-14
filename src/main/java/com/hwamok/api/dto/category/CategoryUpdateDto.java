@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class CategoryUpdateDTO {
+public class CategoryUpdateDto {
 
     @Getter
     @AllArgsConstructor

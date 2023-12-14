@@ -4,8 +4,8 @@ import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hwamok.api.dto.category.CategoryCreateDTO;
-import com.hwamok.api.dto.category.CategoryUpdateDTO;
+import com.hwamok.api.dto.category.CategoryCreateDto;
+import com.hwamok.api.dto.category.CategoryUpdateDto;
 import com.hwamok.category.domain.Category;
 import com.hwamok.category.domain.CategoryRepository;
 import fixture.CategoryFixture;
@@ -59,7 +59,7 @@ class CategoryControllerTest {
 
     @Test
     void 카테고리_생성_성공() throws Exception {
-        CategoryCreateDTO.Request request = new CategoryCreateDTO.Request("식품", "CA003", "과자", -1L);
+        CategoryCreateDto.Request request = new CategoryCreateDto.Request("식품", "CA003", "과자", -1L);
 
         ResultActions resultActions = mockMvc.perform(post("/category")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ class CategoryControllerTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 카테고리_생성_실패__이름이_null_또는_공백(String name) throws Exception {
-        CategoryCreateDTO.Request request = new CategoryCreateDTO.Request("식품", "CA001", name, -1L);
+        CategoryCreateDto.Request request = new CategoryCreateDto.Request("식품", "CA001", name, -1L);
 
         ResultActions resultActions = mockMvc.perform(post("/category")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -342,7 +342,7 @@ class CategoryControllerTest {
 
     @Test
     void 카테고리_업데이트하기_성공() throws Exception {
-        CategoryUpdateDTO.Request request = new CategoryUpdateDTO.Request("가구", "FA001", "의자");
+        CategoryUpdateDto.Request request = new CategoryUpdateDto.Request("가구", "FA001", "의자");
 
         mockMvc.perform(patch("/category/{id}", category1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -383,7 +383,7 @@ class CategoryControllerTest {
 
     @Test
     void 카테고리_업데이트하기_실패__브랜치_null() throws Exception {
-        CategoryUpdateDTO.Request request = new CategoryUpdateDTO.Request(null, "FA001", "의자");
+        CategoryUpdateDto.Request request = new CategoryUpdateDto.Request(null, "FA001", "의자");
 
         mockMvc.perform(patch("/category/{id}", category1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -424,7 +424,7 @@ class CategoryControllerTest {
 
     @Test
     void 카테고리_업데이트하기_실패__없는_id() throws Exception {
-        CategoryUpdateDTO.Request request = new CategoryUpdateDTO.Request("가구", "FA001", "의자");
+        CategoryUpdateDto.Request request = new CategoryUpdateDto.Request("가구", "FA001", "의자");
 
         mockMvc.perform(patch("/category/{id}", -1)
                         .contentType(MediaType.APPLICATION_JSON)

@@ -1,9 +1,8 @@
 package com.hwamok.api;
 
-import com.hwamok.api.dto.admin.AdminReadDto;
-import com.hwamok.api.dto.category.CategoryCreateDTO;
-import com.hwamok.api.dto.category.CategoryReadDTO;
-import com.hwamok.api.dto.category.CategoryUpdateDTO;
+import com.hwamok.api.dto.category.CategoryCreateDto;
+import com.hwamok.api.dto.category.CategoryReadDto;
+import com.hwamok.api.dto.category.CategoryUpdateDto;
 import com.hwamok.category.domain.Category;
 import com.hwamok.category.service.CategoryService;
 import com.hwamok.core.response.ApiResult;
@@ -21,7 +20,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<ApiResult<?>> createCategory(@RequestBody CategoryCreateDTO.Request request) {
+    public ResponseEntity<ApiResult<?>> createCategory(@RequestBody CategoryCreateDto.Request request) {
         categoryService.create(request.getBranch(), request.getCode(), request.getName(), request.getParentId());
 
         return Result.created();
@@ -35,32 +34,25 @@ public class CategoryController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategoryByName(@RequestParam("name")String name) {
+    public ResponseEntity<ApiResult<CategoryReadDto.Response>> getCategoryByName(@RequestParam("name")String name) {
         Category category = categoryService.getOneByName(name);
 
-        CategoryReadDTO.Response response = CategoryReadDTO.Response.builder()
-                .branch(category.getBranch())
-                .level(category.getLevel())
-                .name(category.getName())
-                .code(category.getCode())
-                .parentId(category.getParentId())
-                .build();
+        CategoryReadDto.Response response = new CategoryReadDto.Response(category);
 
         return Result.ok(response);
     }
 
     @GetMapping("/code")
-    public ResponseEntity<ApiResult<CategoryReadDTO.Response>> getCategory(@RequestParam("code")String code) {
+    public ResponseEntity<ApiResult<CategoryReadDto.Response>> getCategory(@RequestParam("code")String code) {
         Category category = categoryService.getOneByCode(code);
 
-        CategoryReadDTO.Response response = new CategoryReadDTO.Response(category.getBranch(), category.getCode(),
-                category.getName(), category.getLevel() , category.getParentId());
+        CategoryReadDto.Response response = new CategoryReadDto.Response(category);
 
         return Result.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<?>> updateCategory(@PathVariable("id")Long id, @RequestBody CategoryUpdateDTO.Request request) {
+    public ResponseEntity<ApiResult<?>> updateCategory(@PathVariable("id")Long id, @RequestBody CategoryUpdateDto.Request request) {
         categoryService.update(id, request.getBranch(), request.getCode(), request.getName());
 
         return Result.ok();

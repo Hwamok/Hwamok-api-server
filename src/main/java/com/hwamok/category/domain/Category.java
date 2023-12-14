@@ -78,11 +78,8 @@ public class Category extends BaseEntity {
     this.parentCategory = parentCategory;
   }
 
-  public Long getParentId(){
-    if(parentCategory != null){
-      return parentCategory.getId();
-    }
-    return null;
+  public Long getParentId() {
+    return parentCategory != null? parentCategory.getId() : null;
   }
 
   public void registerLevel(Long level){

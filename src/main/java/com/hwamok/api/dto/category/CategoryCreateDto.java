@@ -1,12 +1,11 @@
 package com.hwamok.api.dto.category;
 
-import com.hwamok.category.domain.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class CategoryCreateDTO {
+public class CategoryCreateDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
