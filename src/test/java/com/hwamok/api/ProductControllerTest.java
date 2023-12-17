@@ -115,9 +115,19 @@ class ProductControllerTest {
     void 상품_업데이트_성공() throws Exception {
         ProductUpdateDto.Request request = new ProductUpdateDto.Request("안심", 12000, "S003", category);
 
-        mockMvc.perform(patch("/product/update")
+        mockMvc.perform(patch("/product/{id}", product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("code").value("S000"),
+                        jsonPath("message").value("success")
+                );
+    }
+
+    @Test
+    void 상품_삭제_성공() throws Exception {
+        mockMvc.perform(delete("/product/{id}", product.getId()))
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("S000"),
