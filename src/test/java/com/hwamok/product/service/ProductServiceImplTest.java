@@ -103,6 +103,9 @@ class ProductServiceImplTest {
         List<Product> productList = productService.getProductByName("사과");
 
         assertThat(productList.get(0).getId()).isNotNull();
+        assertThat(productList.get(0).getName()).isEqualTo("사과");
+        assertThat(productList.get(0).getCode()).isEqualTo("S001");
+        assertThat(productList.get(0).getStatus()).isEqualTo(ProductStatus.ACTIVATED);
     }
 
     @Test
