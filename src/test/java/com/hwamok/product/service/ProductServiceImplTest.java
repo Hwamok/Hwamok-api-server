@@ -53,6 +53,8 @@ class ProductServiceImplTest {
     void 상품_생성_성공() {
         Product product = productService.create("사과", "S001", 10000, category);
 
+        //카테고리에 등록해줘야하는 절차 필요
+
         assertThat(product.getId()).isNotNull();
     }
 
