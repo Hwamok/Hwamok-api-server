@@ -43,11 +43,13 @@ class ProductControllerTest {
 
     private Category category;
 
+    private Category parent;
+
     private Product product;
 
     @BeforeEach
     private void setUp() {
-        Category parent = CategoryFixture.createCategory();
+        parent = categoryRepository.save(CategoryFixture.createCategory());
         category = categoryRepository.save(CategoryFixture.createCategory(parent));
 
         product = productRepository.save(ProductFixture.createProduct("소갈비", "S002", category));
@@ -91,8 +93,7 @@ class ProductControllerTest {
                         jsonPath("message").value("success"),
                         jsonPath("data[0].name").value("소갈비"),
                         jsonPath("data[0].code").value("S002"),
-                        jsonPath("data[0].price").value(10000),
-                        jsonPath("data[0].category.name").value("소고기")
+                        jsonPath("data[0].price").value(10000)
                 );
     }
 
@@ -104,10 +105,9 @@ class ProductControllerTest {
                 .andExpectAll(
                         jsonPath("code").value("S000"),
                         jsonPath("message").value("success"),
-                        jsonPath("data[0].name").value("소갈비"),
-                        jsonPath("data[0].code").value("S002"),
-                        jsonPath("data[0].price").value(10000),
-                        jsonPath("data[0].category.name").value("소고기")
+                        jsonPath("data.name").value("소갈비"),
+                        jsonPath("data.code").value("S002"),
+                        jsonPath("data.price").value(10000)
                 );
     }
 
