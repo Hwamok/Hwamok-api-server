@@ -117,6 +117,8 @@ class ProductControllerTest {
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.level")
                                                                 .type(JsonFieldType.NUMBER).description("0"),
+                                                        PayloadDocumentation.fieldWithPath("category.parentCategory.parentId").optional()
+                                                                .type(JsonFieldType.NUMBER).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.products").optional()
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.status")
@@ -125,6 +127,8 @@ class ProductControllerTest {
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.level")
                                                                 .type(JsonFieldType.NUMBER).description("0"),
+                                                        PayloadDocumentation.fieldWithPath("category.parentId").optional()
+                                                                .type(JsonFieldType.NUMBER).description("2"),
                                                         PayloadDocumentation.fieldWithPath("category.products").optional()
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.status")
@@ -199,6 +203,8 @@ class ProductControllerTest {
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.level")
                                                                 .type(JsonFieldType.NUMBER).description("0"),
+                                                        PayloadDocumentation.fieldWithPath("category.parentCategory.parentId").optional()
+                                                                .type(JsonFieldType.NUMBER).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.products").optional()
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.status")
@@ -207,6 +213,8 @@ class ProductControllerTest {
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.level")
                                                                 .type(JsonFieldType.NUMBER).description("0"),
+                                                        PayloadDocumentation.fieldWithPath("category.parentId").optional()
+                                                                .type(JsonFieldType.NUMBER).description("2"),
                                                         PayloadDocumentation.fieldWithPath("category.products").optional()
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.status")
@@ -359,6 +367,8 @@ class ProductControllerTest {
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.level")
                                                                 .type(JsonFieldType.NUMBER).description("0"),
+                                                        PayloadDocumentation.fieldWithPath("category.parentCategory.parentId").optional()
+                                                                .type(JsonFieldType.NUMBER).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.products").optional()
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.parentCategory.status")
@@ -367,6 +377,8 @@ class ProductControllerTest {
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.level")
                                                                 .type(JsonFieldType.NUMBER).description("0"),
+                                                        PayloadDocumentation.fieldWithPath("category.parentId").optional()
+                                                                .type(JsonFieldType.NUMBER).description("2"),
                                                         PayloadDocumentation.fieldWithPath("category.products").optional()
                                                                 .type(JsonFieldType.ARRAY).description("null"),
                                                         PayloadDocumentation.fieldWithPath("category.status")
