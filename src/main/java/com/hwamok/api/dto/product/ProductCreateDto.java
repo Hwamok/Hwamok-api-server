@@ -6,16 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class ProductCreateDto {
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
     public static class Request {
         private String name;
-
         private String code;
-
         private Integer price;
-
         private Category category;
     }
 }

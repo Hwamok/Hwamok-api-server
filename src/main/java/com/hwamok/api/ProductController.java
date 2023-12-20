@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product")
@@ -28,16 +29,16 @@ public class ProductController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<ApiResult<List<ProductReadDto.Response>>> getOneByName(@RequestParam("name")String name) {
+    public ResponseEntity<ApiResult<List<ProductReadDto.Response>>> getOneByName(@RequestParam String name) {
         List<Product> productList = productService.getProductByName(name);
 
-        List<ProductReadDto.Response> dtoList = ProductReadDto.Response.createDtoList(productList);
+        List<ProductReadDto.Response> dtoList = productList.stream().map(p -> new ProductReadDto.Response(p)).collect(Collectors.toList());
 
         return Result.ok(dtoList);
     }
 
     @GetMapping("/code")
-    public ResponseEntity<ApiResult<ProductReadDto.Response>> getOneByCode(@RequestParam("code")String code) {
+    public ResponseEntity<ApiResult<ProductReadDto.Response>> getOneByCode(@RequestParam String code) {
         Product product = productService.getProductByCode(code);
 
         ProductReadDto.Response response = new ProductReadDto.Response(product);

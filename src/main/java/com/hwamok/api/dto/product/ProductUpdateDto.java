@@ -7,16 +7,13 @@ import lombok.NoArgsConstructor;
 
 public class ProductUpdateDto {
 
-    @AllArgsConstructor
-    @NoArgsConstructor
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Request {
         private String name;
-
         private Integer price;
-
         private String code;
-
         private Category category;
     }
 }
