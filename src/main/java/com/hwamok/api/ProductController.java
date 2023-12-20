@@ -32,7 +32,7 @@ public class ProductController {
     public ResponseEntity<ApiResult<List<ProductReadDto.Response>>> getOneByName(@RequestParam String name) {
         List<Product> productList = productService.getProductByName(name);
 
-        List<ProductReadDto.Response> dtoList = productList.stream().map(p -> new ProductReadDto.Response(p)).collect(Collectors.toList());
+        List<ProductReadDto.Response> dtoList = productList.stream().map(p -> new ProductReadDto.Response(p)).toList();
 
         return Result.ok(dtoList);
     }
