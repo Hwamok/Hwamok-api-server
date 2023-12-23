@@ -8,6 +8,7 @@ import com.hwamok.api.dto.user.*;
 import com.hwamok.user.domain.User;
 import com.hwamok.user.domain.UserRepository;
 import fixture.UserFixture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -16,12 +17,17 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -30,7 +36,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,15 +53,31 @@ class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    MockMultipartFile mockFile = null;
+
+    @BeforeEach
+    void setUp() throws IOException {
+        Path path = Paths.get("imageProfile/winter background.png");
+        byte[] fileContent = Files.readAllBytes(path);
+
+        mockFile = new MockMultipartFile(
+                "profilePicture",
+                "winter background.png",
+                "image/png",
+                fileContent
+        );
+    }
+
     @Test
     void 회원_가입_성공() throws Exception {
+
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isCreated())
@@ -77,9 +98,7 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamok"),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
-                                                        PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
+                                                        PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),                                                        
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -106,11 +125,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -130,9 +149,7 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamokhwa"),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
-                                                        PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
+                                                        PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),                                                        
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -302,11 +319,11 @@ class UserControllerTest {
     void 회원_가입_실패_email_필수값_입력_null_혹은_빈값(String email) throws Exception {
         UserCreateDto.Request request = new UserCreateDto.Request(email, "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -328,8 +345,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -354,11 +369,11 @@ class UserControllerTest {
     void 회원_가입_실패_password_필수값_입력_null_혹은_빈값(String password) throws Exception {
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", password, "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -375,12 +390,11 @@ class UserControllerTest {
                                         .requestFields(
                                                 List.of(
                                                         PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING).description("hwamok@test.com"),
-                                                        PayloadDocumentation.fieldWithPath("password").optional().type(JsonFieldType.STRING).description(password),                                                        PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamok"),
+                                                        PayloadDocumentation.fieldWithPath("password").optional().type(JsonFieldType.STRING).description(password),                                                        
+                                                        PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description("hwamok"),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -406,11 +420,11 @@ class UserControllerTest {
     void 회원_가입_실패_name_필수값_입력_null_혹은_빈값(String name) throws Exception {
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", name,
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -432,8 +446,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -461,11 +473,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request(password, "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -486,8 +498,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -515,11 +525,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", name, "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -540,8 +550,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -569,11 +577,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", birthDay,
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -594,8 +602,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").optional().type(JsonFieldType.STRING).description(birthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -622,11 +628,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", -1l)
+        mockMvc.perform(multipart("/user/{id}", -1l)
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -647,8 +653,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -674,11 +678,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request(fakeEmail, "12345", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -700,8 +704,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -727,11 +729,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request(fakeEmail, "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -753,8 +755,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -780,11 +780,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", fakeName,
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -806,8 +806,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -833,11 +831,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", fakeName,
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -859,8 +857,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -886,11 +882,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", fakeName,
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -912,8 +908,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -939,11 +933,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 fakeBirthDay, "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -965,8 +959,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description(fakeBirthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -992,11 +984,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 fakeBirthDay, "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1018,8 +1010,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description(fakeBirthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1045,11 +1035,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(fakePost, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1071,8 +1061,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(fakePost),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1098,11 +1086,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", fakePhone, "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1124,8 +1112,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1151,11 +1137,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", fakePhone, "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1177,8 +1163,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1204,11 +1188,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", fakePhone, "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1230,8 +1214,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1257,11 +1239,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", fakePhone, "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1283,8 +1265,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1310,11 +1290,11 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", fakePlatform,
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1336,8 +1316,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description(fakePlatform),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -1366,11 +1344,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", fakeName, "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1391,8 +1369,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1421,11 +1397,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", fakeName, "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1446,8 +1422,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1476,11 +1450,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", fakeName, "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1501,8 +1475,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1531,11 +1503,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", fakeBirthDay,
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1556,8 +1528,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description(fakeBirthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1586,11 +1556,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", fakeBirthDay,
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1611,8 +1581,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description(fakeBirthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1641,11 +1609,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(fakePost, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1666,8 +1634,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(fakePost),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1696,11 +1662,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 fakePhone, "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1721,8 +1687,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1751,11 +1715,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 fakePhone, "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1776,8 +1740,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1806,11 +1768,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 fakePhone, "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1831,8 +1793,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1861,11 +1821,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 fakePhone, "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1886,8 +1846,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1916,11 +1874,11 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", fakePlatform,
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -1941,8 +1899,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -1968,14 +1924,14 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request(fakeEmail, "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E021"),
@@ -1995,8 +1951,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -2022,14 +1976,14 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", fakeName,
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E022"),
@@ -2048,9 +2002,7 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING).description(fakeName),
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
-                                                        PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
+                                                        PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),                                                                                                                
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -2076,14 +2028,14 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 fakeBirthDay, "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E023"),
@@ -2103,8 +2055,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description(fakeBirthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -2130,14 +2080,14 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", fakePhone, "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E024"),
@@ -2157,8 +2107,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -2184,14 +2132,14 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", fakePlatform,
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345,"15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E025"),
@@ -2211,8 +2159,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description(fakePlatform),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -2238,14 +2184,13 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, fakeAddr,
                         "201"));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E026"),
@@ -2265,8 +2210,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description(fakeAddr),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("201")
@@ -2292,14 +2235,13 @@ class UserControllerTest {
 
         UserCreateDto.Request request = new UserCreateDto.Request("hwamok@test.com", "1234", "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
                         fakeDetailAddr));
 
-        mockMvc.perform(post("/user")
+       mockMvc.perform(multipart("/user")
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E027"),
@@ -2319,8 +2261,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-15"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345678"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("GOOGLE"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12345),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description(fakeDetailAddr)
@@ -2349,14 +2289,13 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", fakeName, "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E022"),
@@ -2375,8 +2314,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -2405,14 +2342,14 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", fakeBirthDay,
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E023"),
@@ -2431,8 +2368,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description(fakeBirthDay),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -2461,14 +2396,14 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 fakePhone, "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E024"),
@@ -2487,8 +2422,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description(fakePhone),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -2517,14 +2450,14 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", fakePlatform,
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         "202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E025"),
@@ -2543,8 +2476,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description(fakePlatform),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -2573,13 +2504,13 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, fakeAddr,"202"));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E026"),
@@ -2598,8 +2529,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description(fakeAddr),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description("202")
@@ -2628,14 +2557,14 @@ class UserControllerTest {
 
         UserUpdateDto.Request request = new UserUpdateDto.Request("12345", "hwamokhwa", "2023-11-16",
                 "01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1", "savedImage1"),
                 new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
                         fakeDetailAddr));
 
-        mockMvc.perform(patch("/user/{id}", user.getId())
+        mockMvc.perform(multipart("/user/{id}", user.getId())
+                        .file(mockFile)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
+                
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("code").value("E027"),
@@ -2654,8 +2583,6 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("birthDay").type(JsonFieldType.STRING).description("2023-11-16"),
                                                         PayloadDocumentation.fieldWithPath("phone").type(JsonFieldType.STRING).description("01012345679"),
                                                         PayloadDocumentation.fieldWithPath("platform").type(JsonFieldType.STRING).description("NAVER"),
-                                                        PayloadDocumentation.fieldWithPath("profile.originalFileName").type(JsonFieldType.STRING).description("originalImage1"),
-                                                        PayloadDocumentation.fieldWithPath("profile.savedFileName").type(JsonFieldType.STRING).description("savedImage1"),
                                                         PayloadDocumentation.fieldWithPath("address.post").type(JsonFieldType.NUMBER).description(12346),
                                                         PayloadDocumentation.fieldWithPath("address.addr").type(JsonFieldType.STRING).description("17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea"),
                                                         PayloadDocumentation.fieldWithPath("address.detailAddr").type(JsonFieldType.STRING).description(fakeDetailAddr)

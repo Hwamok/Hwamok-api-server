@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
     // queryDsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

@@ -2,17 +2,22 @@ package com.hwamok.user.service;
 
 import com.hwamok.api.dto.user.AddressCreateDto;
 import com.hwamok.api.dto.user.AddressUpdateDto;
-import com.hwamok.api.dto.user.UploadedFileCreateDto;
-import com.hwamok.api.dto.user.UploadedFileUpdateDto;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.user.domain.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.hwamok.core.exception.HwamokExceptionTest.*;
 import static org.assertj.core.api.Assertions.*;
@@ -30,13 +35,27 @@ class UserServiceImplTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    MockMultipartFile mockFile = null;
+
+    @BeforeEach
+    void setUp() throws IOException {
+        Path path = Paths.get("imageProfile/winter background.png");
+        byte[] fileContent = Files.readAllBytes(path);
+
+        mockFile = new MockMultipartFile(
+                "profilePicture",
+                "Capture001.png",
+                "image/png",
+                fileContent
+        );
+    }
+
     @Test
     void 회원_가입_성공() {
         User user = userService.create("hwamok@test.com", passwordEncoder.encode("1234"), "hwamok",
                 "2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                "201"));
+                "201"),mockFile);
 
         assertThat(user.getId()).isNotNull();
     }
@@ -79,9 +98,8 @@ class UserServiceImplTest {
                         "201")));
 
         User updateInfo = userService.update(user.getId(), "12345", "hwamokhwa","2023-11-16",
-                "01012345679", "NAVER", new UploadedFileUpdateDto.Request("originalImage1",
-                "savedImage1"), new AddressUpdateDto.Request(12346, 
-                        "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea","202"));
+                "01012345679", "NAVER",new AddressUpdateDto.Request(12346,"17, " +
+                        "Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea","202"), mockFile);
 
         assertThat(updateInfo.getId()).isNotNull();
         assertThat(updateInfo.getEmail()).isEqualTo(user.getEmail());
@@ -102,9 +120,8 @@ class UserServiceImplTest {
         assertThatHwamokException(ExceptionCode.NOT_FOUND_USER)
                 .isThrownBy(() -> userService.update(-1L, "1234", "hwamokhwa",
                         "2023-11-16", "01012345679", "NAVER",
-                        new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
                         new AddressUpdateDto.Request(12346, "17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202")));
+                        "202"), mockFile));
     }
 
     @Test
@@ -132,9 +149,8 @@ class UserServiceImplTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> userService.create("hwamok@test.com", password,
                         "hwamok","2023-11-15", "01012345678", "GOOGLE",
-                new UploadedFileCreateDto.Request("originalImage", "savedImage"),
                 new AddressCreateDto.Request(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201")));
+                        "201"), mockFile));
     }
 
     @ParameterizedTest
@@ -149,8 +165,7 @@ class UserServiceImplTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> userService.update(user.getId(),
                 password, "hwamokhwa","2023-11-16","01012345679", "NAVER",
-                new UploadedFileUpdateDto.Request("originalImage1","savedImage1"),
                 new AddressUpdateDto.Request(12346,"17, Deoksugung-gil1, Jung-gu1, Seoul, Republic of Korea",
-                        "202")));
+                        "202"), mockFile));
     }
 }

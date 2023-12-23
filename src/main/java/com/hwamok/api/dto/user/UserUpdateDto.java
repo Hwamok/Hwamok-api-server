@@ -14,7 +14,6 @@ public class UserUpdateDto {
         private String birthDay;
         private String phone;
         private String platform;
-        private UploadedFileUpdateDto.Request profile;
         private AddressUpdateDto.Request address;
     }
 }

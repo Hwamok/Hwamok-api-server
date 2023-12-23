@@ -35,7 +35,7 @@ class AdminAuthServiceImplTest {
 
     @Test
     void 어드민로그인_성공() {
-        Admin admin = adminRepository.save(new Admin("test123", passwordEncoder.encode("1234"), "이름", "test@test.com", List.of(Role.ADMIN)));
+        Admin admin = adminRepository.save(new Admin("test1234", passwordEncoder.encode("1234"), "이름", "test@test.com", List.of(Role.ADMIN)));
 
         Pair<String, String> pair = adminAuthService.login(admin.getLoginId(), "1234");
 
