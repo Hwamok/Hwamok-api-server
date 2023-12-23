@@ -30,6 +30,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
+    //integration
+    implementation 'com.slack.api:slack-api-client:1.36.1'
+
     // queryDsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
@@ -85,6 +88,28 @@ tasks.named('generateSwaggerUIConvert') {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named("bootJar") {
+    enabled = true
+    archiveFileName.set("hwamok.jar")
+}
+
+
+tasks.register("zip", Zip.class) {
+    //실행가능한 jar파일 만들어야함
+    dependsOn("bootJar")
+
+    //zip파일을 하나 생성해줘야함
+    archiveFileName.set("hwamok.zip")
+
+    //.ebextentions(optional)
+    // Procfile
+    // .platform
+    // 우리의 jar파일
+    from("build/libs/hwamok.jar") { into("") }
+    from(".platform") { into(".platform") }
+    from("procfiles/Procfile") { into("") }
 }
 
 def getServerUrl(profile) {

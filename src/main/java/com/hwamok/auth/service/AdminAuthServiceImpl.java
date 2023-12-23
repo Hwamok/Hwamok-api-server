@@ -31,16 +31,9 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         if(!passwordEncoder.matches(password, admin.getPassword())){
             throw new HwamokException(ExceptionCode.NOT_FOUND_ADMIN);
         }
-        List<Role> roles = admin.getRoles();
-        String role = "";
-        if(roles.contains(Role.SUPER)){
-            role = Role.SUPER.getName();
-        } else {
-            role = Role.ADMIN.getName();
-        }
 
-        String accessToken = jwtService.issue(admin.getId(), role, JwtType.ACCESS);
-        String refreshToken = jwtService.issue(admin.getId(), role, JwtType.REFRESH);
+        String accessToken = jwtService.issue(admin.getId(), admin.getRoles(), JwtType.ACCESS);
+        String refreshToken = jwtService.issue(admin.getId(), admin.getRoles(), JwtType.REFRESH);
 
         return Pair.of(accessToken,refreshToken);
     }
