@@ -45,26 +45,16 @@ public class SecurityConfig {
         http.httpBasic(h -> h.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(reqeust ->
-                        reqeust.requestMatchers(HttpMethod.POST,POST_PERMIT_MATCHERS).permitAll())
+                .authorizeHttpRequests(request ->
+                        request.requestMatchers(HttpMethod.POST,POST_PERMIT_MATCHERS).permitAll())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.GET, "/notice/**").permitAll())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
+                        request.requestMatchers("/category/**").permitAll())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET, "/user/**").authenticated())
+                        request.requestMatchers("/admin/**").hasAnyAuthority(Role.ADMIN.name(), Role.SUPER.name()))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST, "/notice").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.PATCH, "/notice/**", "/admin/**").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.PATCH, "/user/**").authenticated())
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.DELETE, "/notice/**", "/admin/**").hasAnyAuthority(Role.ADMIN.getName(), Role.SUPER.getName()))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.DELETE, "/user/**").authenticated())
-                .authorizeHttpRequests(request ->
-                                request.anyRequest().permitAll())
+                                request.anyRequest().authenticated())
                 .csrf(c -> c.disable())
                 .authenticationProvider(new DefaultAuthenticationProvider())
                 .addFilterBefore(new JwtTokenFilter(jwtService), UsernamePasswordAuthenticationFilter.class)

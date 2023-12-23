@@ -198,7 +198,7 @@ class UserControllerTest {
                                                         PayloadDocumentation.fieldWithPath("data.address.detailAddr").type(JsonFieldType.STRING).description("201"),
                                                         PayloadDocumentation.fieldWithPath("data.status").type(JsonFieldType.STRING).description("ACTIVATED"),
                                                         PayloadDocumentation.fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("The timestamp when the data was created"),
-                                                        PayloadDocumentation.fieldWithPath("data.role").type(JsonFieldType.STRING).description("USER")
+                                                        PayloadDocumentation.fieldWithPath("data.roles").type(JsonFieldType.ARRAY).description("Roles")
                                                 )
                                         )
                                         .responseSchema(Schema.schema("UserUpdateDto.Response"))

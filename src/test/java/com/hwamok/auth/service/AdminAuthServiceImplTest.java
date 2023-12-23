@@ -39,8 +39,8 @@ class AdminAuthServiceImplTest {
 
         Pair<String, String> pair = adminAuthService.login(admin.getLoginId(), "1234");
 
-        assertThat(pair.getFirst()).isEqualTo(jwtService.issue(admin.getId(), "어드민", JwtType.ACCESS));
-        assertThat(pair.getSecond()).isEqualTo(jwtService.issue(admin.getId(), "어드민", JwtType.REFRESH));
+        assertThat(pair.getFirst()).isEqualTo(jwtService.issue(admin.getId(), admin.getRoles(), JwtType.ACCESS));
+        assertThat(pair.getSecond()).isEqualTo(jwtService.issue(admin.getId(), admin.getRoles(), JwtType.REFRESH));
     }
 
     @Test

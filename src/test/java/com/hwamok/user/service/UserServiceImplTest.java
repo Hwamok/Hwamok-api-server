@@ -109,11 +109,11 @@ class UserServiceImplTest {
 
     @Test
     void 회원_탈퇴_성공() {
-        User user = userRepository.save(userRepository.save(new User("hwamok@test.com", passwordEncoder.encode("1234"),
+        User user = userRepository.save(new User("hwamok@test.com", passwordEncoder.encode("1234"),
                 "hwamok","2023-11-15", "01012345678", "GOOGLE",
                 new UploadedFile("originalImage", "savedImage"),
                 new Address(12345, "15, Deoksugung-gil, Jung-gu, Seoul, Republic of Korea",
-                        "201"))));
+                        "201")));
 
         userService.withdraw(user.getId());
 
