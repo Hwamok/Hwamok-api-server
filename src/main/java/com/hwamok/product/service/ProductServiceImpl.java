@@ -1,6 +1,7 @@
 package com.hwamok.product.service;
 
 import com.hwamok.category.domain.Category;
+import com.hwamok.category.domain.CategoryRepository;
 import com.hwamok.core.exception.ExceptionCode;
 import com.hwamok.core.exception.HwamokException;
 import com.hwamok.product.domain.Product;
@@ -21,7 +22,10 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product create(String name, String code, Integer price, Category category) {
-        return productRepository.save(new Product(name, code, price, category));
+        Product product = productRepository.save(new Product(name, code, price, category));
+        category.registerProduct(product);
+
+        return product;
     }
 
     @Override

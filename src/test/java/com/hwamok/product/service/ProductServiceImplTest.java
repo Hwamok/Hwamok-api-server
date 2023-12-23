@@ -54,6 +54,7 @@ class ProductServiceImplTest {
         Product product = productService.create("사과", "S001", 10000, category);
 
         assertThat(product.getId()).isNotNull();
+        assertThat(category.getProducts()).contains(product);
     }
 
     @ParameterizedTest
