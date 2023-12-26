@@ -101,9 +101,12 @@ class ProductServiceImplTest {
 
     @Test
     void 이름으로_모든_상품_가져오기_성공() {
+        Product product1 = productRepository.save(ProductFixture.createProduct("사과", "S012", category));
+
         List<Product> productList = productService.getProductByName("사과");
 
-        assertThat(productList.get(0).getId()).isNotNull();
+        assertList(0, productList, product);
+        assertList(1, productList, product1);
     }
 
     @Test
@@ -210,5 +213,14 @@ class ProductServiceImplTest {
     void 상품_삭제_실패__없는_id() {
         HwamokExceptionTest.assertThatHwamokException(ExceptionCode.NOT_FOUND_PRODUCT)
                 .isThrownBy(()->productService.delete(-1L));
+    }
+
+    private void assertList(int index, List<Product> list, Product product) {
+        assertThat(list.get(index).getId()).isEqualTo(product.getId());
+        assertThat(list.get(index).getName()).isEqualTo(product.getName());
+        assertThat(list.get(index).getCode()).isEqualTo(product.getCode());
+        assertThat(list.get(index).getPrice()).isEqualTo(product.getPrice());
+        assertThat(list.get(index).getCategory()).isEqualTo(product.getCategory());
+        assertThat(list.get(index).getStatus()).isEqualTo(product.getStatus());
     }
 }
