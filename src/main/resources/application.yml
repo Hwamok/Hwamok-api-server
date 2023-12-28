@@ -14,7 +14,7 @@ spring:
     show-sql: true
 
 jwt:
-  secretKey: hwamokJwtSecretKey20231102PM1057
+  secretKey: ${hwamok.jwt.secret.key:123}
 
 slack:
   bot-token: ${bot.token:1234}
@@ -23,10 +23,10 @@ slack:
 cloud:
   aws:
     credentials:
-      access-key: AKIA5CD3QQSFBJFUA6N7
-      secret-key: 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
+      access-key: ${aws.access.key:123}
+      secret-key: ${aws.secret.key:123}
     region:
-      static: ap-northeast-2
+      static: ${aws.region:123}
 
 s3:
-  bucket: hwamok3
+  bucket: ${aws.s3.bucket:123}

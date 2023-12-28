@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void withdraw(long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_USER));
+        s3Service.delete(user.getProfile().getSavedFileName());
         user.delete();
     }
 }
