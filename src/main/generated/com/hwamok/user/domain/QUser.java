@@ -46,7 +46,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final QUploadedFile profile;
 
-    public final EnumPath<Role> role = createEnum("role", Role.class);
+    public final ListPath<com.hwamok.utils.Role, EnumPath<com.hwamok.utils.Role>> roles = this.<com.hwamok.utils.Role, EnumPath<com.hwamok.utils.Role>>createList("roles", com.hwamok.utils.Role.class, EnumPath.class, PathInits.DIRECT2);
 
     public final EnumPath<UserStatus> status = createEnum("status", UserStatus.class);
 
