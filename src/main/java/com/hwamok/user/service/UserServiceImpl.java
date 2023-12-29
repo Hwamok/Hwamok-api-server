@@ -52,11 +52,11 @@ public class UserServiceImpl implements UserService {
                        String platform, AddressUpdateDto.Request reqAddress, MultipartFile profilePicture) {
         User user = userRepository.findById(id).orElseThrow(() -> new HwamokException(ExceptionCode.NOT_FOUND_USER));
 
+        require(Strings.isNotBlank(password));
+
         Pair pair = s3Service.upload(profilePicture);
         UploadedFile profile = new UploadedFile(pair.getFirst().toString(), pair.getSecond().toString());
         Address address = new Address(reqAddress.getPost(), reqAddress.getAddr(), reqAddress.getDetailAddr());
-
-        require(Strings.isNotBlank(password));
 
         user.update(passwordEncoder.encode(password), name, birthDay, phone, platform, profile, address);
 

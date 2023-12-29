@@ -51,6 +51,14 @@ jobs:
           gradle-version: wrapper
           arguments: test
 
+      # AWS Key을 환경 변수를 통해서 사용
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       # job 결과를 slack으로 알려줌
       - name: send slack message
         uses: 8398a7/action-slack@v3
