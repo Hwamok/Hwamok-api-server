@@ -20,7 +20,7 @@ public class AwsConfiguration {
     private String region;
 
     @Bean
-    public AmazonS3 amazonS3() { // 컨트롤 알트 브이
+    public AmazonS3 amazonS3() {
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(accessKey, secretKey);
 
         return AmazonS3ClientBuilder.standard()
