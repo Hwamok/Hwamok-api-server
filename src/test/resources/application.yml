@@ -19,14 +19,3 @@ jwt:
 slack:
   bot-token: ${bot.token:1234}
   log-channel: ${bot.channel:1234}
-
-cloud:
-  aws:
-    credentials:
-      access-key: AKIA5CD3QQSFA2EMCR5N
-      secret-key: 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
-    region:
-      static: ap-northeast-2
-
-s3:
-  bucket: hwamok3
