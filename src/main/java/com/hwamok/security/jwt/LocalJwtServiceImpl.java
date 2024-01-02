@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +17,11 @@ import static com.hwamok.utils.PreConditions.notNull;
 
 @Service
 @Transactional
-@Profile({"dev","prod"})
+@Profile({"default","local"})
 @RequiredArgsConstructor
-public class JwtServiceImpl implements JwtService {
+public class LocalJwtServiceImpl implements JwtService {
     private static final Long EXPIRE_MINUTES = 30L*1000; // 5분
     private static final Long EXPIRE_DATE = 1L*24*60*60*1000; // 24시간
-
-    @Value("${jwt.secretKey}")
-    private String secretKey;
-
     @Override
     public String issue(Long id, List<Role> roles, JwtType type) {
         Map<String,String> claims = new HashMap<>();
@@ -97,6 +92,6 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private SecretKey generateSecretKey(){
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        return Keys.hmacShaKeyFor("hwamokJwtLocalSecretKey20240102PM1651".getBytes());
     }
 }
