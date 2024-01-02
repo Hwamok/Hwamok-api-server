@@ -14,8 +14,19 @@ spring:
     show-sql: true
 
 jwt:
-  secretKey: hwamokJwtSecretKey20231102PM1057
+  secretKey: ${hwamok.jwt.secret.key:123}
 
 slack:
   bot-token: ${bot.token:1234}
   log-channel: ${bot.channel:1234}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${aws.access.key:123}
+      secret-key: ${aws.secret.key:123}
+    region:
+      static: ${aws.region:123}
+
+s3:
+  bucket: ${aws.s3.bucket:123}
