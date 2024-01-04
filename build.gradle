@@ -90,11 +90,21 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.named("bootJar") {
-    enabled = true
-    archiveFileName.set("hwamok.jar")
+task moveSwaggerFiles(type: Copy) {
+    dependsOn("generateSwaggerUIConvert")
+    from("$buildDir/swagger-ui-convert")
+    into("$buildDir/resources/main/static/docs/")
 }
 
+tasks.named("resolveMainClassName") {
+    dependsOn("moveSwaggerFiles")
+}
+
+tasks.named("bootJar") {
+    enabled = true
+    dependsOn("moveSwaggerFiles")
+    archiveFileName.set("hwamok.jar")
+}
 
 tasks.register("zip", Zip.class) {
     //실행가능한 jar파일 만들어야함
