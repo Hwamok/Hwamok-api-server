@@ -36,7 +36,7 @@ public class QAdmin extends EntityPathBase<Admin> {
 
     public final StringPath password = createString("password");
 
-    public final ListPath<Role, EnumPath<Role>> roles = this.<Role, EnumPath<Role>>createList("roles", Role.class, EnumPath.class, PathInits.DIRECT2);
+    public final ListPath<com.hwamok.utils.Role, EnumPath<com.hwamok.utils.Role>> roles = this.<com.hwamok.utils.Role, EnumPath<com.hwamok.utils.Role>>createList("roles", com.hwamok.utils.Role.class, EnumPath.class, PathInits.DIRECT2);
 
     public final EnumPath<AdminStatus> status = createEnum("status", AdminStatus.class);
 

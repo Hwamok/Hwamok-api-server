@@ -9,6 +9,7 @@ import com.hwamok.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResult<?>> create(@RequestBody UserCreateDto.Request request) {
+    public ResponseEntity<ApiResult<?>> create(@RequestBody UserCreateDto.Request request, @RequestPart MultipartFile profilePicture) {
         userService.create(
                 request.getEmail(),
                 request.getPassword(),
@@ -25,23 +26,23 @@ public class UserController {
                 request.getBirthDay(),
                 request.getPhone(),
                 request.getPlatform(),
-                request.getProfile(),
-                request.getAddress());
+                request.getAddress(),
+                profilePicture);
 
         return Result.created();
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<ApiResult<?>> update(@PathVariable Long id,
-                                                  @RequestBody UserUpdateDto.Request request) {
+                                               @RequestBody UserUpdateDto.Request request, @RequestPart MultipartFile profilePicture) {
         userService.update(id,
                 request.getPassword(),
                 request.getName(),
                 request.getBirthDay(),
                 request.getPhone(),
                 request.getPlatform(),
-                request.getProfile(),
-                request.getAddress());
+                request.getAddress(),
+                profilePicture);
 
         return Result.ok();
     }

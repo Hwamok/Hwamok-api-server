@@ -38,3 +38,7 @@ out/
 
 ### QueryDsl
 /src/main/generated
+
+### QueryDSL QAdmin QUser
+src/main/generated/com/hwamok/admin/domain/
+src/main/generated/com/hwamok/user/domain/

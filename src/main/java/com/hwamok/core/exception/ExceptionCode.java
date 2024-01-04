@@ -33,7 +33,9 @@ public enum ExceptionCode {
     OVER_LENGTH_PLATFORM("E025", "플랫폼의 길이가 초과되었습니다."),
     OVER_LENGTH_ADDR("E026", "주소의 길이가 초과되었습니다."),
     OVER_LENGTH_DETAILADDR("E027", "주소 상세의 길이가 초과되었습니다."),
-    ACCESS_DENIED("E028", "권한이 없습니다.");
+    ACCESS_DENIED("E028", "권한이 없습니다."),
+    FILE_UPLOAD_FAILED("E029", "파일 업로드에 실패 하였습니다."),
+    NOT_FILE_FORM("E030", "잘 못 된 형식의 파일입니다.");
 
     private final String code;
     private final String message;
