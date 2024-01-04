@@ -18,7 +18,6 @@ import static com.hwamok.utils.PreConditions.notNull;
 
 @Service
 @Transactional
-@Profile({"dev","prod"})
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
     private static final Long EXPIRE_MINUTES = 30L*1000; // 5분

@@ -14,7 +14,7 @@ spring:
     show-sql: true
 
 jwt:
-  secretKey: ${hwamok.jwt.secret.key:123}
+  secretKey: hwamokJwtLocalSecretKey20240102PM1651
 
 slack:
   bot-token: ${bot.token:1234}
